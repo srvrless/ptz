@@ -1,0 +1,622 @@
+2025-12-02 14:28:03,941 - app - INFO - Остановка всех камер...
+2025-12-02 14:28:08,865 - app - INFO - Остановка всех камер...
+2025-12-03 09:24:54,588 - app - INFO - Остановка всех камер...
+2025-12-03 09:24:57,037 - app - INFO - Остановка всех камер...
+2025-12-03 09:24:59,516 - app - INFO - Остановка всех камер...
+2025-12-03 09:49:17,670 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 111, in app
+    response = await f(request)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "/home/albert/Рабочий стол/ptz-backend/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "/home/albert/Рабочий стол/ptz-backend/app/api/v1/cameras.py", line 22, in list_cameras
+    return camera_service.list_cameras()
+  File "/home/albert/Рабочий стол/ptz-backend/app/services/camera_service.py", line 34, in list_cameras
+    return serialize_cameras(config.cameras)
+  File "/home/albert/Рабочий стол/ptz-backend/app/utils/serializers.py", line 19, in serialize_cameras
+    return {camera_id: serialize_camera_config(cfg) for camera_id, cfg in cameras.items()}
+  File "/home/albert/Рабочий стол/ptz-backend/app/utils/serializers.py", line 19, in <dictcomp>
+    return {camera_id: serialize_camera_config(cfg) for camera_id, cfg in cameras.items()}
+  File "/home/albert/Рабочий стол/ptz-backend/app/utils/serializers.py", line 12, in serialize_camera_config
+    return asdict(cfg)
+  File "/home/albert/snap/code/212/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/dataclasses.py", line 1237, in asdict
+    raise TypeError("asdict() should be called on dataclass instances")
+TypeError: asdict() should be called on dataclass instances
+2025-12-03 11:56:23,101 - app - INFO - Остановка всех камер...
+2025-12-03 11:56:46,496 - app - INFO - Остановка всех камер...
+2025-12-03 11:57:12,207 - app - INFO - Остановка всех камер...
+2025-12-03 11:59:22,866 - app - INFO - Остановка всех камер...
+2025-12-03 11:59:50,557 - app - INFO - Остановка всех камер...
+2025-12-03 12:01:10,743 - app - INFO - Остановка всех камер...
+2025-12-03 12:07:36,296 - app - INFO - Остановка всех камер...
+2025-12-03 12:08:37,657 - app - INFO - Остановка всех камер...
+2025-12-03 12:15:18,217 - app - INFO - Остановка всех камер...
+2025-12-03 12:15:20,917 - app - INFO - Остановка всех камер...
+2025-12-03 12:15:22,862 - app - INFO - Остановка всех камер...
+2025-12-03 12:17:55,007 - app - INFO - Остановка всех камер...
+2025-12-03 12:18:13,915 - app - INFO - Остановка всех камер...
+2025-12-03 12:19:02,623 - app - INFO - Остановка всех камер...
+2025-12-03 12:20:14,364 - app - INFO - Остановка всех камер...
+2025-12-03 12:36:43,018 - app - INFO - Остановка всех камер...
+2025-12-03 12:36:47,008 - app - INFO - Остановка всех камер...
+2025-12-03 12:36:56,521 - app - INFO - Остановка всех камер...
+2025-12-04 17:18:52,133 - app - INFO - Остановка всех камер...
+2025-12-04 17:22:21,175 - app - INFO - Остановка всех камер...
+2025-12-04 17:28:16,773 - app - INFO - Остановка всех камер...
+2025-12-04 17:31:30,737 - app - INFO - Остановка всех камер...
+2025-12-04 17:40:19,611 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-04 17:40:28,652 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-04 17:41:44,689 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-04 17:45:15,421 - app - INFO - Остановка всех камер...
+2025-12-04 17:46:59,120 - app - INFO - Остановка всех камер...
+2025-12-04 17:48:41,317 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-04 17:52:52,506 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-04 17:54:23,668 - app - INFO - Остановка всех камер...
+2025-12-05 16:32:36,483 - app - INFO - Остановка всех камер...
+2025-12-05 17:25:17,903 - app - INFO - Остановка всех камер...
+2025-12-05 17:31:52,182 - app - INFO - Остановка всех камер...
+2025-12-05 17:55:30,380 - app - INFO - Остановка всех камер...
+2025-12-05 17:58:33,482 - app - INFO - Остановка всех камер...
+2025-12-05 18:01:46,619 - app - INFO - Остановка всех камер...
+2025-12-05 18:07:20,469 - app - INFO - Остановка всех камер...
+2025-12-05 18:08:27,364 - app - INFO - Остановка всех камер...
+2025-12-05 18:12:15,799 - app - INFO - Остановка всех камер...
+2025-12-05 18:14:17,620 - app - INFO - Остановка всех камер...
+2025-12-05 18:15:26,368 - app - INFO - Остановка всех камер...
+2025-12-05 18:16:16,048 - app - INFO - Остановка всех камер...
+2025-12-05 18:32:12,517 - app - INFO - Остановка всех камер...
+2025-12-05 18:33:32,552 - app - INFO - Остановка всех камер...
+2025-12-05 18:35:08,830 - app - INFO - Остановка всех камер...
+2025-12-05 18:38:28,210 - app - INFO - Остановка всех камер...
+2025-12-05 18:39:53,533 - app - INFO - Остановка всех камер...
+2025-12-05 18:46:15,250 - app - INFO - Остановка всех камер...
+2025-12-05 18:53:05,883 - app - INFO - Остановка всех камер...
+2025-12-08 17:01:51,619 - app - INFO - Остановка всех камер...
+2025-12-08 17:10:51,327 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\Desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-08 17:10:54,723 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\Desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-08 17:10:56,447 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\Desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-08 17:11:00,763 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\Desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-08 17:11:08,466 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 41, in _get_radar_height
+    return config.heights[radar_id - 1]
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz-backend\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\Desktop\ptz-backend\app\api\v1\ptz.py", line 34, in ptz_move
+    result = ptz_service.move_to_target(
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 68, in move_to_target
+    radar_h = self._get_radar_height(radar_id)
+  File "C:\Users\PC\Desktop\ptz-backend\app\services\ptz_service.py", line 43, in _get_radar_height
+    raise ValueError(f"Invalid radar_id: {radar_id}")
+ValueError: Invalid radar_id: 4
+2025-12-08 17:12:30,659 - app - INFO - Остановка всех камер...

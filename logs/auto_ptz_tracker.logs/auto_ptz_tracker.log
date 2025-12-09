@@ -1,0 +1,403 @@
+2025-12-05 17:50:56,478 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(1647, 148, 1725, 248), conf=0.78
+2025-12-05 17:51:28,544 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:51:28,633 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=6, bbox=(841, 190, 1440, 968), conf=0.90
+2025-12-05 17:51:34,464 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:51:34,547 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=7, bbox=(933, 523, 1015, 625), conf=0.75
+2025-12-05 17:51:39,927 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:51:40,019 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=14, bbox=(923, 128, 1511, 882), conf=0.91
+2025-12-05 17:51:43,611 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:51:43,698 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=15, bbox=(581, 317, 1183, 1075), conf=0.92
+2025-12-05 17:52:38,352 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:52:38,440 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=27, bbox=(2, 303, 537, 1044), conf=0.91
+2025-12-05 17:52:40,611 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:52:40,695 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=34, bbox=(0, 348, 339, 1069), conf=0.90
+2025-12-05 17:52:44,612 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:52:44,696 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=35, bbox=(236, 187, 612, 698), conf=0.90
+2025-12-05 17:52:49,464 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:52:49,562 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=36, bbox=(451, 439, 735, 828), conf=0.89
+2025-12-05 17:52:52,024 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:52:52,108 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=39, bbox=(1195, 445, 1465, 819), conf=0.88
+2025-12-05 17:52:55,411 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:52:55,495 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=40, bbox=(1143, 751, 1410, 1080), conf=0.87
+2025-12-05 17:52:58,788 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:52:58,873 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=41, bbox=(1066, 572, 1340, 941), conf=0.88
+2025-12-05 17:53:02,178 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:53:02,266 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=42, bbox=(996, 2, 1278, 240), conf=0.89
+2025-12-05 17:53:05,298 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:53:05,387 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=44, bbox=(919, 402, 1187, 767), conf=0.88
+2025-12-05 17:53:27,841 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:53:27,929 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=55, bbox=(1327, 490, 1600, 858), conf=0.87
+2025-12-05 17:54:19,591 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:54:19,686 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=56, bbox=(1207, 468, 1283, 550), conf=0.81
+2025-12-05 17:54:22,683 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:54:22,770 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=57, bbox=(747, 390, 821, 497), conf=0.73
+2025-12-05 17:54:27,796 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:54:27,882 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=58, bbox=(1414, 477, 1542, 624), conf=0.82
+2025-12-05 17:54:37,030 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:54:37,117 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=61, bbox=(932, 261, 1162, 568), conf=0.84
+2025-12-05 17:54:57,074 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:54:57,164 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=62, bbox=(481, 422, 735, 758), conf=0.86
+2025-12-05 17:55:02,704 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:55:02,790 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=63, bbox=(2, 201, 267, 558), conf=0.82
+2025-12-05 17:55:48,346 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(1674, 141, 1821, 396), conf=0.41
+2025-12-05 17:56:30,299 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:56:30,386 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=4, bbox=(104, 331, 164, 435), conf=0.66
+2025-12-05 17:56:36,349 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:56:37,817 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=7, bbox=(877, 311, 945, 426), conf=0.70
+2025-12-05 17:56:59,107 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:56:59,192 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=8, bbox=(341, 351, 439, 471), conf=0.74
+2025-12-05 17:57:04,870 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:57:04,956 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=11, bbox=(359, 1012, 392, 1052), conf=0.45
+2025-12-05 17:57:28,699 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:57:28,784 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=15, bbox=(926, 637, 1047, 875), conf=0.75
+2025-12-05 17:57:41,463 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:57:41,569 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=27, bbox=(689, 663, 804, 887), conf=0.77
+2025-12-05 17:58:59,284 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(143, 961, 208, 1060), conf=0.81
+2025-12-05 17:59:00,951 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:59:01,035 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=5, bbox=(1345, 792, 1386, 883), conf=0.66
+2025-12-05 17:59:04,204 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 17:59:04,292 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=7, bbox=(393, 458, 503, 681), conf=0.75
+2025-12-05 18:00:30,666 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:00:30,755 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=31, bbox=(1008, 495, 1599, 1076), conf=0.90
+2025-12-05 18:00:32,142 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:00:32,231 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=33, bbox=(1319, 419, 1917, 1080), conf=0.90
+2025-12-05 18:00:36,551 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:00:36,678 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=42, bbox=(918, 4, 1570, 690), conf=0.92
+2025-12-05 18:00:41,055 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:00:41,143 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=54, bbox=(399, 110, 976, 917), conf=0.91
+2025-12-05 18:00:51,150 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:00:51,240 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=64, bbox=(491, 0, 1056, 199), conf=0.74
+2025-12-05 18:00:59,428 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:00:59,512 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=71, bbox=(1127, 728, 1892, 1080), conf=0.75
+2025-12-05 18:01:03,410 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:03,492 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=81, bbox=(114, 62, 953, 1071), conf=0.89
+2025-12-05 18:01:04,964 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:05,052 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=82, bbox=(744, 8, 1660, 1022), conf=0.92
+2025-12-05 18:01:08,364 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:08,450 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=85, bbox=(1094, 27, 1920, 944), conf=0.90
+2025-12-05 18:01:14,613 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:14,699 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=89, bbox=(1487, 14, 1919, 1080), conf=0.86
+2025-12-05 18:01:17,282 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:17,371 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=92, bbox=(569, 3, 1604, 741), conf=0.87
+2025-12-05 18:01:19,534 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:19,622 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=93, bbox=(987, 10, 1920, 659), conf=0.75
+2025-12-05 18:01:26,504 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:26,677 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=98, bbox=(958, 0, 1920, 998), conf=0.73
+2025-12-05 18:01:30,796 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:30,881 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=103, bbox=(216, 10, 1332, 1044), conf=0.86
+2025-12-05 18:01:32,784 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:32,868 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=105, bbox=(392, 0, 1713, 840), conf=0.57
+2025-12-05 18:01:35,025 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:35,111 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=110, bbox=(1404, 6, 1919, 704), conf=0.78
+2025-12-05 18:01:41,527 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:01:41,612 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=114, bbox=(257, 3, 1604, 1080), conf=0.46
+2025-12-05 18:07:36,688 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(1751, 632, 1816, 723), conf=0.65
+2025-12-05 18:07:38,100 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:07:38,189 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=5, bbox=(1682, 977, 1755, 1073), conf=0.72
+2025-12-05 18:07:45,195 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:07:45,284 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=18, bbox=(0, 731, 63, 827), conf=0.78
+2025-12-05 18:07:47,940 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:07:48,026 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=38, bbox=(1615, 376, 1684, 491), conf=0.67
+2025-12-05 18:07:51,227 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:07:51,315 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=42, bbox=(941, 387, 1037, 499), conf=0.83
+2025-12-05 18:07:58,624 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:07:58,710 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=63, bbox=(972, 463, 1053, 563), conf=0.76
+2025-12-05 18:08:14,753 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:08:14,856 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=69, bbox=(281, 243, 363, 319), conf=0.62
+2025-12-05 18:08:17,453 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:08:17,553 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=77, bbox=(1038, 609, 1125, 712), conf=0.80
+2025-12-05 18:08:25,730 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:08:25,845 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=78, bbox=(1303, 861, 1375, 966), conf=0.75
+2025-12-05 18:08:50,525 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(1741, 191, 1920, 604), conf=0.40
+2025-12-05 18:09:00,357 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:00,453 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=2, bbox=(0, 9, 468, 691), conf=0.92
+2025-12-05 18:09:03,246 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:03,335 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=13, bbox=(660, 9, 1320, 766), conf=0.90
+2025-12-05 18:09:04,749 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:04,834 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=16, bbox=(221, 10, 907, 830), conf=0.91
+2025-12-05 18:09:17,532 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:17,617 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=17, bbox=(80, 205, 740, 1075), conf=0.90
+2025-12-05 18:09:20,420 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:20,510 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=24, bbox=(1280, 203, 1920, 1079), conf=0.90
+2025-12-05 18:09:28,325 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:28,409 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=29, bbox=(364, 117, 970, 932), conf=0.90
+2025-12-05 18:09:30,063 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:30,155 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=30, bbox=(0, 139, 403, 952), conf=0.91
+2025-12-05 18:09:33,889 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:33,977 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=37, bbox=(1651, 176, 1919, 1069), conf=0.73
+2025-12-05 18:09:37,911 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:37,996 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=41, bbox=(0, 243, 385, 1075), conf=0.91
+2025-12-05 18:09:40,813 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:40,903 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=50, bbox=(1521, 125, 1919, 1042), conf=0.76
+2025-12-05 18:09:43,818 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:43,909 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=60, bbox=(0, 150, 128, 1069), conf=0.61
+2025-12-05 18:09:57,980 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:09:58,068 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=69, bbox=(1661, 112, 1919, 1067), conf=0.67
+2025-12-05 18:10:00,704 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:00,788 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=77, bbox=(0, 373, 80, 1049), conf=0.44
+2025-12-05 18:10:03,248 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:03,338 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=81, bbox=(878, 209, 1473, 1080), conf=0.85
+2025-12-05 18:10:13,837 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:13,926 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=84, bbox=(498, 113, 1178, 1011), conf=0.90
+2025-12-05 18:10:20,843 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:20,933 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=89, bbox=(1372, 0, 1920, 517), conf=0.91
+2025-12-05 18:10:24,289 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:24,377 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=95, bbox=(412, 141, 1108, 1070), conf=0.90
+2025-12-05 18:10:25,873 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:25,962 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=98, bbox=(778, 61, 1465, 942), conf=0.91
+2025-12-05 18:10:27,661 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:27,749 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=102, bbox=(1411, 251, 1920, 1073), conf=0.91
+2025-12-05 18:10:29,352 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:29,440 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=103, bbox=(589, 5, 988, 437), conf=0.89
+2025-12-05 18:10:31,538 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:31,627 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=108, bbox=(1093, 607, 1464, 1064), conf=0.86
+2025-12-05 18:10:34,360 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:34,445 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=109, bbox=(878, 14, 1274, 449), conf=0.86
+2025-12-05 18:10:39,543 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:39,627 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=113, bbox=(951, 823, 1369, 1080), conf=0.85
+2025-12-05 18:10:41,577 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:41,666 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=116, bbox=(1700, 572, 1920, 964), conf=0.74
+2025-12-05 18:10:44,860 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:44,948 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=130, bbox=(1636, 305, 1919, 769), conf=0.85
+2025-12-05 18:10:47,770 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:48,112 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=143, bbox=(276, 295, 488, 748), conf=0.47
+2025-12-05 18:10:55,552 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:10:55,637 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=149, bbox=(225, 430, 460, 1076), conf=0.68
+2025-12-05 18:11:02,968 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:03,054 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=170, bbox=(184, 131, 627, 817), conf=0.85
+2025-12-05 18:11:04,569 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:04,657 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=166, bbox=(1280, 9, 1620, 472), conf=0.87
+2025-12-05 18:11:19,328 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:19,414 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=182, bbox=(294, 6, 959, 587), conf=0.87
+2025-12-05 18:11:22,955 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:23,040 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=187, bbox=(93, 118, 710, 941), conf=0.89
+2025-12-05 18:11:24,700 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:24,790 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=191, bbox=(395, 86, 1000, 892), conf=0.90
+2025-12-05 18:11:26,195 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:26,284 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=193, bbox=(141, 114, 690, 912), conf=0.86
+2025-12-05 18:11:28,927 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:29,014 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=200, bbox=(1180, 59, 1789, 854), conf=0.90
+2025-12-05 18:11:30,935 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:31,022 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=203, bbox=(739, 52, 1346, 859), conf=0.90
+2025-12-05 18:11:46,596 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:46,685 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=211, bbox=(313, 102, 911, 913), conf=0.88
+2025-12-05 18:11:48,096 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:48,186 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=206, bbox=(1089, 7, 1425, 376), conf=0.80
+2025-12-05 18:11:50,912 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:51,000 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=217, bbox=(1255, 730, 1575, 1078), conf=0.76
+2025-12-05 18:11:53,758 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:53,848 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=232, bbox=(114, 13, 365, 414), conf=0.67
+2025-12-05 18:11:57,184 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:11:57,282 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=245, bbox=(233, 7, 561, 374), conf=0.87
+2025-12-05 18:13:41,178 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(252, 4, 709, 223), conf=0.71
+2025-12-05 18:13:46,368 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:13:46,674 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=12, bbox=(83, 220, 432, 692), conf=0.87
+2025-12-05 18:14:01,602 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:14:01,952 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=26, bbox=(602, 8, 1049, 493), conf=0.89
+2025-12-05 18:14:10,101 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:14:10,443 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=33, bbox=(1816, 289, 1920, 723), conf=0.65
+2025-12-05 18:14:32,323 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(0, 144, 276, 672), conf=0.88
+2025-12-05 18:14:37,345 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:14:37,481 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=6, bbox=(0, 205, 271, 722), conf=0.88
+2025-12-05 18:14:39,953 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:14:40,086 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=7, bbox=(0, 186, 239, 711), conf=0.86
+2025-12-05 18:14:47,390 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:14:47,524 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=15, bbox=(1350, 185, 1766, 734), conf=0.88
+2025-12-05 18:14:57,884 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:14:58,021 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=21, bbox=(0, 334, 409, 869), conf=0.88
+2025-12-05 18:15:01,896 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:15:02,060 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=29, bbox=(1453, 251, 1870, 811), conf=0.87
+2025-12-05 18:15:06,351 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:15:06,485 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=34, bbox=(229, 258, 629, 821), conf=0.88
+2025-12-05 18:15:10,246 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:15:10,410 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=38, bbox=(1169, 257, 1559, 798), conf=0.88
+2025-12-05 18:15:13,698 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:15:13,871 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=43, bbox=(447, 265, 830, 792), conf=0.88
+2025-12-05 18:15:38,289 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(891, 307, 1204, 830), conf=0.88
+2025-12-05 18:15:48,099 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:15:48,197 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=4, bbox=(1298, 96, 1751, 726), conf=0.88
+2025-12-05 18:15:49,890 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:15:49,990 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=2, bbox=(959, 31, 1438, 685), conf=0.88
+2025-12-05 18:15:51,693 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:15:51,789 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=9, bbox=(144, 15, 660, 688), conf=0.89
+2025-12-05 18:15:53,885 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:15:53,982 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=14, bbox=(1272, 183, 1707, 824), conf=0.87
+2025-12-05 18:16:07,553 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:16:07,650 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=23, bbox=(431, 472, 890, 996), conf=0.86
+2025-12-05 18:31:00,932 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(910, 814, 1332, 1080), conf=0.87
+2025-12-05 18:31:02,626 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:31:02,723 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=3, bbox=(813, 322, 1217, 839), conf=0.88
+2025-12-05 18:31:06,549 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:31:06,647 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=4, bbox=(0, 75, 123, 588), conf=0.71
+2025-12-05 18:31:13,486 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:31:13,586 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=7, bbox=(0, 118, 299, 632), conf=0.88
+2025-12-05 18:31:25,492 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:31:25,592 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=18, bbox=(617, 458, 992, 993), conf=0.87
+2025-12-05 18:31:28,409 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:31:28,505 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=22, bbox=(699, 0, 1116, 344), conf=0.90
+2025-12-05 18:31:30,615 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:31:30,713 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=26, bbox=(925, 763, 1332, 1080), conf=0.81
+2025-12-05 18:32:24,222 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(760, 559, 1174, 1077), conf=0.91
+2025-12-05 18:32:33,038 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:32:33,128 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=4, bbox=(949, 5, 1321, 369), conf=0.83
+2025-12-05 18:33:54,626 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(806, 540, 1242, 1076), conf=0.90
+2025-12-05 18:33:56,958 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:33:57,058 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=2, bbox=(935, 663, 1319, 1077), conf=0.84
+2025-12-05 18:34:04,203 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:34:04,292 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=9, bbox=(668, 400, 1235, 1077), conf=0.88
+2025-12-05 18:34:06,658 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:34:06,742 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=15, bbox=(0, 5, 330, 634), conf=0.91
+2025-12-05 18:34:10,516 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:34:10,603 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=24, bbox=(1404, 623, 1919, 1080), conf=0.63
+2025-12-05 18:34:38,431 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:34:38,519 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=32, bbox=(1852, 5, 1920, 314), conf=0.44
+2025-12-05 18:34:50,964 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:34:51,050 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=36, bbox=(969, 973, 1239, 1080), conf=0.72
+2025-12-05 18:35:30,527 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(1124, 565, 1409, 922), conf=0.86
+2025-12-05 18:35:39,469 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:35:39,559 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=3, bbox=(1313, 388, 1587, 753), conf=0.87
+2025-12-05 18:36:40,582 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:36:40,667 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=7, bbox=(491, 334, 714, 626), conf=0.87
+2025-12-05 18:36:56,214 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:36:56,297 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=8, bbox=(451, 385, 673, 672), conf=0.86
+2025-12-05 18:37:05,540 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:05,627 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=11, bbox=(605, 506, 839, 804), conf=0.89
+2025-12-05 18:37:14,102 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:14,189 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=18, bbox=(1762, 487, 1919, 790), conf=0.85
+2025-12-05 18:37:18,018 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:18,102 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=19, bbox=(1723, 449, 1919, 756), conf=0.87
+2025-12-05 18:37:22,115 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:22,205 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=26, bbox=(1494, 417, 1715, 732), conf=0.86
+2025-12-05 18:37:26,146 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:26,232 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=28, bbox=(1697, 442, 1919, 745), conf=0.87
+2025-12-05 18:37:29,291 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:29,379 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=34, bbox=(738, 413, 963, 707), conf=0.87
+2025-12-05 18:37:32,619 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:32,705 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=35, bbox=(0, 440, 32, 744), conf=0.43
+2025-12-05 18:37:36,365 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:36,451 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=38, bbox=(0, 510, 203, 786), conf=0.88
+2025-12-05 18:37:40,176 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:40,272 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=39, bbox=(89, 566, 304, 845), conf=0.86
+2025-12-05 18:37:43,647 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:43,739 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=45, bbox=(0, 570, 141, 841), conf=0.85
+2025-12-05 18:37:45,481 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:37:45,569 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=47, bbox=(1192, 326, 1269, 428), conf=0.77
+2025-12-05 18:38:02,075 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:38:02,162 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=73, bbox=(197, 87, 998, 1072), conf=0.90
+2025-12-05 18:38:54,144 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=1, bbox=(1261, 5, 1920, 713), conf=0.89
+2025-12-05 18:38:55,632 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:38:55,721 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=2, bbox=(703, 14, 1419, 868), conf=0.91
+2025-12-05 18:38:58,532 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:01,049 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=8, bbox=(0, 497, 82, 1080), conf=0.55
+2025-12-05 18:39:02,692 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:02,783 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=13, bbox=(669, 14, 1376, 867), conf=0.92
+2025-12-05 18:39:06,656 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:06,745 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=17, bbox=(1, 431, 523, 1080), conf=0.91
+2025-12-05 18:39:12,451 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:12,539 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=30, bbox=(822, 26, 1378, 728), conf=0.90
+2025-12-05 18:39:14,648 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:14,737 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=33, bbox=(733, 560, 1054, 989), conf=0.86
+2025-12-05 18:39:18,352 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:18,439 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=37, bbox=(1597, 199, 1857, 519), conf=0.88
+2025-12-05 18:39:21,092 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:21,178 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=45, bbox=(407, 426, 648, 730), conf=0.88
+2025-12-05 18:39:22,741 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:22,826 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=48, bbox=(1324, 384, 1544, 668), conf=0.86
+2025-12-05 18:39:24,490 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:24,576 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=49, bbox=(1728, 395, 1919, 664), conf=0.88
+2025-12-05 18:39:27,317 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:27,402 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=55, bbox=(310, 390, 535, 664), conf=0.86
+2025-12-05 18:39:28,869 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:28,955 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=65, bbox=(1075, 297, 1308, 602), conf=0.88
+2025-12-05 18:39:31,490 - auto_ptz_tracker - INFO - AutoPTZ: цель потеряна, сбрасываем трекинг
+2025-12-05 18:39:31,574 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель id=66, bbox=(937, 205, 1016, 303), conf=0.77
+2025-12-05 18:45:36,022 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=1, conf=0.50, bbox=(0, 490, 369, 1066)
+2025-12-05 18:45:38,052 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=1 16 кадров, выбираем новую
+2025-12-05 18:45:38,054 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=5, conf=0.87, bbox=(399, 0, 1162, 568)
+2025-12-05 18:45:41,931 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=5 16 кадров, выбираем новую
+2025-12-05 18:45:41,931 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=7, conf=0.86, bbox=(0, 7, 503, 411)
+2025-12-05 18:46:04,541 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=7 16 кадров, выбираем новую
+2025-12-05 18:46:04,541 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=8, conf=0.90, bbox=(224, 138, 643, 651)
+2025-12-05 18:46:28,230 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=1, conf=0.30, bbox=(1507, 146, 1618, 400)
+2025-12-05 18:46:32,175 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=1 16 кадров, выбираем новую
+2025-12-05 18:46:32,177 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=5, conf=0.34, bbox=(335, 518, 455, 787)
+2025-12-05 18:46:36,684 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=5 16 кадров, выбираем новую
+2025-12-05 18:46:36,685 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=11, conf=0.83, bbox=(1231, 163, 1546, 595)
+2025-12-05 18:46:51,064 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=11 16 кадров, выбираем новую
+2025-12-05 18:46:51,064 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=19, conf=0.90, bbox=(1664, 6, 1920, 364)
+2025-12-05 18:47:18,037 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=19 16 кадров, выбираем новую
+2025-12-05 18:47:18,037 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=21, conf=0.87, bbox=(68, 491, 250, 723)
+2025-12-05 18:47:41,786 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=21 16 кадров, выбираем новую
+2025-12-05 18:47:41,786 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=23, conf=0.87, bbox=(487, 418, 701, 698)
+2025-12-05 18:47:56,566 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=23 16 кадров, выбираем новую
+2025-12-05 18:47:56,566 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=25, conf=0.45, bbox=(0, 453, 38, 742)
+2025-12-05 18:47:58,410 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=25 16 кадров, выбираем новую
+2025-12-05 18:47:58,410 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=27, conf=0.89, bbox=(414, 419, 649, 720)
+2025-12-05 18:51:34,809 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=27 16 кадров, выбираем новую
+2025-12-05 18:51:34,810 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=30, conf=0.62, bbox=(135, 938, 187, 1041)
+2025-12-05 18:52:14,910 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=30 16 кадров, выбираем новую
+2025-12-05 18:52:14,911 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=37, conf=0.87, bbox=(332, 0, 1312, 899)
+2025-12-05 18:52:18,676 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=37 16 кадров, выбираем новую
+2025-12-05 18:52:18,676 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=39, conf=0.34, bbox=(262, 0, 1234, 440)
+2025-12-05 18:52:23,633 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=39 16 кадров, выбираем новую
+2025-12-05 18:52:23,633 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=40, conf=0.88, bbox=(3, 5, 769, 486)
+2025-12-05 18:52:25,641 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=40 16 кадров, выбираем новую
+2025-12-05 18:52:25,641 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=42, conf=0.81, bbox=(0, 1, 286, 586)
+2025-12-05 18:52:41,167 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=42 16 кадров, выбираем новую
+2025-12-05 18:52:41,169 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=47, conf=0.87, bbox=(157, 10, 854, 417)
+2025-12-08 16:52:23,173 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=1, conf=0.86, bbox=(1432, 8, 1804, 385)
+2025-12-08 16:52:25,167 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=1 16 кадров, выбираем новую
+2025-12-08 16:52:25,168 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=3, conf=0.83, bbox=(652, 6, 916, 397)
+2025-12-08 16:52:34,668 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=3 16 кадров, выбираем новую
+2025-12-08 16:52:34,668 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=4, conf=0.76, bbox=(654, 200, 919, 638)
+2025-12-08 16:52:55,271 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=4 16 кадров, выбираем новую
+2025-12-08 16:52:55,271 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=7, conf=0.71, bbox=(776, 854, 839, 932)
+2025-12-08 16:53:01,933 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=7 16 кадров, выбираем новую
+2025-12-08 16:53:01,933 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=10, conf=0.84, bbox=(927, 530, 1036, 651)
+2025-12-08 16:54:51,139 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=1, conf=0.85, bbox=(830, 448, 969, 609)
+2025-12-08 16:55:25,027 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=1 16 кадров, выбираем новую
+2025-12-08 16:55:25,028 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=11, conf=0.64, bbox=(955, 547, 1077, 686)
+2025-12-08 16:55:33,349 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=11 16 кадров, выбираем новую
+2025-12-08 16:55:33,349 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=14, conf=0.83, bbox=(950, 527, 1086, 678)
+2025-12-08 16:58:12,396 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=14 16 кадров, выбираем новую
+2025-12-08 16:58:12,397 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=37, conf=0.84, bbox=(1245, 387, 1387, 568)
+2025-12-08 16:58:16,462 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=37 16 кадров, выбираем новую
+2025-12-08 16:58:16,462 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=42, conf=0.85, bbox=(788, 439, 924, 607)
+2025-12-08 16:58:27,468 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=42 16 кадров, выбираем новую
+2025-12-08 16:58:27,468 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=47, conf=0.40, bbox=(881, 494, 956, 656)
+2025-12-08 16:58:38,596 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=47 16 кадров, выбираем новую
+2025-12-08 16:58:38,596 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=55, conf=0.89, bbox=(0, 6, 341, 826)
+2025-12-08 16:58:41,161 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=55 16 кадров, выбираем новую
+2025-12-08 16:58:41,161 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=51, conf=0.84, bbox=(915, 523, 1035, 646)
+2025-12-08 16:58:51,138 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=51 16 кадров, выбираем новую
+2025-12-08 16:58:51,138 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=61, conf=0.90, bbox=(637, 217, 1366, 1076)
+2025-12-08 16:59:10,023 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=61 16 кадров, выбираем новую
+2025-12-08 16:59:10,024 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=62, conf=0.92, bbox=(127, 6, 728, 665)
+2025-12-08 16:59:26,467 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=62 16 кадров, выбираем новую
+2025-12-08 16:59:26,469 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=68, conf=0.83, bbox=(423, 321, 816, 794)
+2025-12-08 16:59:28,973 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=68 16 кадров, выбираем новую
+2025-12-08 16:59:28,975 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=69, conf=0.82, bbox=(966, 425, 1355, 832)
+2025-12-08 16:59:37,159 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=69 16 кадров, выбираем новую
+2025-12-08 16:59:37,159 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=72, conf=0.75, bbox=(411, 140, 691, 628)
+2025-12-08 16:59:43,324 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=72 16 кадров, выбираем новую
+2025-12-08 16:59:43,324 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=74, conf=0.82, bbox=(696, 246, 1054, 725)
+2025-12-08 17:00:06,195 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=74 16 кадров, выбираем новую
+2025-12-08 17:00:06,195 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=77, conf=0.76, bbox=(475, 407, 748, 795)
+2025-12-08 17:00:13,637 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=77 16 кадров, выбираем новую
+2025-12-08 17:00:13,640 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=79, conf=0.74, bbox=(660, 406, 962, 811)
+2025-12-08 17:00:21,662 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=79 16 кадров, выбираем новую
+2025-12-08 17:00:21,662 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=82, conf=0.73, bbox=(294, 338, 517, 756)
+2025-12-08 17:00:40,453 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=82 16 кадров, выбираем новую
+2025-12-08 17:00:40,453 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=83, conf=0.81, bbox=(1485, 556, 1880, 964)
+2025-12-08 17:00:43,475 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=83 16 кадров, выбираем новую
+2025-12-08 17:00:43,476 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=92, conf=0.78, bbox=(605, 208, 893, 680)
+2025-12-08 17:01:03,273 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=92 16 кадров, выбираем новую
+2025-12-08 17:01:03,273 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=98, conf=0.85, bbox=(529, 188, 813, 697)
+2025-12-08 17:10:31,054 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=1, conf=0.46, bbox=(0, 728, 21, 816)
+2025-12-08 17:10:35,668 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=1, conf=0.57, bbox=(1672, 0, 1919, 330)
+2025-12-08 17:10:37,099 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=1 16 кадров, выбираем новую
+2025-12-08 17:10:37,099 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=5, conf=0.85, bbox=(545, 0, 1002, 324)
+2025-12-08 17:10:38,908 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=5 16 кадров, выбираем новую
+2025-12-08 17:10:38,908 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=9, conf=0.89, bbox=(810, 8, 1264, 476)
+2025-12-08 17:10:40,348 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=9 16 кадров, выбираем новую
+2025-12-08 17:10:40,348 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=15, conf=0.83, bbox=(0, 0, 150, 550)
