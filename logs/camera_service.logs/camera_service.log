@@ -1,0 +1,49 @@
+2025-12-03 09:38:11,540 - camera_service - WARNING - Camera not found: camera1
+2025-12-03 09:51:30,827 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: off
+2025-12-03 10:17:23,203 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: off
+2025-12-03 10:30:17,318 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-03 11:06:07,717 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-03 11:48:53,867 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-03 11:57:56,060 - camera_service - WARNING - Camera not found: camera1
+2025-12-03 11:58:07,342 - camera_service - WARNING - Camera not found: 1
+2025-12-03 12:08:10,714 - camera_service - WARNING - Camera not found: 1
+2025-12-03 12:08:22,744 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-03 12:19:12,792 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:18:57,126 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:18:57,126 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:18:57,126 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:18:57,126 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:20:55,398 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:20:55,398 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:20:55,398 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:24:04,571 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:29:18,785 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:29:28,810 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:35:02,518 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:40:19,655 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:45:20,523 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-04 17:47:12,514 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 16:30:59,474 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 16:33:04,729 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 17:20:20,312 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 17:25:56,157 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 17:50:56,193 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 17:55:36,485 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 17:58:38,904 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:02:06,492 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:07:31,956 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:08:38,889 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:13:38,004 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:14:29,083 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:15:37,873 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:30:58,400 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:32:23,864 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:33:54,238 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:35:30,162 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:38:39,659 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:45:30,120 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-05 18:46:26,924 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-08 16:52:04,037 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-08 16:54:51,093 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-08 17:10:21,794 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
+2025-12-08 17:10:31,695 - camera_service - INFO - Запуск MJPEG-стрима для camera1, детекция: on
