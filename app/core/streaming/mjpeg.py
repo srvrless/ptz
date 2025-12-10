@@ -1,6 +1,9 @@
 from typing import Generator, Optional
 
 import cv2
+import pickle
+import socket
+from app.config.settings import config
 
 from logger.setup_logger import get_logger
 from app.core.detection.yolo_detector import get_detector, ObjectDetector, Detection
@@ -39,37 +42,43 @@ def generate_mjpeg(
         AutoPTZTracker(camera_id) if (enable_detection and enable_auto_tracking) else None
     )
 
-    while True:
-        frame = camera.get_frame()
-        if frame is None:
-            # можно добавить sleep(0.01), если нужно разгрузить CPU
-            continue
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((config.PORT_RECV_SERVER, config.PORT_RECV_SERVER))
+        while True:
+            frame = camera.get_frame()
+            if frame is None:
+                # можно добавить sleep(0.01), если нужно разгрузить CPU
+                continue
 
-        tracked_objects: list[Detection] = []
+            tracked_objects: list[Detection] = []
 
-        if detector is not None:
+            if detector is not None:
 
-            detections = detector.detect(frame)
+                detections = detector.detect(frame)
 
-            if tracker is not None:
-                tracked_objects = tracker.update(detections)
-            else:
-                tracked_objects = detections
+                if tracker is not None:
+                    tracked_objects = tracker.update(detections)
+                else:
+                    tracked_objects = detections
 
-            # рисуем уже с ID
-            frame = detector.draw(frame, tracked_objects)
+                # рисуем уже с ID
+                frame = detector.draw(frame, tracked_objects)
 
-            # авто-слежение PTZ за выбранным объектом
-            if auto_ptz is not None and tracked_objects:
-                auto_ptz.update(frame.shape, tracked_objects)
+                # авто-слежение PTZ за выбранным объектом
+                if auto_ptz is not None and tracked_objects:
+                    auto_ptz.update(frame.shape, tracked_objects)
 
-        ok, buffer = cv2.imencode(".jpg", frame)
-        if not ok:
-            logger.warning("Не удалось закодировать кадр в JPEG")
-            continue
+            ok, buffer = cv2.imencode(".jpg", frame)
+            if not ok:
+                logger.warning("Не удалось закодировать кадр в JPEG")
+                continue
 
-        jpg = buffer.tobytes()
-        yield (
-            b"--frame\r\n"
-            b"Content-Type: image/jpeg\r\n\r\n" + jpg + b"\r\n"
-        )
+            jpg = buffer.tobytes()
+
+            list_of_objects = pickle.dumps(tracked_objects)
+            s.sendall(list_of_objects)
+
+            yield (
+                b"--frame\r\n"
+                b"Content-Type: image/jpeg\r\n\r\n" + jpg + b"\r\n"
+            )

@@ -60,6 +60,10 @@ class AppConfig(BaseSettings):
     )
     detector_conf: float = Field(0.3, ge=0, le=1)
     detector_device: Optional[str] = None  # cpu / cuda / xpu — если нужно форсить
+    # STREAMING
+    
+    HOST_RECV_SERVER: str
+    PORT_RECV_SERVER: int
 
     # RADAR HEIGHTS
     heights: list[float] = Field(
