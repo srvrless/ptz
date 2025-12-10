@@ -24,23 +24,6 @@ class ContinuousMoveRequest(BaseModel):
 
 class ZoomRequest(BaseModel):
     zoom: float = Field(..., ge=-1, le=1, description="Изменение зума (может быть отрицательным)")
-# app/api/v1/schemas.py
-from pydantic import BaseModel, Field, field_validator
 
-
-class MoveRequest(BaseModel):
-    lat: float = Field(..., ge=-90, le=90)
-    lon: float = Field(..., ge=-180, le=180)
-    height: float = Field(..., ge=0)
-    zoom: float = Field(0.0, ge=0, le=1)
-    radar_id: int = Field(1, ge=1)
-
-
-class ContinuousMoveRequest(BaseModel):
-    x: float = Field(0.0, ge=-1, le=1)
-    y: float = Field(0.0, ge=-1, le=1)
-    zoom: float = Field(0.0, ge=-1, le=1)
-
-
-class ZoomRequest(BaseModel):
-    zoom: float = Field(...,)
+class TrackRequest(BaseModel):
+    track_id: int = Field(..., description="ID объекта для слежения")

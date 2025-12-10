@@ -13,14 +13,7 @@ logger = get_logger("auto_ptz_tracker")
 
 class AutoPTZTracker:
     """
-    Автоматическое слежение PTZ-камеры за ОДНИМ объектом.
-
-    Предполагается, что каждый объект в `objects` имеет минимум поля:
-      - bbox: (x1, y1, x2, y2) в пикселях кадра
-      - conf: float, уверенность детекции
-      - track_id: int | None, устойчивый ID трека
-
-    Если у тебя другие имена полей – поправь обращения к ним в этом классе.
+    Слежение PTZ-камеры за ОДНИМ объектом (по track_id).
     """
 
     def __init__(
@@ -46,11 +39,76 @@ class AutoPTZTracker:
         if self._controller is None:
             logger.warning("AutoPTZ: контроллер для камеры %s не найден", camera_id)
 
+        # track_id текущей цели, задаётся ИЗВНЕ
         self._current_target_id: Optional[int] = None
         self._lost_frames: int = 0
 
-    # --- вспомогательные методы работы с боксами ---
+    # --- публичный API управления ---
+    def set_target(self, track_id: Optional[int]) -> None:
+        """
+        Выбрать конкретный track_id для слежения.
+        None = выкл. автослежение.
+        """
+        self._current_target_id = track_id
+        self._lost_frames = 0
+        logger.info(
+            "AutoPTZ: set_target camera=%s track_id=%s",
+            self.camera_id,
+            track_id,
+        )
 
+    def clear_target(self) -> None:
+        """
+        Полностью выключить слежение за объектом и остановить PTZ.
+        """
+        self._current_target_id = None
+        self._lost_frames = 0
+        try:
+            if self._controller is not None:
+                # останавливаем только пан/тилт, зум не трогаем
+                self._controller.stop(pan_tilt=True, zoom=False)
+        except Exception:
+            logger.exception("AutoPTZ: ошибка при stop() в clear_target")
+        logger.info("AutoPTZ: clear_target camera=%s", self.camera_id)
+
+    def get_target(self) -> Optional[int]:
+        """Текущий выбранный track_id (или None, если никого не трекаем)."""
+        return self._current_target_id
+
+    def follow(self, track_id: int) -> None:
+        """
+        Включить слежение за объектом с заданным track_id.
+        """
+        self._current_target_id = track_id
+        self._lost_frames = 0
+        logger.info(
+            "AutoPTZ: включено слежение за track_id=%s на камере %s",
+            track_id,
+            self.camera_id,
+        )
+
+    def stop_follow(self) -> None:
+        """
+        Полностью выключить авто-слежение.
+        """
+        self._current_target_id = None
+        self._lost_frames = 0
+        try:
+            if self._controller is not None:
+                # останавливаем пан/тилт, зум не трогаем
+                self._controller.stop(pan_tilt=True, zoom=False)
+        except Exception:
+            logger.exception("AutoPTZ: ошибка stop() при выключении слежения")
+
+        logger.info("AutoPTZ: слежение выключено на камере %s", self.camera_id)
+
+    def get_current_target_id(self) -> Optional[int]:
+        """
+        Удобно для дебага/эндпоинта статуса.
+        """
+        return self._current_target_id
+
+    # --- вспомогательные методы работы с боксами (как было) ---
     @staticmethod
     def _bbox_center(bbox: Tuple[int, int, int, int]) -> Tuple[float, float]:
         x1, y1, x2, y2 = bbox
@@ -66,10 +124,6 @@ class AutoPTZTracker:
         bbox: Tuple[int, int, int, int],
         frame_shape: Tuple[int, int, int],
     ) -> float:
-        """
-        Относительная диагональ бокса: 0..1.
-        Используем как грубую оценку “насколько объект крупный / зум сильный”.
-        """
         x1, y1, x2, y2 = bbox
         w_box = max(1, x2 - x1)
         h_box = max(1, y2 - y1)
@@ -85,33 +139,18 @@ class AutoPTZTracker:
         bbox: Tuple[int, int, int, int],
         frame_shape: Tuple[int, int, int],
     ) -> float:
-        """
-        Чем крупнее объект (сильнее зум) – тем меньше возвращаемое значение.
-        Это снижает усиление при большом приближении, чтобы не было рысканья.
-        """
         rel = self._bbox_diag_ratio(bbox, frame_shape)
-        #  rel = 0.0  → scale ≈ 1.0
-        #  rel = 0.3  → scale ≈ 0.53
-        #  rel = 0.5  → scale ≈ 0.40
         return 1.0 / (1.0 + 3.0 * rel)
 
     def _error_to_speed(self, err: float, k: float) -> float:
-        """
-        Преобразует нормированную ошибку в скорость [-1..1].
-
-        - внутри dead_zone → 0
-        - снаружи → модуль не меньше min_speed
-        """
         if abs(err) < self.dead_zone:
             return 0.0
 
         v = k * err
 
-        # если скорость получилась слишком маленькой – поджимаем до min_speed
         if abs(v) < self.min_speed:
             v = math.copysign(self.min_speed, v)
 
-        # финальный кламп в допустимый диапазон
         if v > 1.0:
             v = 1.0
         elif v < -1.0:
@@ -119,18 +158,23 @@ class AutoPTZTracker:
 
         return v
 
-    # --- выбор и удержание цели ---
+    # --- выбор и удержание цели (НОВЫЙ, без авто-выбора) ---
 
     def _choose_target(self, objects: List[Any]) -> Optional[Any]:
         """
-        Возвращает выбранный объект или None.
+        Возвращает объект с _current_target_id или None,
+        если слежение выключено / цель потеряна.
         """
         if not objects:
             # никого в кадре – увеличиваем счётчик потерь
             if self._current_target_id is not None:
                 self._lost_frames += 1
                 if self._lost_frames > self.max_lost_frames:
-                    logger.info("AutoPTZ: цель потеряна, сбрасываем track_id")
+                    logger.info(
+                        "AutoPTZ: цель id=%s потеряна (%d кадров), сбрасываем track_id",
+                        self._current_target_id,
+                        self._lost_frames,
+                    )
                     self._current_target_id = None
                     self._lost_frames = 0
             return None
@@ -151,31 +195,18 @@ class AutoPTZTracker:
 
             # окончательно потеряли
             logger.info(
-                "AutoPTZ: не видим цель id=%s %d кадров, выбираем новую",
+                "AutoPTZ: не видим цель id=%s %d кадров, сбрасываем track_id",
                 self._current_target_id,
                 self._lost_frames,
             )
             self._current_target_id = None
             self._lost_frames = 0
 
-        # выбираем новую цель:
-        # сначала по уверенности, при равенстве – по площади бокса
-        def _score(o: Any) -> Tuple[float, int]:
-            bbox = getattr(o, "bbox")
-            conf = float(getattr(o, "conf", 0.0))
-            return conf, self._bbox_area(bbox)
+        # если сюда дошли и current_target_id == None — НИКОГО автоматически не выбираем
+        # ждём явный set_target(...) из API
+        return None
 
-        best = max(objects, key=_score)
-        self._current_target_id = getattr(best, "track_id", None)
-        logger.info(
-            "AutoPTZ: выбрана новая цель track_id=%s, conf=%.2f, bbox=%s",
-            self._current_target_id,
-            float(getattr(best, "conf", 0.0)),
-            getattr(best, "bbox"),
-        )
-        return best
-
-    # --- основной публичный метод ---
+    # --- основной публичный метод (как было, но с новым _choose_target) ---
 
     def update(self, frame_shape: Tuple[int, int, int], objects: List[Any]) -> None:
         """
@@ -188,27 +219,30 @@ class AutoPTZTracker:
             return
 
         target = self._choose_target(objects)
+
+        # если автослежение выключено (цель не выбрана) – вообще не шевелим PTZ
+        if self._current_target_id is None:
+            return
+
         if target is None:
-            # цели нет – останавливаем пан/тилт, но не трогаем зум
+            # цель выбрана, но в этом кадре мы её не видим – тормозим камеру
             try:
                 self._controller.stop(pan_tilt=True, zoom=False)
             except Exception:
                 logger.exception("AutoPTZ: ошибка при остановке PTZ")
             return
 
+        # дальше оставляем твою логику вычисления vx/vy и continuous_move(...)
         h, w = frame_shape[:2]
         bbox = getattr(target, "bbox")
         cx, cy = self._bbox_center(bbox)
 
-        # центр кадра
         cx_frame = w / 2.0
         cy_frame = h / 2.0
 
-        # нормированные ошибки: >0 → объект справа/выше центра
         err_x = (cx - cx_frame) / cx_frame
         err_y = (cy_frame - cy) / cy_frame  # ось Y перевёрнута
 
-        # масштаб в зависимости от размера бокса (аналог "учёта зума")
         scale = self._zoom_scale(bbox, frame_shape)
 
         vx = self._error_to_speed(err_x, self.kp_pan * scale)

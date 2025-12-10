@@ -215,3 +215,38 @@
 2025-12-08 17:12:30,722 - camera_manager - INFO - Reader loop завершён для камеры rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
 2025-12-08 17:12:30,735 - camera_manager - INFO - Камера остановлена: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
 2025-12-08 17:12:30,736 - camera_manager - INFO - Все камеры остановлены
+2025-12-10 14:35:15,861 - camera_manager - INFO - Создание нового подключения для камеры camera1
+2025-12-10 14:35:17,090 - camera_manager - INFO - Открыто подключение к камере: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:36:18,923 - camera_manager - INFO - Reader loop завершён для камеры rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:36:18,932 - camera_manager - INFO - Камера остановлена: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:36:18,932 - camera_manager - INFO - Все камеры остановлены
+2025-12-10 14:36:29,179 - camera_manager - INFO - Создание нового подключения для камеры camera1
+2025-12-10 14:36:30,398 - camera_manager - INFO - Открыто подключение к камере: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:36:44,923 - camera_manager - INFO - Reader loop завершён для камеры rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:36:44,933 - camera_manager - INFO - Камера остановлена: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:36:44,933 - camera_manager - INFO - Все камеры остановлены
+2025-12-10 14:36:53,528 - camera_manager - INFO - Создание нового подключения для камеры camera1
+2025-12-10 14:36:54,755 - camera_manager - INFO - Открыто подключение к камере: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:37:33,481 - camera_manager - INFO - Reader loop завершён для камеры rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:37:33,494 - camera_manager - INFO - Камера остановлена: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:37:33,495 - camera_manager - INFO - Все камеры остановлены
+2025-12-10 14:37:48,557 - camera_manager - INFO - Создание нового подключения для камеры camera1
+2025-12-10 14:37:49,793 - camera_manager - INFO - Открыто подключение к камере: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:39:46,711 - camera_manager - INFO - Reader loop завершён для камеры rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:39:46,761 - camera_manager - INFO - Камера остановлена: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:39:46,762 - camera_manager - INFO - Все камеры остановлены
+2025-12-10 14:39:56,338 - camera_manager - INFO - Создание нового подключения для камеры camera1
+2025-12-10 14:39:57,551 - camera_manager - INFO - Открыто подключение к камере: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:52:26,050 - camera_manager - INFO - Reader loop завершён для камеры rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:52:26,055 - camera_manager - INFO - Камера остановлена: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:52:26,055 - camera_manager - INFO - Все камеры остановлены
+2025-12-10 14:53:46,291 - camera_manager - INFO - Создание нового подключения для камеры camera1
+2025-12-10 14:53:47,524 - camera_manager - INFO - Открыто подключение к камере: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:56:02,938 - camera_manager - INFO - Reader loop завершён для камеры rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:56:02,943 - camera_manager - INFO - Камера остановлена: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:56:02,943 - camera_manager - INFO - Все камеры остановлены
+2025-12-10 14:58:28,130 - camera_manager - INFO - Создание нового подключения для камеры camera1
+2025-12-10 14:58:29,375 - camera_manager - INFO - Открыто подключение к камере: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:59:48,712 - camera_manager - INFO - Reader loop завершён для камеры rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:59:48,729 - camera_manager - INFO - Камера остановлена: rtsp://admin:tbtadl2020@@192.168.1.102:554/profile2/media.smp
+2025-12-10 14:59:48,729 - camera_manager - INFO - Все камеры остановлены

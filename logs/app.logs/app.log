@@ -620,3 +620,564 @@ Traceback (most recent call last):
     raise ValueError(f"Invalid radar_id: {radar_id}")
 ValueError: Invalid radar_id: 4
 2025-12-08 17:12:30,659 - app - INFO - Остановка всех камер...
+2025-12-10 14:35:19,941 - app - ERROR - Unhandled error
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 79, in collapse_excgroups
+  |     yield
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 270, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    |     await response(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    |     with collapse_excgroups():
+    |   File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    |     await func()
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    |     async for chunk in self.body_iterator:
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    |     yield await anyio.to_thread.run_sync(_next, as_iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    |     return await future
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    |     result = context.run(func, *args)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    |     return next(iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    |     s.connect((config.PORT_RECV_SERVER, config.PORT_RECV_SERVER))
+    | TypeError: str, bytes or bytearray expected, not int
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    await response(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    with collapse_excgroups():
+  File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    await func()
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    async for chunk in self.body_iterator:
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    yield await anyio.to_thread.run_sync(_next, as_iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    return next(iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    s.connect((config.PORT_RECV_SERVER, config.PORT_RECV_SERVER))
+TypeError: str, bytes or bytearray expected, not int
+2025-12-10 14:35:36,051 - app - ERROR - Unhandled error
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 79, in collapse_excgroups
+  |     yield
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 270, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    |     await response(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    |     with collapse_excgroups():
+    |   File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    |     await func()
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    |     async for chunk in self.body_iterator:
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    |     yield await anyio.to_thread.run_sync(_next, as_iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    |     return await future
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    |     result = context.run(func, *args)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    |     return next(iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    |     s.connect((config.PORT_RECV_SERVER, config.PORT_RECV_SERVER))
+    | TypeError: str, bytes or bytearray expected, not int
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    await response(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    with collapse_excgroups():
+  File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    await func()
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    async for chunk in self.body_iterator:
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    yield await anyio.to_thread.run_sync(_next, as_iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    return next(iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    s.connect((config.PORT_RECV_SERVER, config.PORT_RECV_SERVER))
+TypeError: str, bytes or bytearray expected, not int
+2025-12-10 14:36:18,894 - app - INFO - Остановка всех камер...
+2025-12-10 14:36:33,225 - app - ERROR - Unhandled error
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 79, in collapse_excgroups
+  |     yield
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 270, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    |     await response(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    |     with collapse_excgroups():
+    |   File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    |     await func()
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    |     async for chunk in self.body_iterator:
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    |     yield await anyio.to_thread.run_sync(_next, as_iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    |     return await future
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    |     result = context.run(func, *args)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    |     return next(iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    |     s.connect((config.IP_RECV_SERVER, config.PORT_RECV_SERVER))
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/pydantic/main.py", line 1026, in __getattr__
+    |     raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+    | AttributeError: 'AppConfig' object has no attribute 'IP_RECV_SERVER'. Did you mean: 'HOST_RECV_SERVER'?
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    await response(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    with collapse_excgroups():
+  File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    await func()
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    async for chunk in self.body_iterator:
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    yield await anyio.to_thread.run_sync(_next, as_iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    return next(iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    s.connect((config.IP_RECV_SERVER, config.PORT_RECV_SERVER))
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/pydantic/main.py", line 1026, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'AppConfig' object has no attribute 'IP_RECV_SERVER'. Did you mean: 'HOST_RECV_SERVER'?
+2025-12-10 14:36:44,873 - app - INFO - Остановка всех камер...
+2025-12-10 14:36:57,559 - app - ERROR - Unhandled error
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 79, in collapse_excgroups
+  |     yield
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 270, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    |     await response(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    |     with collapse_excgroups():
+    |   File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    |     await func()
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    |     async for chunk in self.body_iterator:
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    |     yield await anyio.to_thread.run_sync(_next, as_iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    |     return await future
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    |     result = context.run(func, *args)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    |     return next(iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    |     s.connect((config.HOST_RECV_SERVER, config.PORT_RECV_SERVER))
+    | ConnectionRefusedError: [Errno 111] Connection refused
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    await response(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    with collapse_excgroups():
+  File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    await func()
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    async for chunk in self.body_iterator:
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    yield await anyio.to_thread.run_sync(_next, as_iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    return next(iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    s.connect((config.HOST_RECV_SERVER, config.PORT_RECV_SERVER))
+ConnectionRefusedError: [Errno 111] Connection refused
+2025-12-10 14:37:33,429 - app - INFO - Остановка всех камер...
+2025-12-10 14:37:52,633 - app - ERROR - Unhandled error
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 79, in collapse_excgroups
+  |     yield
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 270, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    |     await response(scope, receive, send)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    |     with collapse_excgroups():
+    |   File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    |     raise exc
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    |     await func()
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    |     async for chunk in self.body_iterator:
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    |     yield await anyio.to_thread.run_sync(_next, as_iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    |     return await future
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    |     result = context.run(func, *args)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    |     return next(iterator)
+    |   File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    |     s.connect((config.HOST_RECV_SERVER, config.PORT_RECV_SERVER))
+    | ConnectionRefusedError: [Errno 111] Connection refused
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 112, in app
+    await response(scope, receive, send)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 269, in __call__
+    with collapse_excgroups():
+  File "/home/albert/snap/code/215/.local/share/uv/python/cpython-3.10.18-linux-x86_64-gnu/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    raise exc
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 273, in wrap
+    await func()
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/responses.py", line 253, in stream_response
+    async for chunk in self.body_iterator:
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 55, in iterate_in_threadpool
+    yield await anyio.to_thread.run_sync(_next, as_iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/.venv/lib/python3.10/site-packages/starlette/concurrency.py", line 44, in _next
+    return next(iterator)
+  File "/home/albert/Рабочий стол/PTZ API/ptz/app/core/streaming/mjpeg.py", line 50, in generate_mjpeg
+    s.connect((config.HOST_RECV_SERVER, config.PORT_RECV_SERVER))
+ConnectionRefusedError: [Errno 111] Connection refused
+2025-12-10 14:39:46,709 - app - INFO - Остановка всех камер...
+2025-12-10 14:52:26,019 - app - INFO - Остановка всех камер...
+2025-12-10 14:56:02,935 - app - INFO - Остановка всех камер...
+2025-12-10 14:59:48,670 - app - INFO - Остановка всех камер...

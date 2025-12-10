@@ -6,6 +6,7 @@ from app.config.settings import config
 from app.api.v1.cameras import router as cameras_router
 from app.api.v1.streams import router as streams_router
 from app.api.v1.ptz import router as ptz_router
+from app.api.v1.auto_ptz import router as auto_ptz_router
 from app.services import (
     CameraNotFoundError,
     PTZControllerNotFoundError,
@@ -27,6 +28,7 @@ def create_app() -> FastAPI:
     app.include_router(cameras_router)
     app.include_router(streams_router)
     app.include_router(ptz_router)
+    app.include_router(auto_ptz_router)
 
     # Обработчики ошибок
     register_exception_handlers(app)

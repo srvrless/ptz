@@ -401,3 +401,9 @@
 2025-12-08 17:10:38,908 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=9, conf=0.89, bbox=(810, 8, 1264, 476)
 2025-12-08 17:10:40,348 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=9 16 кадров, выбираем новую
 2025-12-08 17:10:40,348 - auto_ptz_tracker - INFO - AutoPTZ: выбрана новая цель track_id=15, conf=0.83, bbox=(0, 0, 150, 550)
+2025-12-10 14:58:46,225 - auto_ptz_tracker - INFO - AutoPTZ: set_target camera=camera1 track_id=1
+2025-12-10 14:59:01,216 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=1 16 кадров, сбрасываем track_id
+2025-12-10 14:59:15,327 - auto_ptz_tracker - INFO - AutoPTZ: set_target camera=camera1 track_id=5
+2025-12-10 14:59:28,910 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=5 16 кадров, сбрасываем track_id
+2025-12-10 14:59:41,938 - auto_ptz_tracker - INFO - AutoPTZ: set_target camera=camera1 track_id=6
+2025-12-10 14:59:42,140 - auto_ptz_tracker - INFO - AutoPTZ: не видим цель id=6 16 кадров, сбрасываем track_id
