@@ -113,7 +113,7 @@ class ObjectDetector:
         names = self.names or {}
         for xyxy, cls_id, det_conf in zip(boxes.xyxy, boxes.cls, boxes.conf):
             x1, y1, x2, y2 = [int(x) for x in xyxy]
-            class_name = names.get(cls_id, str(cls_id))
+            class_name = names.get(int(cls_id), str(int(cls_id)))
 
             detections.append(
                 Detection(
