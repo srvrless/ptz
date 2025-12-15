@@ -1,7 +1,7 @@
 from typing import Generator, Optional, Tuple, Any, Dict, List
 
 import cv2
-import pickle
+import json
 import socket
 from app.config.settings import config
 
@@ -46,8 +46,8 @@ def generate_mjpeg(
         else None
     )
 
-    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    #     s.connect((config.HOST_RECV_SERVER, config.PORT_RECV_SERVER))
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((config.HOST_RECV_SERVER, config.PORT_RECV_SERVER))
     while True:
         frame = camera.get_frame()
         if frame is None:
@@ -79,8 +79,10 @@ def generate_mjpeg(
 
         jpg = buffer.tobytes()
 
-        list_of_objects = pickle.dumps(tracked_objects)
-        # s.sendall(list_of_objects)
+        objects_data = list(map(Detection.to_dict, tracked_objects))
+        
+        json_data = json.dumps(objects_data).encode() + b"\n"
+        s.sendall(json_data)
 
         yield (
                 b"--frame\r\n"

@@ -67,8 +67,8 @@ class AutoPTZTracker:
             if self._controller is not None:
                 # останавливаем только пан/тилт, зум не трогаем
                 self._controller.stop(pan_tilt=True, zoom=False)
-        except Exception:
-            logger.exception("AutoPTZ: ошибка при stop() в clear_target")
+        except Exception as exc:
+            logger.exception(f"AutoPTZ: ошибка при stop() в clear_target {exc}")
         logger.info("AutoPTZ: clear_target camera=%s", self.camera_id)
 
     def get_target(self) -> Optional[int]:
@@ -97,8 +97,8 @@ class AutoPTZTracker:
             if self._controller is not None:
                 # останавливаем пан/тилт, зум не трогаем
                 self._controller.stop(pan_tilt=True, zoom=False)
-        except Exception:
-            logger.exception("AutoPTZ: ошибка stop() при выключении слежения")
+        except Exception as exc:
+            logger.exception(f"AutoPTZ: ошибка stop() при выключении слежения:  {exc}")
 
         logger.info("AutoPTZ: слежение выключено на камере %s", self.camera_id)
 
@@ -228,8 +228,8 @@ class AutoPTZTracker:
             # цель выбрана, но в этом кадре мы её не видим – тормозим камеру
             try:
                 self._controller.stop(pan_tilt=True, zoom=False)
-            except Exception:
-                logger.exception("AutoPTZ: ошибка при остановке PTZ")
+            except Exception as exc:
+                logger.exception(f"AutoPTZ: ошибка при остановке PTZ {exc}")
             return
 
         # дальше оставляем твою логику вычисления vx/vy и continuous_move(...)
@@ -253,5 +253,5 @@ class AutoPTZTracker:
                 self._controller.stop(pan_tilt=True, zoom=False)
             else:
                 self._controller.continuous_move(vx, vy, zoom=0.0)
-        except Exception:
-            logger.exception("AutoPTZ: ошибка continuous_move/stop")
+        except Exception as exc:
+            logger.exception(f"AutoPTZ: ошибка continuous_move/stop: {exc}")
