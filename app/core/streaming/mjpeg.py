@@ -48,43 +48,44 @@ def generate_mjpeg(
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((config.HOST_RECV_SERVER, config.PORT_RECV_SERVER))
-    while True:
-        frame = camera.get_frame()
-        if frame is None:
-                # можно добавить sleep(0.01), если нужно разгрузить CPU
-            continue
+        while True:
+            frame = camera.get_frame()
+            if frame is None:
+                    # можно добавить sleep(0.01), если нужно разгрузить CPU
 
-        tracked_objects: list[Detection] = []
+                continue
 
-        if detector is not None:
+            tracked_objects: list[Detection] = []
 
-            detections = detector.detect(frame)
+            if detector is not None:
 
-            if tracker is not None:
-                tracked_objects = tracker.update(detections)
-            else:
-                tracked_objects = detections
+                detections = detector.detect(frame)
 
-                # рисуем уже с ID
-            frame = detector.draw(frame, tracked_objects)
+                if tracker is not None:
+                    tracked_objects = tracker.update(detections)
+                else:
+                    tracked_objects = detections
 
-                # авто-слежение PTZ за выбранным объектом
-            if auto_ptz is not None and tracked_objects:
-                auto_ptz.update(frame.shape, tracked_objects)
+                    # рисуем уже с ID
+                frame = detector.draw(frame, tracked_objects)
 
-        ok, buffer = cv2.imencode(".jpg", frame)
-        if not ok:
-            logger.warning("Не удалось закодировать кадр в JPEG")
-            continue
+                    # авто-слежение PTZ за выбранным объектом
+                if auto_ptz is not None and tracked_objects:
+                    auto_ptz.update(frame.shape, tracked_objects)
 
-        jpg = buffer.tobytes()
+            ok, buffer = cv2.imencode(".jpg", frame)
+            if not ok:
+                logger.warning("Не удалось закодировать кадр в JPEG")
+                continue
 
-        objects_data = list(map(Detection.to_dict, tracked_objects))
-        
-        json_data = json.dumps(objects_data).encode() + b"\n"
-        s.sendall(json_data)
+            jpg = buffer.tobytes()
 
-        yield (
-                b"--frame\r\n"
-                b"Content-Type: image/jpeg\r\n\r\n" + jpg + b"\r\n"
-            )
+            objects_data = list(map(Detection.to_dict, tracked_objects))
+            
+            json_data = json.dumps(objects_data).encode() + b"\n"
+            s.sendall(json_data)
+
+            yield (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + jpg + b"\r\n"
+                )
