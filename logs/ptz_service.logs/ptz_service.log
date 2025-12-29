@@ -2218,3 +2218,6 @@
 2025-12-08 17:11:27,027 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
 2025-12-08 17:11:30,631 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
 2025-12-08 17:11:30,981 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2025-12-10 14:45:48,342 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-0.1, y=0.0, zoom=0.0
+2025-12-10 14:46:07,225 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2025-12-10 14:46:43,988 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None

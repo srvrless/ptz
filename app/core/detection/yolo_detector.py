@@ -27,6 +27,14 @@ class Detection:
     cls_id: int
     conf: float
     track_id: Optional[int] = None
+    name: Optional[str] = None
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.track_id,
+            "name": self.name or "",
+            "confidence": round(self.conf, 4),
+        }
 
 class ObjectDetector:
     """Обёртка над Ultralytics YOLO для нанесения боксов на кадр."""
@@ -102,13 +110,17 @@ class ObjectDetector:
             return []
 
         detections: List[Detection] = []
+        names = self.names or {}
         for xyxy, cls_id, det_conf in zip(boxes.xyxy, boxes.cls, boxes.conf):
             x1, y1, x2, y2 = [int(x) for x in xyxy]
+            class_name = names.get(int(cls_id), str(int(cls_id)))
+
             detections.append(
                 Detection(
                     bbox=(x1, y1, x2, y2),
                     cls_id=int(cls_id),
                     conf=float(det_conf),
+                    name=class_name,
                 )
             )
         return detections
@@ -121,11 +133,10 @@ class ObjectDetector:
             return frame
 
         annotated = frame.copy()
-        names = self.names or {}
 
         for det in detections:
             x1, y1, x2, y2 = det.bbox
-            class_name = names.get(det.cls_id, str(det.cls_id))
+            class_name = det.name or str(det.cls_id)
             id_prefix = f"#{det.track_id} " if det.track_id is not None else ""
             label = f"{id_prefix}{class_name} {det.conf:.2f}"
 

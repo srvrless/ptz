@@ -18,3 +18,10 @@
 2025-12-05 18:46:27,081 - object_detector - INFO - Loaded detection model from C:\Users\PC\Desktop\ptz-backend\app\best.pt on cpu
 2025-12-08 16:52:04,409 - object_detector - INFO - Loaded detection model from C:\Users\PC\Desktop\ptz-backend\app\best.pt on cpu
 2025-12-08 17:10:21,870 - object_detector - INFO - Loaded detection model from C:\Users\PC\Desktop\ptz-backend\app\best.pt on cpu
+2025-12-10 14:35:19,941 - object_detector - INFO - Loaded detection model from /home/albert/Рабочий стол/PTZ API/ptz/app/best.pt on cuda
+2025-12-10 14:36:33,224 - object_detector - INFO - Loaded detection model from /home/albert/Рабочий стол/PTZ API/ptz/app/best.pt on cuda
+2025-12-10 14:36:57,558 - object_detector - INFO - Loaded detection model from /home/albert/Рабочий стол/PTZ API/ptz/app/best.pt on cuda
+2025-12-10 14:37:52,632 - object_detector - INFO - Loaded detection model from /home/albert/Рабочий стол/PTZ API/ptz/app/best.pt on cuda
+2025-12-10 14:40:00,436 - object_detector - INFO - Loaded detection model from /home/albert/Рабочий стол/PTZ API/ptz/app/best.pt on cuda
+2025-12-10 14:53:50,327 - object_detector - INFO - Loaded detection model from /home/albert/Рабочий стол/PTZ API/ptz/app/best.pt on cuda
+2025-12-10 14:58:32,265 - object_detector - INFO - Loaded detection model from /home/albert/Рабочий стол/PTZ API/ptz/app/best.pt on cuda
