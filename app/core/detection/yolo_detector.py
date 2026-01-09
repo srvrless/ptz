@@ -31,9 +31,9 @@ class Detection:
 
     def to_dict(self) -> dict:
         return {
-            "track_id": self.track_id,
+            "id": self.track_id,
             "name": self.name or "",
-            "conf": round(self.conf, 4),
+            "confidence": round(self.conf, 4),
         }
 
 class ObjectDetector:
