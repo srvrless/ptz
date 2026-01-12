@@ -30,10 +30,12 @@ class Detection:
     name: Optional[str] = None
 
     def to_dict(self) -> dict:
+        x1, y1, x2, y2 = self.bbox
         return {
             "id": self.track_id,
             "name": self.name or "",
             "confidence": round(self.conf, 4),
+            "bbox": [x1, y1, x2, y2],
         }
 
 class ObjectDetector:
