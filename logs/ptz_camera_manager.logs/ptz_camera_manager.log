@@ -1519,3 +1519,115 @@
 2025-12-10 14:57:39,790 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
 2025-12-10 14:57:39,790 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
 2025-12-10 14:57:39,790 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 10:29:30,780 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 10:29:32,785 - ptz_camera_manager - ERROR - Ошибка инициализации PTZController camera1: timed out
+2026-01-13 10:29:32,785 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 10:29:34,788 - ptz_camera_manager - ERROR - Ошибка инициализации PTZController camera2: timed out
+2026-01-13 10:34:18,329 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 10:34:18,332 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 10:34:18,332 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 10:34:18,357 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 10:37:31,408 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 10:37:31,429 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 10:37:31,429 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 10:37:31,444 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 12:35:47,499 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:35:47,517 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 12:35:47,517 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:35:47,532 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 12:36:19,242 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:36:19,242 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:36:20,736 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:36:20,737 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:36:22,443 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:36:22,443 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:36:27,848 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:36:27,849 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:36:31,047 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:36:31,047 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:36:31,273 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:36:31,274 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:36:35,124 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:36:35,124 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:36:37,948 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:36:37,948 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:38:50,112 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:38:50,135 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 12:38:50,135 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:38:50,151 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 12:38:53,710 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:38:53,710 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:38:55,308 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:38:55,308 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:40:07,627 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:40:07,650 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 12:40:07,650 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:40:07,665 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 12:40:17,300 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:40:17,300 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:40:19,945 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:40:19,946 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:40:49,682 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:40:49,682 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:40:51,583 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:40:51,583 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:40:53,404 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:40:53,404 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:41:21,602 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:41:21,628 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 12:41:21,628 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:41:21,630 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 12:41:32,075 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:41:32,075 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:41:33,791 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:41:33,791 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:41:35,660 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:41:35,660 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:41:41,142 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:41:41,143 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:42:24,669 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera2
+2026-01-13 12:42:24,670 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:42:26,396 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera2
+2026-01-13 12:42:26,396 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:45:03,948 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:45:03,972 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 12:45:03,973 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:45:03,976 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 12:47:35,709 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:47:35,710 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:50:17,357 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:50:17,375 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 12:50:17,376 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:50:17,390 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 12:51:07,970 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:51:07,970 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:51:26,579 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:51:26,579 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:51:32,584 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:51:32,585 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:52:47,428 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:52:47,447 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 12:52:47,447 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:52:47,447 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 12:53:53,277 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:53:53,296 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 12:53:53,296 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 12:53:53,313 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 12:54:02,597 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:54:02,597 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:54:04,490 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:54:04,490 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:57:53,233 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:57:53,234 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:57:55,845 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:57:55,847 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 12:57:58,554 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 12:57:58,554 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 13:04:21,352 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 13:04:21,371 - ptz_camera_manager - INFO - PTZController инициализирован: camera1
+2026-01-13 13:04:21,371 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera2
+2026-01-13 13:04:21,372 - ptz_camera_manager - INFO - PTZController инициализирован: camera2
+2026-01-13 13:07:12,734 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 13:07:12,735 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
+2026-01-13 13:07:15,757 - ptz_camera_manager - INFO - Переинициализация PTZ-контроллера для camera1
+2026-01-13 13:07:15,757 - ptz_camera_manager - INFO - Создаём TMS-20 PTZController для camera1
