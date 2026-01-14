@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class MoveRequest(BaseModel):
     lat: float = Field(..., ge=-90, le=90, description="Широта цели")
-    lon: float = Field(..., ge=-180, le=-180, description="Долгота цели")
+    lon: float = Field(..., ge=-180, le=180, description="Долгота цели")
     height: float = Field(..., description="Высота цели (м, относительно земли)")
     zoom: float = Field(0.0, description="Уровень зума (0..1), опционально")
     radar_id: int = Field(1, description="ID радара (1..N)")
