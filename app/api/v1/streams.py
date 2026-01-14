@@ -1,24 +1,36 @@
-from fastapi import APIRouter, Depends
-from fastapi.responses import StreamingResponse
+# app/api/v1/streams.py
 
-from app.api.v1.deps import get_token, get_camera_service
+from fastapi import APIRouter, Depends
+
+from app.api.v1.deps import get_camera_service
 from app.services import CameraService
 
 router = APIRouter(prefix="/api", tags=["streams"])
 
 
-@router.get("/stream/{camera_id}/")
-def stream_camera(
+@router.post("/camera/select/{camera_id}")
+def select_camera(
     camera_id: str,
-    #_token: str = Depends(get_token),
     camera_service: CameraService = Depends(get_camera_service),
 ):
     """
-    MJPEG-стрим с камеры.
-    Возвращает multipart/x-mixed-replace поток JPEG-кадров.
+    Фронт сообщает выбранную камеру.
+    Бэк запоминает выбор и запускает фоновую обработку RTSP (детект/трек + сокеты).
     """
-    gen = camera_service.get_mjpeg_stream(camera_id, enable_detection=True)
-    return StreamingResponse(
-        gen,
-        media_type="multipart/x-mixed-replace; boundary=frame",
-    )
+    camera_service.select_camera(camera_id, enable_detection=True, enable_auto_tracking=True)
+    return {"selected_camera_id": camera_id}
+
+
+@router.get("/camera/selected")
+def get_selected_camera(
+    camera_service: CameraService = Depends(get_camera_service),
+):
+    return {"selected_camera_id": camera_service.get_selected_camera_id()}
+
+
+@router.post("/camera/stop")
+def stop_selected_camera(
+    camera_service: CameraService = Depends(get_camera_service),
+):
+    camera_service.stop_selected_camera()
+    return {"stopped": True}

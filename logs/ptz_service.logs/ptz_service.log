@@ -2221,3 +2221,182 @@
 2025-12-10 14:45:48,342 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-0.1, y=0.0, zoom=0.0
 2025-12-10 14:46:07,225 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
 2025-12-10 14:46:43,988 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:36:18,473 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:36:19,265 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:36:20,346 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:36:20,757 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:36:21,699 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:36:22,459 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:36:27,254 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:36:27,872 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:36:30,666 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=0.0, y=-1.0, zoom=0.0
+2026-01-13 12:36:31,049 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:36:31,103 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=0.0, y=-1.0, zoom=0.0
+2026-01-13 12:36:31,298 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:36:33,817 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:36:35,148 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:36:37,502 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=0.0, y=1.0, zoom=0.0
+2026-01-13 12:36:37,966 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:38:53,098 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:38:53,713 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:38:54,645 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
+2026-01-13 12:38:55,333 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:40:16,658 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:40:17,326 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:40:19,385 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
+2026-01-13 12:40:19,948 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:40:29,916 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:40:30,072 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:40:30,336 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:40:30,461 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:40:30,647 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:40:30,787 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:40:31,006 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:40:31,333 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:40:31,487 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:40:32,391 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:32,547 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:32,704 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:32,862 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:32,986 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:33,172 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:33,328 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:33,483 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:33,654 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:33,824 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:33,992 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:34,150 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:34,308 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:34,464 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:34,606 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:40:49,006 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
+2026-01-13 12:40:49,696 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:40:51,039 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
+2026-01-13 12:40:51,609 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:40:52,817 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
+2026-01-13 12:40:53,418 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:41:31,402 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:41:32,077 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:41:33,179 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:41:33,812 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:41:35,101 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:41:35,677 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:41:39,820 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:41:41,156 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:42:23,981 - ptz_service - INFO - PTZ continuous_move camera=camera2, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:42:24,691 - ptz_service - INFO - PTZ stop camera=camera2, azimut=None
+2026-01-13 12:42:25,734 - ptz_service - INFO - PTZ continuous_move camera=camera2, x=1.0, y=0.0, zoom=0.0
+2026-01-13 12:42:26,421 - ptz_service - INFO - PTZ stop camera=camera2, azimut=None
+2026-01-13 12:47:35,062 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:47:35,711 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:51:07,438 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:51:07,972 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:51:26,176 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:51:26,592 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:51:32,146 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
+2026-01-13 12:51:32,586 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:54:02,136 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:54:02,600 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:54:03,893 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
+2026-01-13 12:54:04,511 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:54:22,412 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:22,569 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:22,727 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:22,869 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:23,012 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:23,136 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:23,325 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:23,452 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:23,609 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:23,734 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:23,937 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:24,063 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:24,202 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:24,330 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:24,484 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:24,642 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:24,799 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:24,955 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:25,112 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:25,269 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:25,410 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:25,550 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:25,706 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:25,846 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:26,004 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:26,146 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:26,317 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:26,440 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:26,565 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:26,689 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:26,858 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:27,012 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:27,137 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:27,299 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:27,458 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:27,618 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:27,778 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:27,933 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:28,090 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:28,230 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:28,402 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:28,559 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:28,721 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:28,893 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:29,025 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:29,244 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 12:54:32,480 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:54:32,604 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:54:32,822 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 12:57:52,809 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:57:53,235 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:57:55,284 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
+2026-01-13 12:57:55,848 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 12:57:58,147 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 12:57:58,577 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 13:00:21,296 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:21,566 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:21,776 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:22,947 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:23,166 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:23,373 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:23,577 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:23,796 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:24,015 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:24,222 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:24,426 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:24,650 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:24,871 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:28,416 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:28,608 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:00:28,827 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=0.03
+2026-01-13 13:03:32,534 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:32,723 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:32,879 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:33,057 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:33,187 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:33,358 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:33,539 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:33,709 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:33,835 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:33,990 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:34,401 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:34,716 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:34,875 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:35,031 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:35,189 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:35,346 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:35,488 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:35,674 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:35,815 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:35,989 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:36,118 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:36,341 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:37,217 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:37,390 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:37,579 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:03:37,799 - ptz_service - INFO - PTZ set_zoom camera=camera1, delta=-0.03
+2026-01-13 13:07:12,354 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=1.0, y=0.0, zoom=0.0
+2026-01-13 13:07:12,752 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None
+2026-01-13 13:07:15,324 - ptz_service - INFO - PTZ continuous_move camera=camera1, x=-1.0, y=0.0, zoom=0.0
+2026-01-13 13:07:15,758 - ptz_service - INFO - PTZ stop camera=camera1, azimut=None

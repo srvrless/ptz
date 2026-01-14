@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Generator
+from typing import Any, Dict, Generator, Optional
+from threading import Event, Lock, Thread
 
 from logger.setup_logger import get_logger
 
 from app.config.settings import config
 from app.core.camera.manager import camera_manager, CameraConnection
-from app.core.streaming.mjpeg import generate_mjpeg
+from app.core.streaming.mjpeg import generate_mjpeg, run_detection_sender
 from app.utils.serializers import serialize_cameras
 
 logger = get_logger("camera_service")
@@ -15,7 +16,13 @@ logger = get_logger("camera_service")
 class CameraNotFoundError(Exception):
     """Камера с указанным ID не найдена в конфиге."""
 
+
 class CameraService:
+    def __init__(self) -> None:
+        self._lock = Lock()
+        self._selected_camera_id: Optional[str] = None
+        self._worker_thread: Optional[Thread] = None
+        self._stop_event: Optional[Event] = None
 
     def list_cameras(self) -> Dict[str, Any]:
         return serialize_cameras(config.cameras)
@@ -27,7 +34,7 @@ class CameraService:
             raise CameraNotFoundError(f"Camera not found: {camera_id}")
         return cam_cfg
 
-
+    # старое оставляем (если нужно для отладки MJPEG)
     def get_mjpeg_stream(
         self,
         camera_id: str,
@@ -35,7 +42,6 @@ class CameraService:
     ) -> Generator[bytes, None, None]:
         cam_cfg = self.get_camera_config(camera_id)
 
-        # Низкоуровневое подключение к камере
         conn = CameraConnection(url=cam_cfg.rtsp_url)
         camera = camera_manager.get_or_create(camera_id, conn)
 
@@ -47,7 +53,71 @@ class CameraService:
             camera,
             camera_id=camera_id,
             enable_detection=enable_detection,
-            enable_auto_tracking=True,  # при необходимости можно сделать параметром
+            enable_auto_tracking=True,
         )
+
+    # НОВОЕ: выбрать камеру и запустить фоновую обработку (без MJPEG)
+    def select_camera(
+        self,
+        camera_id: str,
+        enable_detection: bool = True,
+        enable_auto_tracking: bool = True,
+    ) -> None:
+        cam_cfg = self.get_camera_config(camera_id)
+
+        conn = CameraConnection(url=cam_cfg.rtsp_url)
+        camera = camera_manager.get_or_create(camera_id, conn)
+
+        with self._lock:
+            # если уже выбрана и поток жив — ничего не делаем
+            if (
+                self._selected_camera_id == camera_id
+                and self._worker_thread is not None
+                and self._worker_thread.is_alive()
+            ):
+                return
+
+            # стопаем старый воркер
+            self._stop_worker_locked()
+
+            stop_event = Event()
+            worker = Thread(
+                target=run_detection_sender,
+                kwargs=dict(
+                    camera=camera,
+                    camera_id=camera_id,
+                    enable_detection=enable_detection,
+                    enable_auto_tracking=enable_auto_tracking,
+                    stop_event=stop_event,
+                ),
+                daemon=True,
+            )
+            worker.start()
+
+            self._selected_camera_id = camera_id
+            self._stop_event = stop_event
+            self._worker_thread = worker
+
+            logger.info(f"Selected camera: {camera_id}")
+
+    def get_selected_camera_id(self) -> Optional[str]:
+        with self._lock:
+            return self._selected_camera_id
+
+    def stop_selected_camera(self) -> None:
+        with self._lock:
+            self._stop_worker_locked()
+            self._selected_camera_id = None
+
+    def _stop_worker_locked(self) -> None:
+        if self._stop_event is not None:
+            self._stop_event.set()
+
+        if self._worker_thread is not None and self._worker_thread.is_alive():
+            self._worker_thread.join(timeout=2)
+
+        self._stop_event = None
+        self._worker_thread = None
+
 
 camera_service = CameraService()

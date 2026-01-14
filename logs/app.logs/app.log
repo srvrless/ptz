@@ -1181,3 +1181,137 @@ ConnectionRefusedError: [Errno 111] Connection refused
 2025-12-10 14:52:26,019 - app - INFO - Остановка всех камер...
 2025-12-10 14:56:02,935 - app - INFO - Остановка всех камер...
 2025-12-10 14:59:48,670 - app - INFO - Остановка всех камер...
+2026-01-13 10:29:59,438 - app - INFO - Остановка всех камер...
+2026-01-13 10:35:00,060 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\Desktop\ptz\app\api\v1\streams.py", line 20, in select_camera
+    camera_service.select_camera(camera_id, enable_detection=True, enable_auto_tracking=True)
+AttributeError: 'CameraService' object has no attribute 'select_camera'
+2026-01-13 10:37:27,689 - app - INFO - Остановка всех камер...
+2026-01-13 10:37:38,272 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\Desktop\ptz\app\api\v1\streams.py", line 36, in stop_selected_camera
+    camera_service.stop_selected_camera()
+AttributeError: 'CameraService' object has no attribute 'stop_selected_camera'
+2026-01-13 10:38:38,127 - app - ERROR - Unhandled error
+Traceback (most recent call last):
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 125, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 111, in app
+    response = await f(request)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 391, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\fastapi\routing.py", line 292, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\anyio\to_thread.py", line 61, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 2525, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\PC\Desktop\ptz\.venv\lib\site-packages\anyio\_backends\_asyncio.py", line 986, in run
+    result = context.run(func, *args)
+  File "C:\Users\PC\Desktop\ptz\app\api\v1\streams.py", line 36, in stop_selected_camera
+    camera_service.stop_selected_camera()
+AttributeError: 'CameraService' object has no attribute 'stop_selected_camera'
+2026-01-13 12:38:45,449 - app - INFO - Остановка всех камер...
+2026-01-13 12:40:03,638 - app - INFO - Остановка всех камер...
+2026-01-13 12:41:18,244 - app - INFO - Остановка всех камер...
+2026-01-13 12:44:47,988 - app - INFO - Остановка всех камер...
+2026-01-13 12:48:56,089 - app - INFO - Остановка всех камер...
+2026-01-13 12:52:43,443 - app - INFO - Остановка всех камер...
+2026-01-13 12:53:30,525 - app - INFO - Остановка всех камер...
+2026-01-13 13:04:16,472 - app - INFO - Остановка всех камер...
+2026-01-13 13:10:47,330 - app - INFO - Остановка всех камер...
