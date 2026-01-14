@@ -26,4 +26,4 @@ class ZoomRequest(BaseModel):
     zoom: float = Field(..., ge=-1, le=1, description="Изменение зума (может быть отрицательным)")
 
 class TrackRequest(BaseModel):
-    track_id: int = Field(..., description="ID объекта для слежения")
+    track_id: int

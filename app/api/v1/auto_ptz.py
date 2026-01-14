@@ -1,13 +1,10 @@
+from app.api.v1.schemas import TrackRequest
 from fastapi import APIRouter
 from pydantic import BaseModel
 
 from app.core.tracking.auto_ptz_manager import auto_ptz_manager
 
 router = APIRouter(prefix="/api", tags=["auto-ptz"])
-
-
-class TrackRequest(BaseModel):
-    track_id: int
 
 
 @router.post("/track/{camera_id}")
