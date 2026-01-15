@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import threading
 from typing import Dict, Optional
+import time
 
 import cv2
 
@@ -41,14 +42,17 @@ class Camera:
     def _reader_loop(self) -> None:
         """
         Бесконечно читает кадры из VideoCapture и сохраняет последний успешный.
-        При ошибках пытается реконнектиться.
+        При ошибках пытается реконнектиться с экспоненциальным бэк-оффом.
         """
         reconnect_attempts = 0
         while self._running:
             if not self._cap.isOpened():
                 logger.warning(
-                    f"Поток камеры {self._conn.url} закрыт, попытка реконнекта ({reconnect_attempts})"
+                    f"Поток камеры {self._conn.url} закрыт, попытка реконнекта ({reconnect_attempts + 1})"
                 )
+                # Экспоненциальный бэк-офф: 0.5s, 1s, 2s, 4s, 8s
+                delay = min(0.5 * (2 ** reconnect_attempts), 8.0)
+                time.sleep(delay)
                 self._cap.release()
                 self._cap = cv2.VideoCapture(self._conn.url)
                 reconnect_attempts += 1
