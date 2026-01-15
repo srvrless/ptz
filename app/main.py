@@ -71,7 +71,6 @@ def register_exception_handlers(app: FastAPI) -> None:
             content={"error": "internal_error", "message": str(exc)},
         )
 
-
 app = create_app()
 
 # Для запуска: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
