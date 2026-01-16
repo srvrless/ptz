@@ -19,10 +19,10 @@ class PTZCameraManager:
     """
 
     def __init__(self):
-        self._controllers: Dict[str, BasePTZController] = {}
+        self._controllers: Dict[int, BasePTZController] = {}
         self._init_all_cameras()
 
-    def _create_controller_for(self, camera_id: str) -> Optional[BasePTZController]:
+    def _create_controller_for(self, camera_id: int) -> Optional[BasePTZController]:
         cam_cfg = config.cameras.get(camera_id)
         if not cam_cfg:
             logger.error(f"Камера {camera_id} отсутствует в конфиге")
@@ -61,7 +61,7 @@ class PTZCameraManager:
             except Exception as e:
                 logger.error(f"Ошибка инициализации PTZController {camera_id}: {e}")
 
-    def get_controller(self, camera_id: str) -> Optional[BasePTZController]:
+    def get_controller(self, camera_id: int) -> Optional[BasePTZController]:
         controller = self._controllers.get(camera_id)
         if controller is None:
             controller = self._create_controller_for(camera_id)
@@ -71,7 +71,7 @@ class PTZCameraManager:
             logger.warning(f"PTZController для камеры {camera_id} не найден")
         return controller
 
-    def restart_camera(self, camera_id: str) -> Optional[BasePTZController]:
+    def restart_camera(self, camera_id: int) -> Optional[BasePTZController]:
         logger.info(f"Переинициализация PTZ-контроллера для {camera_id}")
         controller = self._create_controller_for(camera_id)
         if controller:

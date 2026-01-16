@@ -1,9 +1,12 @@
-from sqlalchemy import Integer, Float
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Integer
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
+from typing import TYPE_CHECKING
 
-from .camera import Camera
-from .ptz_types import PTZType
+if TYPE_CHECKING:
+    from .camera import Camera
+    from .ptz_types import PTZType
+
 from .base import Base
 
 class CameraPTZ(Base):
@@ -11,4 +14,7 @@ class CameraPTZ(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     camera_id: Mapped[int] = mapped_column(Integer, ForeignKey("cameras.id"), nullable=False)
-    type_id: Mapped[int] = mapped_column(Integer, ForeignKey("ptz_types.id"), nullable=False)
+    type_id: Mapped[int] = mapped_column(Integer, ForeignKey("ptz_types.id"), nullable=False, default=1)
+
+    camera: Mapped["Camera"] = relationship("Camera", back_populates="ptz")
+    ptz_type: Mapped["PTZType"] = relationship("PTZType")

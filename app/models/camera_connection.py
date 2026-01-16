@@ -1,8 +1,11 @@
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
+from typing import TYPE_CHECKING
 
-from .camera import Camera
+if TYPE_CHECKING:
+    from .camera import Camera
+
 from .base import Base
 
 class CameraConnection(Base):
@@ -16,4 +19,7 @@ class CameraConnection(Base):
     rtsp_url_ik: Mapped[str] = mapped_column(String, nullable=False)
     username: Mapped[str] = mapped_column(String, nullable=False)
     password: Mapped[str] = mapped_column(String, nullable=False)
+
+    # Relationship
+    camera: Mapped["Camera"] = relationship("Camera", back_populates="connection")
 

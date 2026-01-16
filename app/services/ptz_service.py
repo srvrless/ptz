@@ -29,7 +29,7 @@ class PTZService:
       - решение, когда делать restart камеры.
     """
 
-    def _get_controller(self, camera_id: str) -> PTZController:
+    def _get_controller(self, camera_id: int) -> PTZController:
         controller = ptz_camera_manager.get_controller(camera_id)
         if controller is None:
             logger.warning(f"PTZController not found for camera {camera_id}")
@@ -46,7 +46,7 @@ class PTZService:
 
     def move_to_target(
         self,
-        camera_id: str,
+        camera_id: int,
         *,
         lat: float,
         lon: float,
@@ -106,7 +106,7 @@ class PTZService:
             f"PTZ continuous_move camera={camera_id}, x={x}, y={y}, zoom={zoom}"
         )
 
-    def stop(self, camera_id: str) -> Dict[str, Any]:
+    def stop(self, camera_id: int) -> Dict[str, Any]:
         """
         Остановить PTZ-движение и вернуть текущий азимут.
         """
@@ -120,7 +120,7 @@ class PTZService:
         logger.info(f"PTZ stop camera={camera_id}, azimut={azimut}")
         return {"status": "ok", "azimut": azimut}
 
-    def set_zoom(self, camera_id: str, zoom_delta: float) -> None:
+    def set_zoom(self, camera_id: int, zoom_delta: float) -> None:
         """
         Изменить зум относительно текущего (zoom_delta может быть отрицательным).
         """

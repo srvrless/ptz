@@ -27,7 +27,7 @@ class CameraService:
     def list_cameras(self) -> Dict[str, Any]:
         return serialize_cameras(config.cameras)
 
-    def get_camera_config(self, camera_id: str):
+    def get_camera_config(self, camera_id: int):
         cam_cfg = config.cameras.get(camera_id)
         if not cam_cfg:
             logger.warning(f"Camera not found: {camera_id}")

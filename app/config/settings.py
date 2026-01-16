@@ -10,7 +10,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # ---------- Модель камеры ----------
 
 class CameraConfig(BaseModel):
-    id: str = Field(..., description="ID камеры (ключ)")
+    id: int = Field(..., description="ID камеры (число)")
+    name: str = Field(None, description="Имя камеры")
     host: str = Field(..., description="IP/домен камеры")
     user: str = Field(..., description="Логин ONVIF/RTSP")
     password: str = Field(..., description="Пароль ONVIF/RTSP")
@@ -72,12 +73,35 @@ class AppConfig(BaseSettings):
     )
 
 
-def _load_cameras_from_settings(cfg: AppConfig) -> Dict[str, CameraConfig]:
+def _load_cameras_from_db() -> Dict[int, CameraConfig]:
     """
-    Собираем камеры не из os.environ, а из самого AppConfig,
-    куда pydantic-settings уже прочитал .env.
+    Загружает все включённые камеры из БД.
+    Преобразует SQLAlchemy модели в Pydantic CameraConfig.
     """
-    cameras: Dict[str, CameraConfig] = {}
+    from app.db.base import engine
+    from app.db.session import Session
+    from app.repositories.camera_repository import CameraRepository
+    
+    try:
+        db_session = Session()
+        repo = CameraRepository(db_session)
+        cameras = repo.get_all_cameras(enabled_only=True)
+        db_session.close()
+        return cameras
+    except Exception as exc:
+        from logger.setup_logger import get_logger
+        logger = get_logger("settings")
+        logger.error(f"Failed to load cameras from database: {exc}")
+        # Возвращаем пусто, чтобы приложение могло стартануть
+        return {}
+
+
+def _load_cameras_from_settings(cfg: AppConfig) -> Dict[int, CameraConfig]:
+    """
+    DEPRECATED: Собираем камеры из .env (для обратной совместимости).
+    Используется только если БД пуста.
+    """
+    cameras: Dict[int, CameraConfig] = {}
 
     cam_ids_raw = cfg.cameras_raw
     if not cam_ids_raw:
@@ -88,7 +112,8 @@ def _load_cameras_from_settings(cfg: AppConfig) -> Dict[str, CameraConfig]:
         if not cam_num:
             continue
 
-        cam_id = f"camera{cam_num}"
+        cam_id_int = int(cam_num)
+        cam_id_str = f"camera{cam_num}"
 
         try:
             host = getattr(cfg, f"camera{cam_num}_host")
@@ -104,7 +129,7 @@ def _load_cameras_from_settings(cfg: AppConfig) -> Dict[str, CameraConfig]:
             ptz_type = getattr(cfg, f"camera{cam_num}_ptz_type", "onvif")
 
             cam_cfg = CameraConfig(
-                id=cam_id,
+                id=cam_id_int,  # Число!
                 host=str(host),
                 user=str(user),
                 password=str(password),
@@ -117,19 +142,38 @@ def _load_cameras_from_settings(cfg: AppConfig) -> Dict[str, CameraConfig]:
                 ptz_type=str(ptz_type),
             )
         except (AttributeError, TypeError, ValueError, ValidationError) as exc:
-            raise ValueError(f"Invalid configuration for {cam_id}: {exc}")
+            raise ValueError(f"Invalid configuration for {cam_id_str}: {exc}")
 
-        cameras[cam_id] = cam_cfg
+        cameras[cam_id_int] = cam_cfg
 
     return cameras
 
 
 @lru_cache
 def get_config() -> AppConfig:
+    from logger.setup_logger import get_logger
+    logger = get_logger("settings")
+    
     cfg = AppConfig()
-    cfg.cameras: Dict[str, CameraConfig] = _load_cameras_from_settings(cfg)
-    # можно оставить отладочный вывод
-    print("Loaded config:", cfg.model_dump(exclude={"app_token"}))
+    
+    # Сначала пробуем загрузить из БД
+    cameras_from_db = _load_cameras_from_db()
+    
+    if cameras_from_db:
+        cfg.cameras: Dict[int, CameraConfig] = cameras_from_db
+        logger.info(f"Loaded {len(cameras_from_db)} cameras from database")
+    else:
+        # Fallback на .env, если БД пуста
+        cameras_from_env = _load_cameras_from_settings(cfg)
+        cfg.cameras: Dict[int, CameraConfig] = cameras_from_env
+        if cameras_from_env:
+            logger.warning(f"Loaded {len(cameras_from_env)} cameras from .env (database is empty)")
+        else:
+            logger.warning("No cameras loaded from database or .env")
+    
+    # Отладочный вывод
+    logger.info(f"Total cameras loaded: {len(cfg.cameras)}")
+    print(cfg.cameras)
     return cfg
 
 

@@ -13,9 +13,7 @@ engine = create_engine(DB_URL, echo=True)
 
 def create_db_and_tables() -> None:
     """
-    Создаёт все таблицы в БД.
-    ВАЖНО: перед вызовом этой функции нужно импортировать ВСЕ модели,
-    чтобы SQLAlchemy их зарегистрировал в Base.metadata.
+    Создаёт все таблицы в БД
     """
     # Импортируем все модели, чтобы они зарегистрировались в Base.metadata
     from app.models.camera import Camera
