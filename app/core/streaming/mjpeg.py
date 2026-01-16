@@ -2,21 +2,20 @@
 
 from __future__ import annotations
 
-from typing import Generator, Optional, List
+from typing import Generator, Optional, Protocol, Callable
+import socket
+import dataclasses
 
+from app.core.streaming.frame import ProcessFrame
 import cv2
 import json
-import socket
 import time
 from threading import Event
 
-from app.config.settings import config
+from app.core.streaming.sockets_con import ConnectionConfig, ConnectionManager, SocketConnection
 from logger.setup_logger import get_logger
 
-from app.core.detection.yolo_detector import get_detector, ObjectDetector, Detection
-from app.core.tracking.centroid_tracker import CentroidTracker
-from app.core.tracking.auto_ptz_tracker import AutoPTZTracker
-from app.core.tracking.auto_ptz_manager import auto_ptz_manager
+from app.core.detection.yolo_detector import get_detector, ObjectDetector
 
 
 logger = get_logger("streaming")
@@ -32,10 +31,9 @@ def _get_detector_safe(enable_detection: bool) -> Optional[ObjectDetector]:
         return None
 
 
-def _connect_sender_socket() -> socket.socket:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((config.HOST_RECV_SERVER, config.PORT_RECV_SERVER))
-    return s
+def _default_connection_factory() -> SocketConnection:
+    manager = ConnectionManager(ConnectionConfig.default())
+    return manager.create_connection()
 
 
 def run_detection_sender(
@@ -50,18 +48,14 @@ def run_detection_sender(
     НИЧЕГО не стримит как видео (нет yield).
     """
 
-    detector = _get_detector_safe(enable_detection)
-    tracker: Optional[CentroidTracker] = CentroidTracker() if detector else None
+    prcocess_manager = ProcessFrame(camera_id, enable_auto_tracking, enable_detection)
 
-    auto_ptz: Optional[AutoPTZTracker] = (
-        auto_ptz_manager.get_or_create(camera_id)
-        if (detector is not None and enable_auto_tracking)
-        else None
-    )
 
-    s: Optional[socket.socket] = None
+    factory = _default_connection_factory
+
+    s: Optional[SocketConnection] = None
     try:
-        s = _connect_sender_socket()
+        s = factory()
         logger.info(f"[{camera_id}] detection sender started")
 
         while stop_event is None or not stop_event.is_set():
@@ -69,20 +63,8 @@ def run_detection_sender(
             if frame is None:
                 time.sleep(0.01)
                 continue
-
-            tracked_objects: List[Detection] = []
-
-            if detector is not None:
-                detections = detector.detect(frame)
-
-                if tracker is not None:
-                    tracked_objects = tracker.update(detections)
-                else:
-                    tracked_objects = detections
-
-                # авто-слежение (если включено)
-                if auto_ptz is not None and tracked_objects:
-                    auto_ptz.update(frame.shape, tracked_objects)
+            
+            tracked_objects = prcocess_manager.process_frame(frame)
 
             # После правки Detection.to_dict() тут уже будет bbox
             objects_data = [d.to_dict() for d in tracked_objects]
@@ -97,7 +79,7 @@ def run_detection_sender(
                 except Exception:
                     pass
                 time.sleep(0.2)
-                s = _connect_sender_socket()
+                s = factory()
 
         logger.info(f"[{camera_id}] detection sender stopped")
 
@@ -114,18 +96,12 @@ def generate_mjpeg(
     camera_id: str,
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
+    connection_config: Optional[ConnectionConfig] = None,
 ) -> Generator[bytes, None, None]:
 
-    detector = _get_detector_safe(enable_detection)
-    tracker: Optional[CentroidTracker] = CentroidTracker() if detector else None
-    auto_ptz: Optional[AutoPTZTracker] = (
-        auto_ptz_manager.get_or_create(camera_id)
-        if (detector is not None and enable_auto_tracking)
-        else None
-    )
+    prcocess_manager = ProcessFrame(camera_id, enable_auto_tracking, enable_detection)
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((config.HOST_RECV_SERVER, config.PORT_RECV_SERVER))
+    with _default_connection_factory() as s:
 
         while True:
             frame = camera.get_frame()
@@ -133,16 +109,7 @@ def generate_mjpeg(
                 time.sleep(0.01)
                 continue
 
-            tracked_objects: List[Detection] = []
-
-            if detector is not None:
-                detections = detector.detect(frame)
-                tracked_objects = tracker.update(detections) if tracker else detections
-
-                frame = detector.draw(frame, tracked_objects)
-
-                if auto_ptz is not None and tracked_objects:
-                    auto_ptz.update(frame.shape, tracked_objects)
+            tracked_objects = prcocess_manager.process_frame(frame)
 
             ok, buffer = cv2.imencode(".jpg", frame)
             if not ok:

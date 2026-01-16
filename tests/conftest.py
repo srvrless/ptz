@@ -44,6 +44,11 @@ os.environ["HEIGHTS"] = "[5,10,15]"
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 from app.main import app  # noqa: E402
+from app.core.streaming import mjpeg # noqa: E402
+from app.core.camera import manager as cam_manager_module # noqa: E402
+from tests.dummies import DummyCamera # noqa: E402
+from tests.mocks import MockSocketConnection # noqa: E402
+from tests.fakes import fake_imencode # noqa: E402
 
 
 @pytest.fixture(scope="session")
@@ -59,3 +64,34 @@ def client(app_instance):
 @pytest.fixture
 def auth_header():
     return {"Authorization": "Bearer test-token"}
+
+@pytest.fixture
+def dummy_camera():
+    return DummyCamera()
+
+
+@pytest.fixture
+def mock_socket_connection(monkeypatch):
+    conn = MockSocketConnection()
+
+    monkeypatch.setattr(
+        mjpeg,
+        "_default_connection_factory",
+        lambda: conn,
+    )
+
+    return conn
+
+
+@pytest.fixture
+def patched_camera_manager(monkeypatch, dummy_camera):
+    monkeypatch.setattr(
+        cam_manager_module.camera_manager,
+        "get_or_create",
+        lambda camera_id, conn: dummy_camera,
+    )
+
+
+@pytest.fixture
+def patched_imencode(monkeypatch):
+    monkeypatch.setattr("cv2.imencode", fake_imencode)
