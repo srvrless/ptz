@@ -8,7 +8,7 @@ DB_DIR = PROJECT_ROOT / "db"
 DB_DIR.mkdir(exist_ok=True)
 
 DB_URL = f'sqlite:///{DB_DIR / "database.db"}'
-engine = create_engine(DB_URL, echo=True)
+engine = create_engine(DB_URL, echo=False)
 
 
 def create_db_and_tables() -> None:

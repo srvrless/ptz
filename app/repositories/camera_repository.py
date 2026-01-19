@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
+from typing import Optional
 from datetime import datetime
 
-from sqlalchemy.orm import Session, joinedload, selectinload
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
 
 from app.models.camera import Camera
@@ -53,31 +53,20 @@ class CameraRepository:
             ptz_type=camera.ptz.ptz_type.type,
         )
 
-    def get_all_cameras(self, enabled_only: bool = True) -> Dict[int, CameraConfig]:
+    def get_all_cameras(self, enabled_only: bool = True) -> list:
         """
         Получить все камеры из БД.
         """
-        query = select(Camera).options(
+        query = select(Camera).options( 
             joinedload(Camera.connection),
             joinedload(Camera.location),
             joinedload(Camera.ptz).joinedload(CameraPTZ.ptz_type),
         )
         
         if enabled_only:
-            query = query.where(Camera.enabled == True)
+            query = query.where(Camera.enabled)
         
-        cameras = self.session.scalars(query).unique().all()
-        
-        result = {}
-        for camera in cameras:
-            try:
-                config = self._db_to_config(camera)
-                result[config.id] = config
-            except ValueError as e:
-                logger.warning(f"Skipping camera {camera.id}: {e}")
-                continue
-        
-        return result
+        return self.session.scalars(query).all()
 
     def get_camera_by_id(self, camera_id: int) -> Optional[CameraConfig]:
         """

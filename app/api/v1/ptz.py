@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.api.v1.deps import get_token, get_ptz_service
-from app.api.v1.schemas import MoveRequest, ContinuousMoveRequest, ZoomRequest
+from app.schemas.ptz import MoveRequest, ContinuousMoveRequest, ZoomRequest
 from app.services import PTZService
 
 router = APIRouter(prefix="/api", tags=["ptz"])
