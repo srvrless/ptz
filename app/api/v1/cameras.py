@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from app.api.v1.deps import get_token, get_camera_service
+from app.api.v1.dependencies import get_token, get_camera_service
 from app.services import CameraService
 from .dependencies import UOWDep
 
