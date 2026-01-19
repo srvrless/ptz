@@ -93,11 +93,8 @@ class CameraRepository:
         if not camera or not camera.enabled:
             return None
         
-        try:
-            return self._db_to_config(camera)
-        except ValueError as e:
-            logger.error(f"Error converting camera {camera_id} to config: {e}")
-            return None
+        return camera
+
 
     def create_camera(
         self,
@@ -164,8 +161,7 @@ class CameraRepository:
 
         self.session.commit()
         logger.info(f"Created camera {camera.id} ({name})")
-        
-        return self._db_to_config(camera)
+        return camera
 
     def update_camera(
         self,
@@ -276,7 +272,7 @@ class CameraRepository:
         self.session.commit()
         logger.info(f"Updated camera {camera.id}")
         
-        return self._db_to_config(camera)
+        return camera
 
     def delete_camera(self, camera_id: str, soft_delete: bool = True) -> bool:
         """

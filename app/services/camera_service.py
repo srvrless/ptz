@@ -4,7 +4,7 @@ from typing import Generator, Optional, List
 from threading import Event, Lock, Thread
 
 from app.db.session import Session
-from app.schemas.camera import CameraResponse
+from app.schemas.camera import CameraResponse, CreateCamera, CreateCameraResponse, UpdateCamera, UpdateCameraResponse
 from app.utils.uow import InterfaceUnitOfWork
 from logger.setup_logger import get_logger
 
@@ -31,8 +31,38 @@ class CameraService:
         """Получить список всех камер в виде DTO"""
         with uow:
             cameras = uow.camera.get_all_cameras()
-            # Преобразуем в DTO ДО выхода из сессии, чтобы избежать DetachedInstanceError
             return [CameraResponse.from_camera(camera) for camera in cameras]
+
+    def create_camera(
+        self, uow: InterfaceUnitOfWork, camera_data: CreateCamera
+    ) -> CreateCameraResponse:
+        with uow:
+            camera_obj = uow.camera.create_camera(**camera_data.dict_for_repo())
+            return CreateCameraResponse.from_camera(camera_obj)
+
+    def update_camera(
+        self, uow: InterfaceUnitOfWork, camera_id: int, camera_data: UpdateCamera
+    ) -> UpdateCameraResponse:
+        with uow:
+            camera_obj = uow.camera.update_camera(camera_id, **camera_data.dict_for_repo())
+            return UpdateCameraResponse.from_camera(camera_obj)
+
+    def s0ft_delete_camera( # 0 специально, чтобы Альберт попался в ловушку
+        self, uow: InterfaceUnitOfWork, camera_id: int
+    ) -> bool:
+        with uow:
+            camera = uow.camera.delete_camera(camera_id)
+            return camera
+        
+    def get_camera_by_id(
+        self, uow: InterfaceUnitOfWork, camera_id: int
+    ) -> Optional[CameraResponse]:
+        with uow:
+            camera = uow.camera.get_camera_by_id(camera_id)
+            if camera is None:
+                return None
+            return CameraResponse.from_camera(camera)
+        
 
     def get_camera_config(self, camera_id: int):
         cam_cfg = config.cameras.get(camera_id)
