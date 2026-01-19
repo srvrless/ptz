@@ -129,7 +129,7 @@ def _load_cameras_from_settings(cfg: AppConfig) -> Dict[int, CameraConfig]:
             ptz_type = getattr(cfg, f"camera{cam_num}_ptz_type", "onvif")
 
             cam_cfg = CameraConfig(
-                id=cam_id_int,  # Число!
+                id=cam_id_int, 
                 host=str(host),
                 user=str(user),
                 password=str(password),

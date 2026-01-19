@@ -1,4 +1,3 @@
-# app/utils/serializers.py
 from __future__ import annotations
 
 from dataclasses import is_dataclass, asdict
