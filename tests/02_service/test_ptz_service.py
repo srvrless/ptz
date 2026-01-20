@@ -2,31 +2,10 @@
 from typing import Optional
 
 from app.services import ptz_service, PTZService
-from app.core.ptz.base import BasePTZController
+from tests.dummies import DummyPTZ
 
 
-class DummyPTZ(BasePTZController):
-    def __init__(self):
-        super().__init__(cam_lat=55.0, cam_lon=37.0, cam_h=10.0, cam_rate=0.0)
-        self.last_goto = None
-        self.last_continuous = None
-        self.last_zoom_delta = None
-        self.stopped = False
 
-    def goto_angles(self, az_deg: float, el_deg: float, zoom: Optional[float]):
-        self.last_goto = (az_deg, el_deg, zoom)
-
-    def continuous_move(self, x: float, y: float, zoom: float = 0.0):
-        self.last_continuous = (x, y, zoom)
-
-    def stop(self, pan_tilt: bool = True, zoom: bool = True):
-        self.stopped = True
-
-    def set_zoom(self, delta: float):
-        self.last_zoom_delta = delta
-
-    def get_azimut(self) -> Optional[float]:
-        return 123.45
 
 
 def test_ptz_service_move_to_target(monkeypatch):
