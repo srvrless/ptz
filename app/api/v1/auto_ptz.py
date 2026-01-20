@@ -1,4 +1,4 @@
-from app.api.v1.schemas import TrackRequest
+from app.schemas.auto_ptz import TrackRequest
 from fastapi import APIRouter
 from pydantic import BaseModel
 

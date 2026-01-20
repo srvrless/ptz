@@ -24,6 +24,3 @@ class ContinuousMoveRequest(BaseModel):
 
 class ZoomRequest(BaseModel):
     zoom: float = Field(..., ge=-1, le=1, description="Изменение зума (может быть отрицательным)")
-
-class TrackRequest(BaseModel):
-    track_id: int

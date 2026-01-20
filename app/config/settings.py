@@ -159,17 +159,17 @@ def get_config() -> AppConfig:
     # Сначала пробуем загрузить из БД
     cameras_from_db = _load_cameras_from_db()
     
-    if cameras_from_db:
-        cfg.cameras: Dict[int, CameraConfig] = cameras_from_db
-        logger.info(f"Loaded {len(cameras_from_db)} cameras from database")
+    # if cameras_from_db:
+    #     cfg.cameras: Dict[int, CameraConfig] = cameras_from_db
+    #     logger.info(f"Loaded {len(cameras_from_db)} cameras from database")
+    # else:
+    # Fallback на .env, если БД пуста
+    cameras_from_env = _load_cameras_from_settings(cfg)
+    cfg.cameras: Dict[int, CameraConfig] = cameras_from_env
+    if cameras_from_env:
+        logger.warning(f"Loaded {len(cameras_from_env)} cameras from .env (database is empty)")
     else:
-        # Fallback на .env, если БД пуста
-        cameras_from_env = _load_cameras_from_settings(cfg)
-        cfg.cameras: Dict[int, CameraConfig] = cameras_from_env
-        if cameras_from_env:
-            logger.warning(f"Loaded {len(cameras_from_env)} cameras from .env (database is empty)")
-        else:
-            logger.warning("No cameras loaded from database or .env")
+        logger.warning("No cameras loaded from database or .env")
     
     # Отладочный вывод
     logger.info(f"Total cameras loaded: {len(cfg.cameras)}")

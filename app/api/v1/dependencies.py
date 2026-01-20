@@ -1,3 +1,6 @@
+from typing import Annotated
+
+from app.utils.uow import InterfaceUnitOfWork, UnitOfWork
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
@@ -27,3 +30,5 @@ def get_camera_service() -> CameraService:
 
 def get_ptz_service() -> PTZService:
     return ptz_service
+
+UOWDep = Annotated[InterfaceUnitOfWork, Depends(UnitOfWork)]
