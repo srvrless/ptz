@@ -96,6 +96,7 @@ def generate_mjpeg(
     camera_id: str,
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
+    connection_config: Optional[ConnectionConfig] = None,
 ) -> Generator[bytes, None, None]:
 
     prcocess_manager = ProcessFrame(camera_id, enable_auto_tracking, enable_detection)
