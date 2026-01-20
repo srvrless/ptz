@@ -1918,6 +1918,15 @@ wheels = [
 ]
 
 [[package]]
+name = "python-multipart"
+version = "0.0.21"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/78/96/804520d0850c7db98e5ccb70282e29208723f0964e88ffd9d0da2f52ea09/python_multipart-0.0.21.tar.gz", hash = "sha256:7137ebd4d3bbf70ea1622998f902b97a29434a9e8dc40eb203bbcf7c2a2cba92", size = 37196, upload-time = "2025-12-17T09:24:22.446Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/aa/76/03af049af4dcee5d27442f71b6924f01f3efb5d2bd34f23fcd563f2cc5f5/python_multipart-0.0.21-py3-none-any.whl", hash = "sha256:cf7a6713e01c87aa35387f4774e812c4361150938d20d232800f75ffcf266090", size = 24541, upload-time = "2025-12-17T09:24:21.153Z" },
+]
+
+[[package]]
 name = "pytokens"
 version = "0.1.10"
 source = { registry = "https://pypi.org/simple" }
@@ -2020,6 +2029,7 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "pytest" },
     { name = "redis" },
+    { name = "sqladmin" },
     { name = "sqlalchemy" },
     { name = "ultralytics" },
     { name = "uvicorn" },
@@ -2044,6 +2054,7 @@ requires-dist = [
     { name = "pydantic-settings", specifier = ">=2.12.0" },
     { name = "pytest", specifier = ">=9.0.1" },
     { name = "redis", specifier = ">=6.4.0" },
+    { name = "sqladmin", specifier = ">=0.22.0" },
     { name = "sqlalchemy", specifier = ">=2.0.45" },
     { name = "ultralytics", specifier = ">=8.3.234" },
     { name = "uvicorn", specifier = ">=0.38.0" },
@@ -2254,6 +2265,22 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
+]
+
+[[package]]
+name = "sqladmin"
+version = "0.22.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jinja2" },
+    { name = "python-multipart" },
+    { name = "sqlalchemy" },
+    { name = "starlette" },
+    { name = "wtforms" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2c/ac/526bb3ff2dd94fbf8442bccb49ef40aa360045add19d4fbffcb43995e67a/sqladmin-0.22.0.tar.gz", hash = "sha256:4ea904d97e4d030edb68fb0681330b4d963f422442a64bee487fdc46119b3729", size = 1429937, upload-time = "2025-11-24T12:52:59.285Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f2/b4/ab78c7d7b13bd3f90d6d8a106c5ad12bf7a738f89eb0241b24ad8efe5d1e/sqladmin-0.22.0-py3-none-any.whl", hash = "sha256:f2fb11165a70601a97f71956104b47da2c432db49b0d7966dc65e9e6343887d3", size = 1445514, upload-time = "2025-11-24T12:53:00.511Z" },
 ]
 
 [[package]]
@@ -2601,6 +2628,18 @@ dependencies = [
     { name = "ifaddr" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/6c/81/c3e596d7c043a8b557feccb7f675d9bc4dbbcf2efcf08f4d30872a3fe429/WSDiscovery-2.1.2.tar.gz", hash = "sha256:ab816deff2db101be59830317e19b78a95e9146b2b0a747953345ae68d1d8b58", size = 23201, upload-time = "2025-01-24T08:45:12.395Z" }
+
+[[package]]
+name = "wtforms"
+version = "3.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "markupsafe" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6a/c7/96d10183c3470f1836846f7b9527d6cb0b6c2226ebca40f36fa29f23de60/wtforms-3.1.2.tar.gz", hash = "sha256:f8d76180d7239c94c6322f7990ae1216dae3659b7aa1cee94b6318bdffb474b9", size = 134705, upload-time = "2024-01-06T07:52:41.075Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/18/19/c3232f35e24dccfad372e9f341c4f3a1166ae7c66e4e1351a9467c921cc1/wtforms-3.1.2-py3-none-any.whl", hash = "sha256:bf831c042829c8cdbad74c27575098d541d039b1faa74c771545ecac916f2c07", size = 145961, upload-time = "2024-01-06T07:52:43.023Z" },
+]
 
 [[package]]
 name = "zeep"

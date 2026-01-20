@@ -8,3 +8,6 @@ class PTZType(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     type: Mapped[str] = mapped_column(String, nullable=False)
+
+    def __repr__(self) -> str:
+        return self.type

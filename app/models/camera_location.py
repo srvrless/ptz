@@ -18,5 +18,11 @@ class CameraLocation(Base):
     height: Mapped[float] = mapped_column(Float, nullable=False)
     rate: Mapped[float] = mapped_column(Float, nullable=False)
 
-    # Relationship
     camera: Mapped["Camera"] = relationship("Camera", back_populates="location")
+
+    def __repr__(self):
+        return f"Location ({self.lat}, {self.lon}, {self.height}, {self.rate})"
+
+    @property
+    def camera_name(self) -> str:
+        return self.camera.name

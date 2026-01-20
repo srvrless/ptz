@@ -1,18 +1,20 @@
-# app/main.py
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from sqladmin import Admin
 
 from app.config.settings import config
 from app.api.v1.cameras import router as cameras_router
 from app.api.v1.streams import router as streams_router
 from app.api.v1.ptz import router as ptz_router
 from app.api.v1.auto_ptz import router as auto_ptz_router
+from app.api.v1.admin import CameraAdmin, CameraConnectionAdmin, CameraLocationAdmin, CameraPTZAdmin
 from app.services import (
     CameraNotFoundError,
     PTZControllerNotFoundError,
     PTZMoveError,
 )
 from app.core.camera.manager import camera_manager
+from app.db.base import engine
 from logger.setup_logger import get_logger
 
 logger = get_logger("app")
@@ -26,6 +28,13 @@ def create_app() -> FastAPI:
 
     # Инициализируем БД
     init_database()
+
+    # Админка
+    admin = Admin(app, engine, base_url="/admin", title="PTZ Admin")
+    admin.add_view(CameraAdmin)
+    admin.add_view(CameraConnectionAdmin)
+    admin.add_view(CameraLocationAdmin)
+    admin.add_view(CameraPTZAdmin)
 
     # Роутеры
     app.include_router(cameras_router)

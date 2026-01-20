@@ -31,3 +31,27 @@ class Camera(Base):
     ptz: Mapped[Optional["CameraPTZ"]] = relationship(
         "CameraPTZ", back_populates="camera", uselist=False, cascade="all, delete-orphan"
     )
+    
+
+    def __repr__(self):
+        return self.name
+
+    @property
+    def location_lat(self) -> float:
+        return self.location.lat
+    
+    @property
+    def location_lon(self) -> float:
+        return self.location.lon
+    
+    @property
+    def location_height(self) -> float:
+        return self.location.height
+    
+    @property
+    def location_rate(self) -> float:
+        return self.location.rate
+
+    @property
+    def ptz_type(self) -> str:
+        return self.ptz.ptz_type.type

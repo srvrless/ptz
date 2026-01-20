@@ -18,3 +18,14 @@ class CameraPTZ(Base):
 
     camera: Mapped["Camera"] = relationship("Camera", back_populates="ptz")
     ptz_type: Mapped["PTZType"] = relationship("PTZType")
+
+    def __repr__(self):
+        return f"PTZ ({self.type_id}) for camera {self.camera_id}"
+
+    @property
+    def ptz_type_name(self) -> str:
+        return self.ptz_type.type
+
+    @property
+    def camera_name(self) -> str:
+        return self.camera.name
