@@ -52,7 +52,11 @@ def patch_camera(
     """
     Обновить данные камеры.
     """
-    return camera_service.update_camera(uow, camera_id, camera)
+    camera_response =  camera_service.update_camera(uow, camera_id, camera)
+    if camera_response is None:
+        raise HTTPException(status_code=404, detail="Camera not found or not enabled")
+    return camera_response
+
 
 
 @router.delete("/camera/{camera_id}")
@@ -65,7 +69,7 @@ def soft_delete_camera(
     Пометить камеру как удалённую в конфиге.
     """
 
-    camera = camera_service.s0ft_delete_camera(uow, camera_id)
+    camera = camera_service.soft_delete_camera(uow, camera_id)
 
     if camera is False:
         return HTTPException(status_code=404, detail="Camera not found")

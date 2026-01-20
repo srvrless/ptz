@@ -45,9 +45,11 @@ class CameraService:
     ) -> UpdateCameraResponse:
         with uow:
             camera_obj = uow.camera.update_camera(camera_id, **camera_data.dict_for_repo())
+            if camera_obj is None:
+                return None
             return UpdateCameraResponse.from_camera(camera_obj)
 
-    def s0ft_delete_camera( # 0 специально, чтобы Альберт попался в ловушку
+    def soft_delete_camera(
         self, uow: InterfaceUnitOfWork, camera_id: int
     ) -> bool:
         with uow:

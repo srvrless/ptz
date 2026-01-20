@@ -1,3 +1,4 @@
+from enum import Enum
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
@@ -144,3 +145,8 @@ class UpdateCameraResponse(UpdateCamera):
         )
 
     model_config = ConfigDict(from_attributes=True)
+
+class PTZTypeEnum(str, Enum):
+    """Перечисление типов PTZ"""
+    ONVIF = "onvif"
+    TMS20 = "tms20"
