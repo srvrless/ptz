@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, inspect
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -20,6 +20,11 @@ class CameraConnection(Base):
     username: Mapped[str] = mapped_column(String, nullable=False)
     password: Mapped[str] = mapped_column(String, nullable=False)
 
-    # Relationship
     camera: Mapped["Camera"] = relationship("Camera", back_populates="connection")
 
+    def __repr__(self) -> str:
+        return f"Connection for camera {self.camera_id}"
+
+    @property
+    def camera_name(self) -> str:
+        return self.camera.name
