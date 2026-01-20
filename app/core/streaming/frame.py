@@ -2,7 +2,7 @@ import time
 from typing import List, Optional
 
 from app.core.detection.yolo_detector import Detection, ObjectDetector, get_detector
-from app.core.tracking import auto_ptz_manager
+from app.core.tracking.auto_ptz_manager import auto_ptz_manager
 from app.core.tracking.centroid_tracker import CentroidTracker
 from app.core.tracking.auto_ptz_tracker import AutoPTZTracker
 from logger.setup_logger import get_logger
