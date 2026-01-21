@@ -31,7 +31,7 @@ def test_ptz_move_endpoint(client, auth_header):
 # tests/test_api.py
 
 def test_stream_endpoint(client, auth_header, monkeypatch):
-    from app.api.v1 import deps as deps_module
+    from app.api.v1 import dependencies as dependencies_module
 
     class DummyCameraService:
         @staticmethod
@@ -41,7 +41,7 @@ def test_stream_endpoint(client, auth_header, monkeypatch):
                 yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\nxxx\r\n"
 
     # подменяем зависимость, которую FastAPI инжектит в endpoint
-    monkeypatch.setattr(deps_module, "get_camera_service", lambda: DummyCameraService())
+    monkeypatch.setattr(dependencies_module, "get_camera_service", lambda: DummyCameraService())
 
     resp = client.get("/api/stream/camera1/", headers=auth_header)
     assert resp.status_code == 200

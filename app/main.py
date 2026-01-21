@@ -1,18 +1,20 @@
-# app/main.py
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from sqladmin import Admin
 
 from app.config.settings import config
 from app.api.v1.cameras import router as cameras_router
 from app.api.v1.streams import router as streams_router
 from app.api.v1.ptz import router as ptz_router
 from app.api.v1.auto_ptz import router as auto_ptz_router
+from app.api.v1.admin import CameraAdmin, CameraConnectionAdmin, CameraLocationAdmin, CameraPTZAdmin
 from app.services import (
     CameraNotFoundError,
     PTZControllerNotFoundError,
     PTZMoveError,
 )
 from app.core.camera.manager import camera_manager
+from app.db.base import engine
 from logger.setup_logger import get_logger
 
 logger = get_logger("app")
@@ -23,6 +25,16 @@ def create_app() -> FastAPI:
         title="PTZ Backend",
         version="1.0.0",
     )
+
+    # Инициализируем БД
+    init_database()
+
+    # Админка
+    admin = Admin(app, engine, base_url="/admin", title="PTZ Admin")
+    admin.add_view(CameraAdmin)
+    admin.add_view(CameraConnectionAdmin)
+    admin.add_view(CameraLocationAdmin)
+    admin.add_view(CameraPTZAdmin)
 
     # Роутеры
     app.include_router(cameras_router)
@@ -39,6 +51,40 @@ def create_app() -> FastAPI:
         camera_manager.stop_all()
 
     return app
+
+
+def init_database() -> None:
+    """
+    Инициализирует БД: создаёт таблицы и загружает начальные данные.
+    """
+    try:
+        from app.db.base import create_db_and_tables
+        from app.db.session import Session
+        from app.models.ptz_types import PTZType
+        from sqlalchemy import select
+        
+        # Создаём все таблицы
+        create_db_and_tables()
+        
+        # Проверяем и инициализируем справочник PTZ типов, если пуст
+        db_session = Session()
+        try:
+            ptz_types_count = db_session.query(PTZType).count()
+            if ptz_types_count == 0:
+                logger.info("Initializing PTZ types...")
+                default_types = [
+                    PTZType(type="onvif"),
+                    PTZType(type="tms20"),
+                ]
+                db_session.add_all(default_types)
+                db_session.commit()
+                logger.info("✅ PTZ types initialized")
+        finally:
+            db_session.close()
+            
+    except Exception as e:
+        logger.error(f"Database initialization failed: {e}")
+        raise
 
 
 def register_exception_handlers(app: FastAPI) -> None:
@@ -70,7 +116,6 @@ def register_exception_handlers(app: FastAPI) -> None:
             status_code=500,
             content={"error": "internal_error", "message": str(exc)},
         )
-
 
 app = create_app()
 

@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends
 
-from app.api.v1.deps import get_camera_service
+from app.api.v1.dependencies import get_camera_service
 from app.services import CameraService
 
 router = APIRouter(prefix="/api", tags=["streams"])

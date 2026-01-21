@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Generator, Optional
+from typing import Generator, Optional, List
 from threading import Event, Lock, Thread
 
+from app.db.session import Session
+from app.schemas.camera import CameraResponse, CreateCamera, CreateCameraResponse, UpdateCamera, UpdateCameraResponse
+from app.utils.uow import InterfaceUnitOfWork
 from logger.setup_logger import get_logger
 
 from app.config.settings import config
 from app.core.camera.manager import camera_manager, CameraConnection
 from app.core.streaming.mjpeg import generate_mjpeg, run_detection_sender
-from app.utils.serializers import serialize_cameras
 
 logger = get_logger("camera_service")
 
@@ -23,11 +25,48 @@ class CameraService:
         self._selected_camera_id: Optional[str] = None
         self._worker_thread: Optional[Thread] = None
         self._stop_event: Optional[Event] = None
+        self.session = Session()
 
-    def list_cameras(self) -> Dict[str, Any]:
-        return serialize_cameras(config.cameras)
+    def list_cameras(self, uow: InterfaceUnitOfWork) -> List[CameraResponse]:
+        """Получить список всех камер в виде DTO"""
+        with uow:
+            cameras = uow.camera.get_all_cameras()
+            return [CameraResponse.from_camera(camera) for camera in cameras]
 
-    def get_camera_config(self, camera_id: str):
+    def create_camera(
+        self, uow: InterfaceUnitOfWork, camera_data: CreateCamera
+    ) -> CreateCameraResponse:
+        with uow:
+            camera_obj = uow.camera.create_camera(**camera_data.dict_for_repo())
+            return CreateCameraResponse.from_camera(camera_obj)
+
+    def update_camera(
+        self, uow: InterfaceUnitOfWork, camera_id: int, camera_data: UpdateCamera
+    ) -> UpdateCameraResponse:
+        with uow:
+            camera_obj = uow.camera.update_camera(camera_id, **camera_data.dict_for_repo())
+            if camera_obj is None:
+                return None
+            return UpdateCameraResponse.from_camera(camera_obj)
+
+    def soft_delete_camera(
+        self, uow: InterfaceUnitOfWork, camera_id: int
+    ) -> bool:
+        with uow:
+            camera = uow.camera.delete_camera(camera_id)
+            return camera
+        
+    def get_camera_by_id(
+        self, uow: InterfaceUnitOfWork, camera_id: int
+    ) -> Optional[CameraResponse]:
+        with uow:
+            camera = uow.camera.get_camera_by_id(camera_id)
+            if camera is None:
+                return None
+            return CameraResponse.from_camera(camera)
+        
+
+    def get_camera_config(self, camera_id: int):
         cam_cfg = config.cameras.get(camera_id)
         if not cam_cfg:
             logger.warning(f"Camera not found: {camera_id}")
