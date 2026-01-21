@@ -145,8 +145,3 @@ class UpdateCameraResponse(UpdateCamera):
         )
 
     model_config = ConfigDict(from_attributes=True)
-
-class PTZTypeEnum(str, Enum):
-    """Перечисление типов PTZ"""
-    ONVIF = "onvif"
-    TMS20 = "tms20"

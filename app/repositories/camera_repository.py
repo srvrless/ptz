@@ -11,8 +11,6 @@ from app.models.camera_connection import CameraConnection
 from app.models.camera_location import CameraLocation
 from app.models.camera_ptz import CameraPTZ
 from app.models.ptz_types import PTZType
-from app.config.settings import CameraConfig
-from app.db.session import Session as DBSession
 from logger.setup_logger import get_logger
 
 logger = get_logger("camera_repository")
@@ -20,74 +18,38 @@ logger = get_logger("camera_repository")
 
 class CameraRepository:
     """
-    Репозиторий для работы с камерами в БД
-    Преобразует SQLAlchemy модели в Pydantic CameraConfig для совместимости с существующим кодом
+    Репозиторий для работы с камерами в БД.
+    Возвращает SQLAlchemy модели с eager-loaded связями.
+    Конверсию в DTOs выполняет слой сервиса через CameraMapper.
     """
 
     def __init__(self, session: Session):
         self.session = session
 
-    def _db_to_config(self, camera: Camera) -> CameraConfig:
-        """
-        Преобразует SQLAlchemy модель Camera в Pydantic CameraConfig
-        """
-        if not camera.connection:
-            raise ValueError(f"Camera {camera.id} has no connection data")
-        if not camera.location:
-            raise ValueError(f"Camera {camera.id} has no location data")
-        if not camera.ptz or not camera.ptz.ptz_type:
-            raise ValueError(f"Camera {camera.id} has no PTZ type")
-
-        return CameraConfig(
-            id=camera.id,
-            name=camera.name,
-            host=camera.connection.host,
-            user=camera.connection.username,
-            password=camera.connection.password,
-            port=camera.connection.port,
-            rtsp_url=camera.connection.rtsp_url,
-            lat=camera.location.lat,
-            lon=camera.location.lon,
-            height=camera.location.height,
-            rate=camera.location.rate,
-            ptz_type=camera.ptz.ptz_type.type,
-        )
-
-    def get_all_cameras(self, enabled_only: bool = True) -> list:
-        """
-        Получить все камеры из БД.
-        """
-        query = select(Camera).options( 
+    @staticmethod
+    def _eager_load_query():
+        return select(Camera).options(
             joinedload(Camera.connection),
             joinedload(Camera.location),
             joinedload(Camera.ptz).joinedload(CameraPTZ.ptz_type),
         )
+
+    def get_all_cameras(self, enabled_only: bool = True) -> list:
+        query = self._eager_load_query()
         
         if enabled_only:
             query = query.where(Camera.enabled)
-        
         return self.session.scalars(query).all()
 
-    def get_camera_by_id(self, camera_id: int) -> Optional[CameraConfig]:
-        """
-        Получить камеру по ID.
-        """
+    def get_camera_by_id(self, camera_id: int) -> Optional[Camera]:
         try:
             camera_db_id = int(str(camera_id).replace("camera", ""))
         except ValueError:
             # Если camera_id не число, пробуем найти по name
-            query = select(Camera).where(Camera.name == camera_id).options(
-                joinedload(Camera.connection),
-                joinedload(Camera.location),
-                joinedload(Camera.ptz).joinedload(CameraPTZ.ptz_type),
-            )
+            query = self._eager_load_query().where(Camera.name == camera_id)
             camera = self.session.scalar(query)
         else:
-            query = select(Camera).where(Camera.id == camera_db_id).options(
-                joinedload(Camera.connection),
-                joinedload(Camera.location),
-                joinedload(Camera.ptz).joinedload(CameraPTZ.ptz_type),
-            )
+            query = self._eager_load_query().where(Camera.id == camera_db_id)
             camera = self.session.scalar(query)
         
         if not camera or not camera.enabled:
@@ -111,12 +73,12 @@ class CameraRepository:
         rate: float,
         ptz_type: str,
         enabled: bool = True,
-    ) -> CameraConfig:
+    ) -> Camera:
         """
         Создать новую камеру в БД.
         
         Returns:
-            CameraConfig созданной камеры
+            Camera: SQLAlchemy модель созданной камеры
         """
         # Проверяем, существует ли PTZ тип
         ptz_type_obj = self.session.scalar(
@@ -179,12 +141,12 @@ class CameraRepository:
         rate: Optional[float] = None,
         ptz_type: Optional[str] = None,
         enabled: Optional[bool] = None,
-    ) -> Optional[CameraConfig]:
+    ) -> Optional[Camera]:
         """
         Обновить данные камеры.
         
         Returns:
-            CameraConfig обновлённой камеры или None, если камера не найдена
+            Camera или None, если камера не найдена
         """
         try:
             camera_db_id = int(str(camera_id).replace("camera", ""))
@@ -307,13 +269,3 @@ class CameraRepository:
         
         self.session.commit()
         return True
-
-
-def get_camera_repository(session: Optional[Session] = None) -> CameraRepository:
-    """
-    Создаёт экземпляр CameraRepository
-    """
-    if session is None:
-        session = DBSession()
-    return CameraRepository(session)
-
