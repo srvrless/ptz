@@ -1,97 +1,274 @@
-# tests/conftest.py
 import os
 import sys
 from pathlib import Path
+from datetime import datetime
 
-# --- добавить корень проекта в sys.path ---
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session as SQLSession
+from sqlalchemy.pool import StaticPool
+
+# Добавляем корень проекта в sys.path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# --- окружение для тестов: ставим ДО импортов app.* ---
-os.environ["APP_TOKEN"] = "test-token"
+# Настройки окружения для тестов (ДО импортов app.*)
+os.environ["APP_DEBUG"] = "true"
+os.environ["APP_PORT"] = "8000"
+os.environ["APP_HOST"] = "0.0.0.0"
+os.environ["APP_TOKEN"] = "test-token-123"
+os.environ["DETECTOR_CONF"] = "0.3"
+os.environ["DETECTOR_DEVICE"] = "cpu"
+os.environ["HOST_RECV_SERVER"] = "127.0.0.1"
+os.environ["PORT_RECV_SERVER"] = "51242"
+os.environ["CAMERAS"] = ""  # Пусто, так как будем загружать из БД
 
-# две камеры: onvif и tms20
-os.environ["CAMERAS"] = "1,2"
-
-# CAMERA1 (onvif)
-os.environ["CAMERA1_HOST"] = "192.168.0.10"
-os.environ["CAMERA1_USER"] = "admin"
-os.environ["CAMERA1_PASSWORD"] = "qwerty"
-os.environ["CAMERA1_PORT"] = "8000"
-os.environ["CAMERA1_RTSP_URL"] = "rtsp://example1"
-os.environ["CAMERA1_LAT"] = "55.0"
-os.environ["CAMERA1_LON"] = "37.0"
-os.environ["CAMERA1_HEIGHT"] = "10"
-os.environ["CAMERA1_RATE"] = "0"
-os.environ["CAMERA1_PTZ_TYPE"] = "onvif"
-
-# CAMERA2 (tms20)
-os.environ["CAMERA2_HOST"] = "192.168.0.20"
-os.environ["CAMERA2_USER"] = "admin"
-os.environ["CAMERA2_PASSWORD"] = "qwerty"
-os.environ["CAMERA2_PORT"] = "1470"
-os.environ["CAMERA2_RTSP_URL"] = "rtsp://example2"
-os.environ["CAMERA2_LAT"] = "55.1"
-os.environ["CAMERA2_LON"] = "37.1"
-os.environ["CAMERA2_HEIGHT"] = "12"
-os.environ["CAMERA2_RATE"] = "10"
-os.environ["CAMERA2_PTZ_TYPE"] = "tms20"
-
-os.environ["HEIGHTS"] = "[5,10,15]"
-
-# теперь можно импортировать всё остальное
-import pytest  # noqa: E402
-from fastapi.testclient import TestClient  # noqa: E402
-from app.main import app  # noqa: E402
-from app.core.streaming import mjpeg # noqa: E402
-from app.core.camera import manager as cam_manager_module # noqa: E402
-from tests.dummies import DummyCamera # noqa: E402
-from tests.mocks import MockSocketConnection # noqa: E402
-from tests.fakes import fake_imencode # noqa: E402
+from app.models.base import Base
+from app.db.session import Session
+from app.models.ptz_types import PTZType
+from app.models.camera import Camera
+from app.models.camera_connection import CameraConnection
+from app.models.camera_location import CameraLocation
+from app.models.camera_ptz import CameraPTZ
+from app.main import create_app
 
 
 @pytest.fixture(scope="session")
-def app_instance():
-    return app
+def test_db():
+    """
+    Создаёт in-memory SQLite БД для тестов.
+    Используется во всей сессии тестирования.
+    """
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    
+    # Создаём все таблицы
+    Base.metadata.create_all(engine)
+    
+    # Инициализируем справочные данные (PTZ типы)
+    TestSession = sessionmaker(bind=engine)
+    db_session = TestSession()
+    
+    ptz_types = [
+        PTZType(type="onvif"),
+        PTZType(type="tms20"),
+    ]
+    db_session.add_all(ptz_types)
+    db_session.commit()
+    db_session.close()
+    
+    return engine
+
+
+@pytest.fixture(scope="session")
+def test_db_session_factory(test_db):
+    """Фабрика сессий для тестовой БД."""
+    return sessionmaker(bind=test_db)
 
 
 @pytest.fixture
-def client(app_instance):
-    return TestClient(app_instance)
+def db_session(test_db_session_factory):
+    """Сессия БД для одного теста с автоматическим откатом."""
+    session = test_db_session_factory()
+    yield session
+    session.rollback()
+    session.close()
+
+
+@pytest.fixture(scope="session")
+def app(test_db, test_db_session_factory):
+    """FastAPI приложение для тестов."""
+    app_instance = create_app()
+    return app_instance
+
+
+@pytest.fixture
+def client(app):
+    """HTTP клиент для тестирования API."""
+    return TestClient(app)
 
 
 @pytest.fixture
 def auth_header():
-    return {"Authorization": "Bearer test-token"}
-
-@pytest.fixture
-def dummy_camera():
-    return DummyCamera()
+    """Bearer токен для авторизации."""
+    token = os.getenv("APP_TOKEN", "test-token-123")
+    return {"Authorization": f"Bearer {token}"}
 
 
 @pytest.fixture
-def mock_socket_connection(monkeypatch):
-    conn = MockSocketConnection()
+def invalid_auth_header():
+    """Невалидный токен."""
+    return {"Authorization": "Bearer invalid-token"}
 
-    monkeypatch.setattr(
-        mjpeg,
-        "_default_connection_factory",
-        lambda: conn,
+
+# --- Camera Fixtures ---
+
+@pytest.fixture
+def camera_db_onvif(db_session):
+    """Создаёт ONVIF камеру в БД."""
+    ptz_type_obj = db_session.query(PTZType).filter_by(type="onvif").first()
+    
+    camera = Camera(
+        name="Test Camera ONVIF",
+        enabled=True,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
+    
+    connection = CameraConnection(
+        host="192.168.1.100",
+        port=8080,
+        rtsp_url="rtsp://192.168.1.100:554/stream1",
+        rtsp_url_ik="rtsp://192.168.1.100:554/stream2",
+        username="admin",
+        password="password123",
+    )
+    
+    location = CameraLocation(
+        lat=55.751244,
+        lon=37.618423,
+        height=15.5,
+        rate=0.0,
+    )
+    
+    ptz = CameraPTZ(
+        type_id=ptz_type_obj.id,
+    )
+    
+    camera.connection = connection
+    camera.location = location
+    camera.ptz = ptz
+    
+    db_session.add(camera)
+    db_session.commit()
+    
+    return camera
+
+
+@pytest.fixture
+def camera_db_tms20(db_session):
+    """Создаёт TMS-20 камеру в БД."""
+    ptz_type_obj = db_session.query(PTZType).filter_by(type="tms20").first()
+    
+    camera = Camera(
+        name="Test Camera TMS-20",
+        enabled=True,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
+    
+    connection = CameraConnection(
+        host="192.168.1.101",
+        port=1470,
+        rtsp_url="rtsp://192.168.1.101:554/stream1",
+        rtsp_url_ik="rtsp://192.168.1.101:554/stream2",
+        username="admin",
+        password="password123",
+    )
+    
+    location = CameraLocation(
+        lat=55.755814,
+        lon=37.617635,
+        height=12.0,
+        rate=10.0,
+    )
+    
+    ptz = CameraPTZ(
+        type_id=ptz_type_obj.id,
+    )
+    
+    camera.connection = connection
+    camera.location = location
+    camera.ptz = ptz
+    
+    db_session.add(camera)
+    db_session.commit()
+    
+    return camera
+
+
+@pytest.fixture
+def disabled_camera(db_session):
+    """Создаёт отключённую камеру."""
+    ptz_type_obj = db_session.query(PTZType).filter_by(type="onvif").first()
+    
+    camera = Camera(
+        name="Disabled Camera",
+        enabled=False,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
+    
+    connection = CameraConnection(
+        host="192.168.1.200",
+        port=8080,
+        rtsp_url="rtsp://192.168.1.200:554/stream1",
+        rtsp_url_ik="rtsp://192.168.1.200:554/stream2",
+        username="admin",
+        password="password123",
+    )
+    
+    location = CameraLocation(
+        lat=55.0,
+        lon=37.0,
+        height=10.0,
+        rate=0.0,
+    )
+    
+    ptz = CameraPTZ(
+        type_id=ptz_type_obj.id,
+    )
+    
+    camera.connection = connection
+    camera.location = location
+    camera.ptz = ptz
+    
+    db_session.add(camera)
+    db_session.commit()
+    
+    return camera
+
+
+@pytest.fixture
+def sample_camera_onvif_config():
+    """Конфиг ONVIF камеры."""
+    from app.config.settings import CameraConfig
+    return CameraConfig(
+        id=1,
+        name="Test Camera ONVIF",
+        host="192.168.1.100",
+        user="admin",
+        password="password123",
+        port=8080,
+        rtsp_url="rtsp://192.168.1.100:554/stream1",
+        lat=55.751244,
+        lon=37.618423,
+        height=15.5,
+        rate=0.0,
+        ptz_type="onvif",
     )
 
-    return conn
-
 
 @pytest.fixture
-def patched_camera_manager(monkeypatch, dummy_camera):
-    monkeypatch.setattr(
-        cam_manager_module.camera_manager,
-        "get_or_create",
-        lambda camera_id, conn: dummy_camera,
+def sample_camera_tms20_config():
+    """Конфиг TMS-20 камеры."""
+    from app.config.settings import CameraConfig
+    return CameraConfig(
+        id=2,
+        name="Test Camera TMS-20",
+        host="192.168.1.101",
+        user="admin",
+        password="password123",
+        port=1470,
+        rtsp_url="rtsp://192.168.1.101:554/stream1",
+        lat=55.755814,
+        lon=37.617635,
+        height=12.0,
+        rate=10.0,
+        ptz_type="tms20",
     )
-
-
-@pytest.fixture
-def patched_imencode(monkeypatch):
-    monkeypatch.setattr("cv2.imencode", fake_imencode)

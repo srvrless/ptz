@@ -338,3 +338,12 @@ __pycache__/
 
 .db
 db/
+
+.pytest_cache/
+.coverage
+htmlcov/
+*.pyc
+__pycache__/
+
+# test databases
+tests/*.db

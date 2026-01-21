@@ -141,4 +141,4 @@ class PTZService:
         # (если сделаем отдельную dataclass-модель статуса)
         
 
-ptz_service = PTZService()
+ptz_service_instance = PTZService()

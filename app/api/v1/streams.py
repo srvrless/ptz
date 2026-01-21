@@ -21,13 +21,6 @@ def select_camera(
     return {"selected_camera_id": camera_id}
 
 
-@router.get("/camera/selected")
-def get_selected_camera(
-    camera_service: CameraService = Depends(get_camera_service),
-):
-    return {"selected_camera_id": camera_service.get_selected_camera_id()}
-
-
 @router.post("/camera/stop")
 def stop_selected_camera(
     camera_service: CameraService = Depends(get_camera_service),

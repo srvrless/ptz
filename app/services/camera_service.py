@@ -66,8 +66,8 @@ class CameraService:
             return CameraResponse.from_camera(camera)
         
 
-    def get_camera_config(self, camera_id: int):
-        cam_cfg = config.cameras.get(camera_id)
+    def get_camera_config(self, camera_id: str | int):
+        cam_cfg = config.cameras.get(int(camera_id))
         if not cam_cfg:
             logger.warning(f"Camera not found: {camera_id}")
             raise CameraNotFoundError(f"Camera not found: {camera_id}")
@@ -159,4 +159,4 @@ class CameraService:
         self._worker_thread = None
 
 
-camera_service = CameraService()
+camera_service_instance = CameraService()
