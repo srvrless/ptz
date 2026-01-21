@@ -1,8 +1,8 @@
-from .camera_service import camera_service, CameraService, CameraNotFoundError
-from .ptz_service import ptz_service, PTZService, PTZControllerNotFoundError, PTZMoveError
+from .camera_service import camera_service_instance, CameraService, CameraNotFoundError
+from .ptz_service import ptz_service_instance, PTZService, PTZControllerNotFoundError, PTZMoveError
 
 __all__ = [
-    "camera_service",
+    "camera_service_instance",
     "CameraService",
     "CameraNotFoundError",
     "ptz_service",

@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from app.config.settings import config
-from app.services import camera_service, ptz_service
+from app.services import camera_service_instance, ptz_service_instance
 from app.services import CameraService, PTZService
 
 security = HTTPBearer()
@@ -25,10 +25,10 @@ def get_token(
 
 def get_camera_service() -> CameraService:
     # Можно вернуть singleton, как сейчас
-    return camera_service
+    return camera_service_instance
 
 
 def get_ptz_service() -> PTZService:
-    return ptz_service
+    return ptz_service_instance
 
 UOWDep = Annotated[InterfaceUnitOfWork, Depends(UnitOfWork)]
