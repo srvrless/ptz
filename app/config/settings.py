@@ -6,6 +6,8 @@ from typing import Dict, Optional
 from pydantic import BaseModel, Field, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from app.schemas.camera import CameraResponse
+
 
 # ---------- Модель камеры ----------
 
@@ -34,6 +36,22 @@ class CameraConfig(BaseModel):
     def is_tms20(self) -> bool:
         return self.ptz_type.lower() == "tms20"
 
+    @classmethod
+    def from_db_model(cls, camera) -> CameraConfig:
+        return cls(
+            id=camera.id,
+            name=camera.name,
+            host=camera.connection.host,
+            user=camera.connection.username,
+            password=camera.connection.password,
+            port=camera.connection.port,
+            rtsp_url=camera.connection.rtsp_url,
+            lat=camera.location.lat,
+            lon=camera.location.lon,
+            height=camera.location.height,
+            rate=camera.location.rate,
+            ptz_type=camera.ptz.ptz_type.type,
+        )
 
 # ---------- Основной конфиг приложения ----------
 
@@ -73,12 +91,11 @@ class AppConfig(BaseSettings):
     )
 
 
-def _load_cameras_from_db() -> Dict[int, CameraConfig]:
+def _load_cameras_from_db() -> list:
     """
     Загружает все включённые камеры из БД.
     Преобразует SQLAlchemy модели в Pydantic CameraConfig.
     """
-    from app.db.base import engine
     from app.db.session import Session
     from app.repositories.camera_repository import CameraRepository
     
@@ -149,7 +166,7 @@ def _load_cameras_from_settings(cfg: AppConfig) -> Dict[int, CameraConfig]:
     return cameras
 
 
-@lru_cache
+@lru_cache 
 def get_config() -> AppConfig:
     from logger.setup_logger import get_logger
     logger = get_logger("settings")
@@ -159,22 +176,26 @@ def get_config() -> AppConfig:
     # Сначала пробуем загрузить из БД
     cameras_from_db = _load_cameras_from_db()
     
-    # if cameras_from_db:
-    #     cfg.cameras: Dict[int, CameraConfig] = cameras_from_db
-    #     logger.info(f"Loaded {len(cameras_from_db)} cameras from database")
-    # else:
-    # Fallback на .env, если БД пуста
-    cameras_from_env = _load_cameras_from_settings(cfg)
-    cfg.cameras: Dict[int, CameraConfig] = cameras_from_env
-    if cameras_from_env:
-        logger.warning(f"Loaded {len(cameras_from_env)} cameras from .env (database is empty)")
+    if cameras_from_db:
+        # Конвертируем SQLAlchemy модели в CameraConfig через classmethod
+        cameras_dict = {
+            camera.id: CameraConfig.from_db_model(camera) 
+            for camera in cameras_from_db
+        }
+        cfg.cameras = cameras_dict
+        logger.info(f"Loaded {len(cameras_dict)} cameras from database")
     else:
-        logger.warning("No cameras loaded from database or .env")
-    
-    # Отладочный вывод
-    logger.info(f"Total cameras loaded: {len(cfg.cameras)}")
+        # Fallback на .env, если БД пуста
+        cameras_from_env = _load_cameras_from_settings(cfg)
+        cfg.cameras = cameras_from_env
+        if cameras_from_env:
+            logger.warning(f"Loaded {len(cameras_from_env)} cameras from .env (database is empty)")
+        else:
+            logger.warning("No cameras loaded from database or .env")
+        
+        logger.info(f"Total cameras loaded: {len(cfg.cameras)}")
     print(cfg.cameras)
-    return cfg
+    return cfg 
 
 
 config = get_config()
