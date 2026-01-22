@@ -59,10 +59,12 @@ def azimuth_from_latlon(
     dlon = lon2 - lon1
 
     x = math.sin(dlon) * math.cos(lat2)
-    y = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon)
+    y = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(
+        dlon
+    )
 
     brng = math.degrees(math.atan2(x, y))  # в диапазоне (-180, 180]
-    brng = normalize_deg(brng)             # -> [0, 360)
+    brng = normalize_deg(brng)  # -> [0, 360)
 
     # учитываем угол установки камеры (rate)
     return normalize_deg(brng + cam_rate_deg)

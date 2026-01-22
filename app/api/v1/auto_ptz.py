@@ -1,8 +1,7 @@
-from app.schemas.auto_ptz import TrackRequest
 from fastapi import APIRouter
-from pydantic import BaseModel
 
 from app.core.tracking.auto_ptz_manager import auto_ptz_manager
+from app.schemas.auto_ptz import TrackRequest
 
 router = APIRouter(prefix="/api", tags=["auto-ptz"])
 

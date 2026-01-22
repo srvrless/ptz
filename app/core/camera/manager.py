@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import threading
-from typing import Dict, Optional
 import time
+from typing import Dict, Optional
 
 import cv2
 
-from logger.setup_logger import get_logger  # используем твой логгер
 from app.core.camera.models import CameraConnection
+from logger.setup_logger import get_logger  # используем твой логгер
 
 logger = get_logger("camera_manager")
 
@@ -51,13 +51,15 @@ class Camera:
                     f"Поток камеры {self._conn.url} закрыт, попытка реконнекта ({reconnect_attempts + 1})"
                 )
                 # Экспоненциальный бэк-офф: 0.5s, 1s, 2s, 4s, 8s
-                delay = min(0.5 * (2 ** reconnect_attempts), 8.0)
+                delay = min(0.5 * (2**reconnect_attempts), 8.0)
                 time.sleep(delay)
                 self._cap.release()
                 self._cap = cv2.VideoCapture(self._conn.url)
                 reconnect_attempts += 1
                 if reconnect_attempts > 5:
-                    logger.error(f"Не удалось переподключиться к камере {self._conn.url}")
+                    logger.error(
+                        f"Не удалось переподключиться к камере {self._conn.url}"
+                    )
                     break
                 continue
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import is_dataclass, asdict
+from dataclasses import asdict, is_dataclass
 from typing import Any, Dict
 
 from pydantic import BaseModel
@@ -28,4 +28,6 @@ def serialize_camera_config(cfg: CameraConfig) -> Dict[str, Any]:
 
 
 def serialize_cameras(cameras: Dict[str, CameraConfig]) -> Dict[str, Dict[str, Any]]:
-    return {camera_id: serialize_camera_config(cfg) for camera_id, cfg in cameras.items()}
+    return {
+        camera_id: serialize_camera_config(cfg) for camera_id, cfg in cameras.items()
+    }

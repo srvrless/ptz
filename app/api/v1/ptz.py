@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from app.api.v1.dependencies import get_token, get_ptz_service
-from app.schemas.ptz import MoveRequest, ContinuousMoveRequest, ZoomRequest
+from app.api.v1.dependencies import get_ptz_service
+from app.schemas.ptz import ContinuousMoveRequest, MoveRequest, ZoomRequest
 from app.services import PTZService
 
 router = APIRouter(prefix="/api", tags=["ptz"])
@@ -9,11 +9,12 @@ router = APIRouter(prefix="/api", tags=["ptz"])
 
 # ---------- MOVE ----------
 
+
 @router.post("/ptz/{camera_id}/move/")
 def ptz_move(
     camera_id: str,
     body: MoveRequest,
-    #_token: str = Depends(get_token),
+    # _token: str = Depends(get_token),
     ptz_service: PTZService = Depends(get_ptz_service),
 ):
     """
@@ -44,11 +45,12 @@ def ptz_move(
 
 # ---------- CONTINUOUS MOVE ----------
 
+
 @router.post("/ptz/{camera_id}/continuous_move/")
 def ptz_continuous_move(
     camera_id: str,
     body: ContinuousMoveRequest,
-    #_token: str = Depends(get_token),
+    # _token: str = Depends(get_token),
     ptz_service: PTZService = Depends(get_ptz_service),
 ):
     """
@@ -75,10 +77,11 @@ def ptz_continuous_move(
 
 # ---------- STOP ----------
 
+
 @router.post("/ptz/{camera_id}/stop/")
 def ptz_stop(
     camera_id: str,
-    #_token: str = Depends(get_token),
+    # _token: str = Depends(get_token),
     ptz_service: PTZService = Depends(get_ptz_service),
 ):
     """
@@ -93,11 +96,12 @@ def ptz_stop(
 
 # ---------- ZOOM ----------
 
+
 @router.post("/ptz/{camera_id}/zoom/")
 def ptz_zoom(
     camera_id: str,
     body: ZoomRequest,
-    #_token: str = Depends(get_token),
+    # _token: str = Depends(get_token),
     ptz_service: PTZService = Depends(get_ptz_service),
 ):
     """

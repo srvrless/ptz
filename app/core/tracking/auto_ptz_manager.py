@@ -11,6 +11,7 @@ class AutoPTZManager:
     Хранит AutoPTZTracker по camera_id, чтобы один и тот же трекер
     использовался и стримом, и API.
     """
+
     def __init__(self) -> None:
         self._trackers: Dict[str, AutoPTZTracker] = {}
         self._lock = Lock()
@@ -37,4 +38,3 @@ class AutoPTZManager:
 
 
 auto_ptz_manager = AutoPTZManager()
-

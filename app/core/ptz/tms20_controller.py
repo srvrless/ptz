@@ -3,11 +3,12 @@ from __future__ import annotations
 import time
 from typing import Optional
 
-from logger.setup_logger import get_logger
-
 from app.core.ptz.base import BasePTZController
 from app.utils.geo import normalize_relative
-from TCP_COMP import Tms20TCP  # файл TCP_COMP.py лежит в корне проекта :contentReference[oaicite:0]{index=0}
+from logger.setup_logger import get_logger
+from TCP_COMP import (
+    Tms20TCP,
+)  # файл TCP_COMP.py лежит в корне проекта :contentReference[oaicite:0]{index=0}
 
 logger = get_logger("tms20_controller")
 
@@ -29,7 +30,9 @@ class Tms20PTZController(BasePTZController):
         pt_addr: int = 0x04,
         cam_addr: int = 0x01,
     ):
-        super().__init__(cam_lat=cam_lat, cam_lon=cam_lon, cam_h=cam_h, cam_rate=cam_rate)
+        super().__init__(
+            cam_lat=cam_lat, cam_lon=cam_lon, cam_h=cam_h, cam_rate=cam_rate
+        )
 
         self.host = host
         self.port = port
@@ -66,6 +69,7 @@ class Tms20PTZController(BasePTZController):
         """
         x, y в [-1, 1] → скорость 0..63 по протоколу.
         """
+
         def speed(v: float) -> int:
             return max(0, min(63, int(abs(v) * 63)))
 

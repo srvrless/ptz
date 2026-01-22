@@ -1,10 +1,11 @@
-from enum import Enum
-from pydantic import BaseModel, ConfigDict
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class ConnectionResponse(BaseModel):
     """DTO для данных подключения камеры"""
+
     rtsp_url: str
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
@@ -12,6 +13,7 @@ class ConnectionResponse(BaseModel):
 
 class LocationResponse(BaseModel):
     """DTO для геолокации камеры"""
+
     lat: float
     lon: float
     model_config = ConfigDict(from_attributes=True)
@@ -19,6 +21,7 @@ class LocationResponse(BaseModel):
 
 class CameraResponse(BaseModel):
     """DTO для ответа по камере"""
+
     id: int
     name: str
     connection: Optional[ConnectionResponse] = None
@@ -27,12 +30,13 @@ class CameraResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     @classmethod
-    def from_camera(cls, camera) -> 'CameraResponse':
+    def from_camera(cls, camera) -> "CameraResponse":
         """
         Создаёт DTO из SQLAlchemy модели Camera.
         Должна вызываться ВНУТРИ активной сессии.
         """
         return cls.model_validate(camera)
+
 
 class CreateCamera(BaseModel):
     name: str
@@ -74,7 +78,7 @@ class CreateCameraResponse(CreateCamera):
     id: int
 
     @classmethod
-    def from_camera(cls, camera) -> 'CreateCameraResponse':
+    def from_camera(cls, camera) -> "CreateCameraResponse":
         """
         Создаёт DTO из SQLAlchemy модели Camera.
         Должна вызываться ВНУТРИ активной сессии.
@@ -95,6 +99,7 @@ class CreateCameraResponse(CreateCamera):
             ptz_type=camera.ptz.ptz_type.type,
             enabled=camera.enabled,
         )
+
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -111,18 +116,19 @@ class UpdateCamera(BaseModel):
     height: float | None
     rate: float | None
     ptz_type: str | None
-    enabled: bool | None  = True
+    enabled: bool | None = True
 
     def dict_for_repo(self) -> dict:
         """Возвращает только не-None параметры для передачи в репозиторий"""
         return self.model_dump(exclude_none=True)
+
 
 class UpdateCameraResponse(UpdateCamera):
     id: int
     model_config = ConfigDict(from_attributes=True)
 
     @classmethod
-    def from_camera(cls, camera) -> 'UpdateCameraResponse':
+    def from_camera(cls, camera) -> "UpdateCameraResponse":
         """
         Создаёт DTO из SQLAlchemy модели Camera.
         Должна вызываться ВНУТРИ активной сессии.

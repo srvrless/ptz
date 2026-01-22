@@ -23,4 +23,6 @@ class ContinuousMoveRequest(BaseModel):
 
 
 class ZoomRequest(BaseModel):
-    zoom: float = Field(..., ge=-1, le=1, description="Изменение зума (может быть отрицательным)")
+    zoom: float = Field(
+        ..., ge=-1, le=1, description="Изменение зума (может быть отрицательным)"
+    )

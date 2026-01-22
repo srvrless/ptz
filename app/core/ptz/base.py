@@ -31,16 +31,13 @@ class BasePTZController(ABC):
         """
 
     @abstractmethod
-    def continuous_move(self, x: float, y: float, zoom: float = 0.0) -> None:
-        ...
+    def continuous_move(self, x: float, y: float, zoom: float = 0.0) -> None: ...
 
     @abstractmethod
-    def stop(self, pan_tilt: bool = True, zoom: bool = True) -> None:
-        ...
+    def stop(self, pan_tilt: bool = True, zoom: bool = True) -> None: ...
 
     @abstractmethod
-    def set_zoom(self, delta: float) -> None:
-        ...
+    def set_zoom(self, delta: float) -> None: ...
 
     @abstractmethod
     def get_azimut(self) -> Optional[float]:
@@ -65,7 +62,9 @@ class BasePTZController(ABC):
         if self.cam_latlon is None or self.cam_h is None:
             return None
 
-        target_az = azimuth_from_latlon(self.cam_latlon, (target_lat, target_lon), self.cam_rate)
+        target_az = azimuth_from_latlon(
+            self.cam_latlon, (target_lat, target_lon), self.cam_rate
+        )
         target_el = elevation_from_latlon(
             self.cam_latlon,
             self.cam_h,

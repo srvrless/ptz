@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import asdict
 from typing import Any, Dict, Optional
 
-from logger.setup_logger import get_logger
-
 from app.config.settings import config
-from app.core.ptz.manager import ptz_camera_manager
 from app.core.ptz.controller import PTZController
+from app.core.ptz.manager import ptz_camera_manager
+from logger.setup_logger import get_logger
 
 logger = get_logger("ptz_service")
 
@@ -33,7 +31,9 @@ class PTZService:
         controller = ptz_camera_manager.get_controller(camera_id)
         if controller is None:
             logger.warning(f"PTZController not found for camera {camera_id}")
-            raise PTZControllerNotFoundError(f"PTZController not found for camera {camera_id}")
+            raise PTZControllerNotFoundError(
+                f"PTZController not found for camera {camera_id}"
+            )
         return controller
 
     def _get_radar_height(self, radar_id: int) -> float:
@@ -139,6 +139,6 @@ class PTZService:
         # при желании можно вернуть ещё и "сырые" данные:
         # return {"azimut": azimut, "raw": asdict(...)}
         # (если сделаем отдельную dataclass-модель статуса)
-        
+
 
 ptz_service_instance = PTZService()

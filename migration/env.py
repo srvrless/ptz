@@ -1,19 +1,12 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 # Импортируем Base из models, а не из db.base
 from app.models.base import Base
 
 # ВАЖНО: импортируем все модели, чтобы они зарегистрировались в Base.metadata
-from app.models.camera import Camera
-from app.models.camera_connection import CameraConnection
-from app.models.camera_location import CameraLocation
-from app.models.camera_ptz import CameraPTZ
-from app.models.ptz_types import PTZType
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -72,9 +65,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

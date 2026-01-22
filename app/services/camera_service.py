@@ -1,16 +1,21 @@
 from __future__ import annotations
 
-from typing import Generator, Optional, List
 from threading import Event, Lock, Thread
-
-from app.db.session import Session
-from app.schemas.camera import CameraResponse, CreateCamera, CreateCameraResponse, UpdateCamera, UpdateCameraResponse
-from app.utils.uow import InterfaceUnitOfWork
-from logger.setup_logger import get_logger
+from typing import Generator, List, Optional
 
 from app.config.settings import config
-from app.core.camera.manager import camera_manager, CameraConnection
+from app.core.camera.manager import CameraConnection, camera_manager
 from app.core.streaming.mjpeg import generate_mjpeg, run_detection_sender
+from app.db.session import Session
+from app.schemas.camera import (
+    CameraResponse,
+    CreateCamera,
+    CreateCameraResponse,
+    UpdateCamera,
+    UpdateCameraResponse,
+)
+from app.utils.uow import InterfaceUnitOfWork
+from logger.setup_logger import get_logger
 
 logger = get_logger("camera_service")
 
@@ -44,18 +49,18 @@ class CameraService:
         self, uow: InterfaceUnitOfWork, camera_id: int, camera_data: UpdateCamera
     ) -> UpdateCameraResponse:
         with uow:
-            camera_obj = uow.camera.update_camera(camera_id, **camera_data.dict_for_repo())
+            camera_obj = uow.camera.update_camera(
+                camera_id, **camera_data.dict_for_repo()
+            )
             if camera_obj is None:
                 return None
             return UpdateCameraResponse.from_camera(camera_obj)
 
-    def soft_delete_camera(
-        self, uow: InterfaceUnitOfWork, camera_id: int
-    ) -> bool:
+    def soft_delete_camera(self, uow: InterfaceUnitOfWork, camera_id: int) -> bool:
         with uow:
             camera = uow.camera.delete_camera(camera_id)
             return camera
-        
+
     def get_camera_by_id(
         self, uow: InterfaceUnitOfWork, camera_id: int
     ) -> Optional[CameraResponse]:
@@ -64,7 +69,6 @@ class CameraService:
             if camera is None:
                 return None
             return CameraResponse.from_camera(camera)
-        
 
     def get_camera_config(self, camera_id: str | int):
         cam_cfg = config.cameras.get(int(camera_id))

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Optional
 from datetime import datetime
+from typing import Optional
 
-from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
+from sqlalchemy.orm import Session, joinedload
 
 from app.models.camera import Camera
 from app.models.camera_connection import CameraConnection
@@ -36,7 +36,7 @@ class CameraRepository:
 
     def get_all_cameras(self, enabled_only: bool = True) -> list:
         query = self._eager_load_query()
-        
+
         if enabled_only:
             query = query.where(Camera.enabled)
         return self.session.scalars(query).all()
@@ -51,12 +51,11 @@ class CameraRepository:
         else:
             query = self._eager_load_query().where(Camera.id == camera_db_id)
             camera = self.session.scalar(query)
-        
+
         if not camera or not camera.enabled:
             return None
-        
-        return camera
 
+        return camera
 
     def create_camera(
         self,
@@ -76,7 +75,7 @@ class CameraRepository:
     ) -> Camera:
         """
         Создать новую камеру в БД.
-        
+
         Returns:
             Camera: SQLAlchemy модель созданной камеры
         """
@@ -85,7 +84,9 @@ class CameraRepository:
             select(PTZType).where(PTZType.type == ptz_type.lower())
         )
         if not ptz_type_obj:
-            raise ValueError(f"PTZ type '{ptz_type}' not found. Available types: onvif, tms20")
+            raise ValueError(
+                f"PTZ type '{ptz_type}' not found. Available types: onvif, tms20"
+            )
 
         # Создаём камеру
         camera = Camera(
@@ -144,19 +145,17 @@ class CameraRepository:
     ) -> Optional[Camera]:
         """
         Обновить данные камеры.
-        
+
         Returns:
             Camera или None, если камера не найдена
         """
         try:
             camera_db_id = int(str(camera_id).replace("camera", ""))
         except ValueError:
-            camera = self.session.scalar(
-                select(Camera).where(Camera.name == camera_id)
-            )
+            camera = self.session.scalar(select(Camera).where(Camera.name == camera_id))
         else:
             camera = self.session.get(Camera, camera_db_id)
-        
+
         if not camera:
             return None
 
@@ -206,7 +205,9 @@ class CameraRepository:
                 camera.location.rate = rate
         else:
             # Если location нет, создаём его
-            if any([lat is not None, lon is not None, height is not None, rate is not None]):
+            if any(
+                [lat is not None, lon is not None, height is not None, rate is not None]
+            ):
                 camera.location = CameraLocation(
                     camera_id=camera.id,
                     lat=lat or 0.0,
@@ -222,7 +223,7 @@ class CameraRepository:
             )
             if not ptz_type_obj:
                 raise ValueError(f"PTZ type '{ptz_type}' not found")
-            
+
             if camera.ptz:
                 camera.ptz.type_id = ptz_type_obj.id
             else:
@@ -233,29 +234,27 @@ class CameraRepository:
 
         self.session.commit()
         logger.info(f"Updated camera {camera.id}")
-        
+
         return camera
 
     def delete_camera(self, camera_id: str, soft_delete: bool = True) -> bool:
         """
         Удалить камеру.
-        
+
         Args:
             camera_id: ID камеры
             soft_delete: Если True, просто отключает камеру (enabled=False), иначе удаляет физически
-            
+
         Returns:
             True, если камера удалена, False если не найдена
         """
         try:
             camera_db_id = int(str(camera_id).replace("camera", ""))
         except ValueError:
-            camera = self.session.scalar(
-                select(Camera).where(Camera.name == camera_id)
-            )
+            camera = self.session.scalar(select(Camera).where(Camera.name == camera_id))
         else:
             camera = self.session.get(Camera, camera_db_id)
-        
+
         if not camera:
             return False
 
@@ -266,6 +265,6 @@ class CameraRepository:
         else:
             self.session.delete(camera)
             logger.info(f"Hard deleted camera {camera.id}")
-        
+
         self.session.commit()
         return True

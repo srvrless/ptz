@@ -1,12 +1,12 @@
 import os
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session as SQLSession
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 # Добавляем корень проекта в sys.path
@@ -25,14 +25,13 @@ os.environ["HOST_RECV_SERVER"] = "127.0.0.1"
 os.environ["PORT_RECV_SERVER"] = "51242"
 os.environ["CAMERAS"] = ""  # Пусто, так как будем загружать из БД
 
+from app.main import create_app
 from app.models.base import Base
-from app.db.session import Session
-from app.models.ptz_types import PTZType
 from app.models.camera import Camera
 from app.models.camera_connection import CameraConnection
 from app.models.camera_location import CameraLocation
 from app.models.camera_ptz import CameraPTZ
-from app.main import create_app
+from app.models.ptz_types import PTZType
 
 
 @pytest.fixture(scope="session")
@@ -46,14 +45,14 @@ def test_db():
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    
+
     # Создаём все таблицы
     Base.metadata.create_all(engine)
-    
+
     # Инициализируем справочные данные (PTZ типы)
     TestSession = sessionmaker(bind=engine)
     db_session = TestSession()
-    
+
     ptz_types = [
         PTZType(type="onvif"),
         PTZType(type="tms20"),
@@ -61,7 +60,7 @@ def test_db():
     db_session.add_all(ptz_types)
     db_session.commit()
     db_session.close()
-    
+
     return engine
 
 
@@ -108,18 +107,19 @@ def invalid_auth_header():
 
 # --- Camera Fixtures ---
 
+
 @pytest.fixture
 def camera_db_onvif(db_session):
     """Создаёт ONVIF камеру в БД."""
     ptz_type_obj = db_session.query(PTZType).filter_by(type="onvif").first()
-    
+
     camera = Camera(
         name="Test Camera ONVIF",
         enabled=True,
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow(),
     )
-    
+
     connection = CameraConnection(
         host="192.168.1.100",
         port=8080,
@@ -128,25 +128,25 @@ def camera_db_onvif(db_session):
         username="admin",
         password="password123",
     )
-    
+
     location = CameraLocation(
         lat=55.751244,
         lon=37.618423,
         height=15.5,
         rate=0.0,
     )
-    
+
     ptz = CameraPTZ(
         type_id=ptz_type_obj.id,
     )
-    
+
     camera.connection = connection
     camera.location = location
     camera.ptz = ptz
-    
+
     db_session.add(camera)
     db_session.commit()
-    
+
     return camera
 
 
@@ -154,14 +154,14 @@ def camera_db_onvif(db_session):
 def camera_db_tms20(db_session):
     """Создаёт TMS-20 камеру в БД."""
     ptz_type_obj = db_session.query(PTZType).filter_by(type="tms20").first()
-    
+
     camera = Camera(
         name="Test Camera TMS-20",
         enabled=True,
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow(),
     )
-    
+
     connection = CameraConnection(
         host="192.168.1.101",
         port=1470,
@@ -170,25 +170,25 @@ def camera_db_tms20(db_session):
         username="admin",
         password="password123",
     )
-    
+
     location = CameraLocation(
         lat=55.755814,
         lon=37.617635,
         height=12.0,
         rate=10.0,
     )
-    
+
     ptz = CameraPTZ(
         type_id=ptz_type_obj.id,
     )
-    
+
     camera.connection = connection
     camera.location = location
     camera.ptz = ptz
-    
+
     db_session.add(camera)
     db_session.commit()
-    
+
     return camera
 
 
@@ -196,14 +196,14 @@ def camera_db_tms20(db_session):
 def disabled_camera(db_session):
     """Создаёт отключённую камеру."""
     ptz_type_obj = db_session.query(PTZType).filter_by(type="onvif").first()
-    
+
     camera = Camera(
         name="Disabled Camera",
         enabled=False,
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow(),
     )
-    
+
     connection = CameraConnection(
         host="192.168.1.200",
         port=8080,
@@ -212,25 +212,25 @@ def disabled_camera(db_session):
         username="admin",
         password="password123",
     )
-    
+
     location = CameraLocation(
         lat=55.0,
         lon=37.0,
         height=10.0,
         rate=0.0,
     )
-    
+
     ptz = CameraPTZ(
         type_id=ptz_type_obj.id,
     )
-    
+
     camera.connection = connection
     camera.location = location
     camera.ptz = ptz
-    
+
     db_session.add(camera)
     db_session.commit()
-    
+
     return camera
 
 
@@ -238,6 +238,7 @@ def disabled_camera(db_session):
 def sample_camera_onvif_config():
     """Конфиг ONVIF камеры."""
     from app.config.settings import CameraConfig
+
     return CameraConfig(
         id=1,
         name="Test Camera ONVIF",
@@ -258,6 +259,7 @@ def sample_camera_onvif_config():
 def sample_camera_tms20_config():
     """Конфиг TMS-20 камеры."""
     from app.config.settings import CameraConfig
+
     return CameraConfig(
         id=2,
         name="Test Camera TMS-20",

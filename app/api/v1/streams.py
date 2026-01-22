@@ -17,7 +17,9 @@ def select_camera(
     Фронт сообщает выбранную камеру.
     Бэк запоминает выбор и запускает фоновую обработку RTSP (детект/трек + сокеты).
     """
-    camera_service.select_camera(camera_id, enable_detection=True, enable_auto_tracking=True)
+    camera_service.select_camera(
+        camera_id, enable_detection=True, enable_auto_tracking=True
+    )
     return {"selected_camera_id": camera_id}
 
 

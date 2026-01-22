@@ -1,5 +1,5 @@
-from contextlib import contextmanager
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker
+
 from .base import engine
 
 Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)

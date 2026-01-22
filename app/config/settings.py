@@ -6,10 +6,8 @@ from typing import Dict, Optional
 from pydantic import BaseModel, Field, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from app.schemas.camera import CameraResponse
-
-
 # ---------- Модель камеры ----------
+
 
 class CameraConfig(BaseModel):
     id: int = Field(..., description="ID камеры (число)")
@@ -53,7 +51,9 @@ class CameraConfig(BaseModel):
             ptz_type=camera.ptz.ptz_type.type,
         )
 
+
 # ---------- Основной конфиг приложения ----------
+
 
 class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(
@@ -80,7 +80,7 @@ class AppConfig(BaseSettings):
     detector_conf: float = Field(0.3, ge=0, le=1)
     detector_device: Optional[str] = None  # cpu / cuda / xpu — если нужно форсить
     # STREAMING
-    
+
     HOST_RECV_SERVER: str = "127.0.0.1"
     PORT_RECV_SERVER: int = 51242
 
@@ -98,7 +98,7 @@ def _load_cameras_from_db() -> list:
     """
     from app.db.session import Session
     from app.repositories.camera_repository import CameraRepository
-    
+
     try:
         db_session = Session()
         repo = CameraRepository(db_session)
@@ -107,6 +107,7 @@ def _load_cameras_from_db() -> list:
         return cameras
     except Exception as exc:
         from logger.setup_logger import get_logger
+
         logger = get_logger("settings")
         logger.error(f"Failed to load cameras from database: {exc}")
         # Возвращаем пусто, чтобы приложение могло стартануть
@@ -146,7 +147,7 @@ def _load_cameras_from_settings(cfg: AppConfig) -> Dict[int, CameraConfig]:
             ptz_type = getattr(cfg, f"camera{cam_num}_ptz_type", "onvif")
 
             cam_cfg = CameraConfig(
-                id=cam_id_int, 
+                id=cam_id_int,
                 host=str(host),
                 user=str(user),
                 password=str(password),
@@ -166,21 +167,21 @@ def _load_cameras_from_settings(cfg: AppConfig) -> Dict[int, CameraConfig]:
     return cameras
 
 
-@lru_cache 
+@lru_cache
 def get_config() -> AppConfig:
     from logger.setup_logger import get_logger
+
     logger = get_logger("settings")
-    
+
     cfg = AppConfig()
-    
+
     # Сначала пробуем загрузить из БД
     cameras_from_db = _load_cameras_from_db()
-    
+
     if cameras_from_db:
         # Конвертируем SQLAlchemy модели в CameraConfig через classmethod
         cameras_dict = {
-            camera.id: CameraConfig.from_db_model(camera) 
-            for camera in cameras_from_db
+            camera.id: CameraConfig.from_db_model(camera) for camera in cameras_from_db
         }
         cfg.cameras = cameras_dict
         logger.info(f"Loaded {len(cameras_dict)} cameras from database")
@@ -189,13 +190,15 @@ def get_config() -> AppConfig:
         cameras_from_env = _load_cameras_from_settings(cfg)
         cfg.cameras = cameras_from_env
         if cameras_from_env:
-            logger.warning(f"Loaded {len(cameras_from_env)} cameras from .env (database is empty)")
+            logger.warning(
+                f"Loaded {len(cameras_from_env)} cameras from .env (database is empty)"
+            )
         else:
             logger.warning("No cameras loaded from database or .env")
-        
+
         logger.info(f"Total cameras loaded: {len(cfg.cameras)}")
     print(cfg.cameras)
-    return cfg 
+    return cfg
 
 
 config = get_config()
