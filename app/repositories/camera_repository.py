@@ -122,7 +122,6 @@ class CameraRepository:
             type_id=ptz_type_obj.id,
         )
 
-        self.session.commit()
         logger.info(f"Created camera {camera.id} ({name})")
         return camera
 
@@ -232,7 +231,6 @@ class CameraRepository:
                     type_id=ptz_type_obj.id,
                 )
 
-        self.session.commit()
         logger.info(f"Updated camera {camera.id}")
 
         return camera
@@ -266,5 +264,4 @@ class CameraRepository:
             self.session.delete(camera)
             logger.info(f"Hard deleted camera {camera.id}")
 
-        self.session.commit()
         return True

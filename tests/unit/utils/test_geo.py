@@ -50,7 +50,7 @@ class TestGeoUtilities:
         cam = (55.0, 37.0)
         target = (56.0, 37.0)
 
-        az = azimuth_from_latlon(cam, target, cam_rate_deg=0.0)
+        az = azimuth_from_latlon(cam, target)
         assert az == pytest.approx(0.0, abs=1.0)
 
     def test_azimuth_east(self):
@@ -58,7 +58,7 @@ class TestGeoUtilities:
         cam = (55.0, 37.0)
         target = (55.0, 38.0)
 
-        az = azimuth_from_latlon(cam, target, cam_rate_deg=0.0)
+        az = azimuth_from_latlon(cam, target)
         assert az == pytest.approx(90.0, abs=1.0)
 
     def test_elevation_positive(self):
