@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional
 import math
 import statistics
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple
 
 from app.core.detection.yolo_detector import Detection
 
@@ -15,8 +15,8 @@ class _Track:
     disappeared: int = 0
 
     # стабильность трека
-    hits: int = 0          # сколько раз подряд/всего успешно сматчился
-    age: int = 0           # сколько кадров живёт
+    hits: int = 0  # сколько раз подряд/всего успешно сматчился
+    age: int = 0  # сколько кадров живёт
 
     # простая модель движения (constant velocity)
     vx: float = 0.0
@@ -37,11 +37,11 @@ class CentroidTracker:
         self,
         max_distance: float = 80.0,
         max_disappeared: int = 20,
-        iou_weight: float = 0.6,     # 0..1: чем больше, тем важнее IoU
-        min_iou: float = 0.05,       # отсечка (очень мягкая)
-        max_cost: float = 1.2,       # отсечка по суммарной "плохости" пары
-        vel_smooth: float = 0.7,     # сглаживание скорости (0..1)
-        cam_smooth: float = 0.8,     # сглаживание компенсации камеры (0..1)
+        iou_weight: float = 0.6,  # 0..1: чем больше, тем важнее IoU
+        min_iou: float = 0.05,  # отсечка (очень мягкая)
+        max_cost: float = 1.2,  # отсечка по суммарной "плохости" пары
+        vel_smooth: float = 0.7,  # сглаживание скорости (0..1)
+        cam_smooth: float = 0.8,  # сглаживание компенсации камеры (0..1)
     ) -> None:
         self._next_id: int = 1
         self._max_distance = float(max_distance)
@@ -65,9 +65,16 @@ class CentroidTracker:
         return ((x1 + x2) / 2.0, (y1 + y2) / 2.0)
 
     @staticmethod
-    def _shift_bbox(bbox: Tuple[int, int, int, int], dx: float, dy: float) -> Tuple[int, int, int, int]:
+    def _shift_bbox(
+        bbox: Tuple[int, int, int, int], dx: float, dy: float
+    ) -> Tuple[int, int, int, int]:
         x1, y1, x2, y2 = bbox
-        return (int(round(x1 + dx)), int(round(y1 + dy)), int(round(x2 + dx)), int(round(y2 + dy)))
+        return (
+            int(round(x1 + dx)),
+            int(round(y1 + dy)),
+            int(round(x2 + dx)),
+            int(round(y2 + dy)),
+        )
 
     @staticmethod
     def _iou(a: Tuple[int, int, int, int], b: Tuple[int, int, int, int]) -> float:
@@ -144,7 +151,9 @@ class CentroidTracker:
             pred_centroids.append(pc)
 
         # 4) строим список всех пар (track, det) с cost = w*(1-iou) + (1-w)*norm_dist
-        pairs: List[Tuple[float, int, int, float, float]] = []  # (cost, t_idx, d_idx, iou, dist)
+        pairs: List[
+            Tuple[float, int, int, float, float]
+        ] = []  # (cost, t_idx, d_idx, iou, dist)
         for t_idx, oid in enumerate(track_ids):
             pb = pred_bboxes[t_idx]
             pc = pred_centroids[t_idx]
@@ -154,7 +163,10 @@ class CentroidTracker:
                 dist = math.hypot(pc[0] - dc[0], pc[1] - dc[1])
 
                 norm_dist = dist / max(1e-6, self._max_distance)
-                cost = self._iou_weight * (1.0 - iou) + (1.0 - self._iou_weight) * norm_dist
+                cost = (
+                    self._iou_weight * (1.0 - iou)
+                    + (1.0 - self._iou_weight) * norm_dist
+                )
 
                 # мягкие гейты (чтобы не разваливалось на поворотах камеры)
                 if iou < self._min_iou and dist > self._max_distance * 1.5:
@@ -214,8 +226,12 @@ class CentroidTracker:
         if len(cam_res_dx) >= 3:
             mdx = statistics.median(cam_res_dx)
             mdy = statistics.median(cam_res_dy)
-            self._cam_dx = self._cam_smooth * self._cam_dx + (1.0 - self._cam_smooth) * mdx
-            self._cam_dy = self._cam_smooth * self._cam_dy + (1.0 - self._cam_smooth) * mdy
+            self._cam_dx = (
+                self._cam_smooth * self._cam_dx + (1.0 - self._cam_smooth) * mdx
+            )
+            self._cam_dy = (
+                self._cam_smooth * self._cam_dy + (1.0 - self._cam_smooth) * mdy
+            )
         else:
             # чуть затухаем, чтобы не "залипало"
             self._cam_dx *= 0.9

@@ -1,28 +1,28 @@
-
-import socket
 import dataclasses
-from typing import Optional, Protocol, Callable
+import socket
+from typing import Callable, Optional, Protocol
+
 from app.config.settings import config
+
 
 class SocketConnection(Protocol):
     """Protocol for socket-like connection that supports sendall and close."""
 
-    def sendall(self, data: bytes) -> None:
-        ...
+    def sendall(self, data: bytes) -> None: ...
 
-    def close(self) -> None:
-        ...
+    def close(self) -> None: ...
 
 
 @dataclasses.dataclass
 class ConnectionConfig:
     """Configuration for socket connections."""
+
     host: str
     port: int
     timeout: Optional[float] = None
 
     @classmethod
-    def default(cls) -> 'ConnectionConfig':
+    def default(cls) -> "ConnectionConfig":
         return cls(
             host=config.HOST_RECV_SERVER,
             port=config.PORT_RECV_SERVER,
@@ -49,5 +49,3 @@ class ConnectionManager:
 
 
 ConnectionFactory = Callable[[], SocketConnection]
-
-

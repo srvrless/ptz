@@ -1,18 +1,21 @@
-from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, inspect
 from typing import TYPE_CHECKING
+
+from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from .camera import Camera
 
 from .base import Base
 
+
 class CameraConnection(Base):
     __tablename__ = "camera_connections"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    camera_id: Mapped[int] = mapped_column(Integer, ForeignKey("cameras.id"), nullable=False)
+    camera_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("cameras.id"), nullable=False
+    )
     host: Mapped[str] = mapped_column(String, nullable=False)
     port: Mapped[int] = mapped_column(Integer, nullable=False)
     rtsp_url: Mapped[str] = mapped_column(String, nullable=False)

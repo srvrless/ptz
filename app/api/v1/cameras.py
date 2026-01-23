@@ -1,7 +1,8 @@
 from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.v1.dependencies import get_token, get_camera_service
+from app.api.v1.dependencies import get_camera_service
 from app.schemas.camera import (
     CameraResponse,
     CreateCamera,
@@ -9,6 +10,7 @@ from app.schemas.camera import (
     UpdateCamera,
 )
 from app.services import CameraService
+
 from .dependencies import UOWDep
 
 router = APIRouter(prefix="/api", tags=["cameras"])
@@ -52,11 +54,10 @@ def patch_camera(
     """
     Обновить данные камеры.
     """
-    camera_response =  camera_service.update_camera(uow, camera_id, camera)
+    camera_response = camera_service.update_camera(uow, camera_id, camera)
     if camera_response is None:
         raise HTTPException(status_code=404, detail="Camera not found or not enabled")
     return camera_response
-
 
 
 @router.delete("/camera/{camera_id}")
@@ -82,7 +83,6 @@ def one_camera(
     camera_id: int,
     camera_service: CameraService = Depends(get_camera_service),
 ) -> CameraResponse:
-
     camera_response = camera_service.get_camera_by_id(uow, camera_id)
 
     if camera_response is None:

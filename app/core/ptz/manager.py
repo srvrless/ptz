@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from typing import Dict, Optional
 
-from logger.setup_logger import get_logger
-
 from app.config.settings import config
 from app.core.ptz.base import BasePTZController
 from app.core.ptz.controller import PTZController
 from app.core.ptz.tms20_controller import Tms20PTZController
+from logger.setup_logger import get_logger
 
 logger = get_logger("ptz_camera_manager")
 

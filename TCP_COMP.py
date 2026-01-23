@@ -1,6 +1,5 @@
 import socket
 import time
-from typing import Optional
 
 
 class Tms20TCP:
@@ -47,22 +46,14 @@ class Tms20TCP:
         """
         cmd – 16-битное значение (как в доке: 0x0002 Right, 0x004B Pan Direct, ...).
         """
-        cmd1 = (cmd >> 8) & 0xFF   # MSB
-        cmd2 = cmd & 0xFF          # LSB
+        cmd1 = (cmd >> 8) & 0xFF  # MSB
+        cmd2 = cmd & 0xFF  # LSB
         data1 &= 0xFF
         data2 &= 0xFF
 
         chksum = self._checksum(address, cmd1, cmd2, data1, data2)
 
-        packet = bytes([
-            0xFF,
-            address & 0xFF,
-            cmd1,
-            cmd2,
-            data1,
-            data2,
-            chksum
-        ])
+        packet = bytes([0xFF, address & 0xFF, cmd1, cmd2, data1, data2, chksum])
         self.sock.sendall(packet)
 
     def _send_pt(self, cmd: int, data1: int, data2: int):
@@ -152,8 +143,8 @@ class Tms20TCP:
         1 единица = 0.01 градуса.
         Поддерживаются отрицательные значения, возвращаем 16-битное представление.
         """
-        val = int(round(deg * 100.0))      # -7000..7000 и т.п.
-        return val & 0xFFFF                # two's complement
+        val = int(round(deg * 100.0))  # -7000..7000 и т.п.
+        return val & 0xFFFF  # two's complement
 
     def goto_position(self, pan_deg: float, tilt_deg: float):
         """

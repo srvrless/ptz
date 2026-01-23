@@ -2,19 +2,19 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from sqladmin import Admin
 
-from app.config.settings import config
-from app.api.v1.cameras import router as cameras_router
-from app.api.v1.streams import router as streams_router
-from app.api.v1.ptz import router as ptz_router
-from app.api.v1.auto_ptz import router as auto_ptz_router
-from app.api.v1.admin import CameraAdmin, CameraConnectionAdmin, CameraLocationAdmin, CameraPTZAdmin
-from app.services import (
-    CameraNotFoundError,
-    PTZControllerNotFoundError,
-    PTZMoveError,
+from app.api.v1.admin import (
+    CameraAdmin,
+    CameraConnectionAdmin,
+    CameraLocationAdmin,
+    CameraPTZAdmin,
 )
+from app.api.v1.auto_ptz import router as auto_ptz_router
+from app.api.v1.cameras import router as cameras_router
+from app.api.v1.ptz import router as ptz_router
+from app.api.v1.streams import router as streams_router
 from app.core.camera.manager import camera_manager
 from app.db.base import engine
+from app.services import CameraNotFoundError, PTZControllerNotFoundError, PTZMoveError
 from logger.setup_logger import get_logger
 
 logger = get_logger("app")
@@ -61,11 +61,10 @@ def init_database() -> None:
         from app.db.base import create_db_and_tables
         from app.db.session import Session
         from app.models.ptz_types import PTZType
-        from sqlalchemy import select
-        
+
         # Создаём все таблицы
         create_db_and_tables()
-        
+
         # Проверяем и инициализируем справочник PTZ типов, если пуст
         db_session = Session()
         try:
@@ -81,7 +80,7 @@ def init_database() -> None:
                 logger.info("✅ PTZ types initialized")
         finally:
             db_session.close()
-            
+
     except Exception as e:
         logger.error(f"Database initialization failed: {e}")
         raise
@@ -116,6 +115,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             status_code=500,
             content={"error": "internal_error", "message": str(exc)},
         )
+
 
 app = create_app()
 

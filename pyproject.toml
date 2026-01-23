@@ -27,3 +27,8 @@ dependencies = [
     "uvicorn>=0.38.0",
     "wsdiscovery>=2.1.2",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.13",
+]

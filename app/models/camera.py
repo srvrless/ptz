@@ -1,8 +1,8 @@
-from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, func
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
+from sqlalchemy import Boolean, DateTime, Integer, String, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 
@@ -18,20 +18,31 @@ class Camera(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
-
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
+    )
 
     connection: Mapped[Optional["CameraConnection"]] = relationship(
-        "CameraConnection", back_populates="camera", uselist=False, cascade="all, delete-orphan"
+        "CameraConnection",
+        back_populates="camera",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
     location: Mapped[Optional["CameraLocation"]] = relationship(
-        "CameraLocation", back_populates="camera", uselist=False, cascade="all, delete-orphan"
+        "CameraLocation",
+        back_populates="camera",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
     ptz: Mapped[Optional["CameraPTZ"]] = relationship(
-        "CameraPTZ", back_populates="camera", uselist=False, cascade="all, delete-orphan"
+        "CameraPTZ",
+        back_populates="camera",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
-    
 
     def __repr__(self):
         return self.name
@@ -39,15 +50,15 @@ class Camera(Base):
     @property
     def location_lat(self) -> float:
         return self.location.lat
-    
+
     @property
     def location_lon(self) -> float:
         return self.location.lon
-    
+
     @property
     def location_height(self) -> float:
         return self.location.height
-    
+
     @property
     def location_rate(self) -> float:
         return self.location.rate

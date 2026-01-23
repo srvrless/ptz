@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import math
 import time
-from typing import List, Optional, Tuple, Any
-
-from logger.setup_logger import get_logger
+from typing import Any, List, Optional, Tuple
 
 from app.core.ptz.base import BasePTZController
 from app.core.ptz.manager import ptz_camera_manager
+from logger.setup_logger import get_logger
 
 logger = get_logger("auto_ptz_tracker")
 
@@ -40,8 +39,8 @@ class AutoPTZTracker:
         self.max_lost_frames = max_lost_frames
         self.min_speed = min_speed
 
-        self._controller: Optional[BasePTZController] = ptz_camera_manager.get_controller(
-            camera_id
+        self._controller: Optional[BasePTZController] = (
+            ptz_camera_manager.get_controller(camera_id)
         )
         if self._controller is None:
             logger.warning("AutoPTZ: контроллер для камеры %s не найден", camera_id)
@@ -270,7 +269,9 @@ class AutoPTZTracker:
                 else:
                     self._controller.continuous_move(vx, vy, zoom=0.0)
             except Exception as exc:
-                logger.exception(f"AutoPTZ: ошибка continuous_move/stop при потере цели: {exc}")
+                logger.exception(
+                    f"AutoPTZ: ошибка continuous_move/stop при потере цели: {exc}"
+                )
             return
 
         # ====== ЦЕЛЬ ВИДИМ ======
@@ -308,7 +309,10 @@ class AutoPTZTracker:
         # а если ошибка большая — вообще отключаем "душилку"
         scale = self._zoom_scale(bbox, frame_shape)
         scale = max(scale, self._scale_min)
-        if abs(err_x_pred) > self._scale_override_err or abs(err_y_pred) > self._scale_override_err:
+        if (
+            abs(err_x_pred) > self._scale_override_err
+            or abs(err_y_pred) > self._scale_override_err
+        ):
             scale = 1.0
 
         # PD-регулятор
@@ -324,7 +328,10 @@ class AutoPTZTracker:
         self._cmd_vy = a * self._cmd_vy + (1.0 - a) * vy
 
         try:
-            if abs(self._cmd_vx) < self.min_speed and abs(self._cmd_vy) < self.min_speed:
+            if (
+                abs(self._cmd_vx) < self.min_speed
+                and abs(self._cmd_vy) < self.min_speed
+            ):
                 self._controller.stop(pan_tilt=True, zoom=False)
             else:
                 self._controller.continuous_move(self._cmd_vx, self._cmd_vy, zoom=0.0)

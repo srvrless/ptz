@@ -1,10 +1,9 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 
 class TestStreamsAPI:
     """Тесты для endpoints /api/camera/select, /api/camera/selected."""
-    
+
     def test_select_camera_success(
         self,
         client,
@@ -13,13 +12,14 @@ class TestStreamsAPI:
         monkeypatch,
     ):
         """Проверяет выбор камеры из БД."""
-        with patch('app.services.camera_service.camera_manager') as mock_manager:
-            with patch('app.services.camera_service.run_detection_sender'):
+        with patch("app.services.camera_service.camera_manager") as mock_manager:
+            with patch("app.services.camera_service.run_detection_sender"):
                 mock_camera = MagicMock()
                 mock_manager.get_or_create.return_value = mock_camera
-                
+
                 # Мокируем конфиг, чтобы камера была найдена
                 from app.config.settings import CameraConfig
+
                 config_dict = {
                     camera_db_onvif.id: CameraConfig(
                         id=camera_db_onvif.id,
@@ -36,17 +36,17 @@ class TestStreamsAPI:
                         ptz_type=camera_db_onvif.ptz_type,
                     )
                 }
-                
+
                 monkeypatch.setattr(
-                    'app.services.camera_service.config.cameras',
+                    "app.services.camera_service.config.cameras",
                     config_dict,
                 )
-                
+
                 response = client.post(
                     f"/api/camera/select/{camera_db_onvif.id}",
                     headers=auth_header,
                 )
-                
+
                 assert response.status_code == 200
                 data = response.json()
                 assert data["selected_camera_id"] == str(camera_db_onvif.id)
@@ -57,7 +57,7 @@ class TestStreamsAPI:
             "/api/camera/stop",
             headers=auth_header,
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["stopped"] is True

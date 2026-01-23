@@ -2,21 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Generator, Optional, Protocol, Callable
-import socket
-import dataclasses
-
-from app.core.streaming.frame import ProcessFrame
-import cv2
 import json
 import time
 from threading import Event
+from typing import Generator, Optional
 
-from app.core.streaming.sockets_con import ConnectionConfig, ConnectionManager, SocketConnection
+import cv2
+
+from app.core.detection.yolo_detector import ObjectDetector, get_detector
+from app.core.streaming.frame import ProcessFrame
+from app.core.streaming.sockets_con import (
+    ConnectionConfig,
+    ConnectionManager,
+    SocketConnection,
+)
 from logger.setup_logger import get_logger
-
-from app.core.detection.yolo_detector import get_detector, ObjectDetector
-
 
 logger = get_logger("streaming")
 
@@ -50,7 +50,6 @@ def run_detection_sender(
 
     prcocess_manager = ProcessFrame(camera_id, enable_auto_tracking, enable_detection)
 
-
     factory = _default_connection_factory
 
     s: Optional[SocketConnection] = None
@@ -63,7 +62,7 @@ def run_detection_sender(
             if frame is None:
                 time.sleep(0.01)
                 continue
-            
+
             tracked_objects = prcocess_manager.process_frame(frame)
 
             # После правки Detection.to_dict() тут уже будет bbox
@@ -98,11 +97,9 @@ def generate_mjpeg(
     enable_auto_tracking: bool = True,
     connection_config: Optional[ConnectionConfig] = None,
 ) -> Generator[bytes, None, None]:
-
     prcocess_manager = ProcessFrame(camera_id, enable_auto_tracking, enable_detection)
 
     with _default_connection_factory() as s:
-
         while True:
             frame = camera.get_frame()
             if frame is None:
@@ -121,7 +118,4 @@ def generate_mjpeg(
             s.sendall((json.dumps(objects_data) + "\n").encode("utf-8"))
 
             jpg = buffer.tobytes()
-            yield (
-                b"--frame\r\n"
-                b"Content-Type: image/jpeg\r\n\r\n" + jpg + b"\r\n"
-            )
+            yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + jpg + b"\r\n")

@@ -1,12 +1,16 @@
 from typing import Annotated
 
-from app.utils.uow import InterfaceUnitOfWork, UnitOfWork
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.config.settings import config
-from app.services import camera_service_instance, ptz_service_instance
-from app.services import CameraService, PTZService
+from app.services import (
+    CameraService,
+    PTZService,
+    camera_service_instance,
+    ptz_service_instance,
+)
+from app.utils.uow import InterfaceUnitOfWork, UnitOfWork
 
 security = HTTPBearer()
 
@@ -30,5 +34,6 @@ def get_camera_service() -> CameraService:
 
 def get_ptz_service() -> PTZService:
     return ptz_service_instance
+
 
 UOWDep = Annotated[InterfaceUnitOfWork, Depends(UnitOfWork)]

@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 from threading import Lock
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -21,6 +21,7 @@ from ultralytics import YOLO  # noqa: E402
 
 logger = get_logger("object_detector")
 
+
 @dataclass
 class Detection:
     bbox: Tuple[int, int, int, int]
@@ -38,6 +39,7 @@ class Detection:
             "bbox": [x1, y1, x2, y2],
         }
 
+
 class ObjectDetector:
     """Обёртка над Ultralytics YOLO для нанесения боксов на кадр."""
 
@@ -49,9 +51,7 @@ class ObjectDetector:
         img_size: int = 640,
     ) -> None:
         self.weights_path = (
-            Path(weights_path)
-            if weights_path
-            else PROJECT_ROOT / "best.pt"
+            Path(weights_path) if weights_path else PROJECT_ROOT / "best.pt"
         )
         if not self.weights_path.exists():
             raise FileNotFoundError(f"Weights not found: {self.weights_path}")
@@ -161,6 +161,7 @@ class ObjectDetector:
         """
         detections = self.detect(frame)
         return self.draw(frame, detections)
+
 
 # --- ленивый синглтон детектора ---
 

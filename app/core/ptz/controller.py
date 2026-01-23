@@ -4,9 +4,9 @@ from typing import Optional
 
 from onvif import ONVIFCamera
 
-from logger.setup_logger import get_logger
-from app.utils.geo import normalize_deg
 from app.core.ptz.base import BasePTZController
+from app.utils.geo import normalize_deg
+from logger.setup_logger import get_logger
 
 logger = get_logger("ptz_controller")
 
@@ -31,7 +31,9 @@ class PTZController(BasePTZController):
         cam_h: float,
         wsdl_dir: Optional[str] = None,
     ):
-        super().__init__(cam_lat=cam_lat, cam_lon=cam_lon, cam_h=cam_h, cam_rate=cam_rate)
+        super().__init__(
+            cam_lat=cam_lat, cam_lon=cam_lon, cam_h=cam_h, cam_rate=cam_rate
+        )
 
         self.host = host
         self.user = user
@@ -52,9 +54,13 @@ class PTZController(BasePTZController):
     def _connect(self) -> None:
         try:
             if self.wsdl_dir:
-                self.camera = ONVIFCamera(self.host, self.port, self.user, self.password, self.wsdl_dir)
+                self.camera = ONVIFCamera(
+                    self.host, self.port, self.user, self.password, self.wsdl_dir
+                )
             else:
-                self.camera = ONVIFCamera(self.host, self.port, self.user, self.password)
+                self.camera = ONVIFCamera(
+                    self.host, self.port, self.user, self.password
+                )
 
             self.media = self.camera.create_media_service()
             self.ptz = self.camera.create_ptz_service()
@@ -65,7 +71,9 @@ class PTZController(BasePTZController):
             self.status = self.ptz.GetStatus({"ProfileToken": self.profile.token})
             logger.info(f"PTZController подключён к {self.host}:{self.port}")
         except Exception as e:
-            logger.error(f"Ошибка подключения к PTZ-камере {self.host}:{self.port}: {e}")
+            logger.error(
+                f"Ошибка подключения к PTZ-камере {self.host}:{self.port}: {e}"
+            )
             self.camera = None
             self.media = None
             self.ptz = None

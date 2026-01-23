@@ -31,9 +31,9 @@ def get_logger(name: str) -> logging.Logger:
         logger.addHandler(handler)
 
         # Добавляем вывод в консоль
-        #console_handler = logging.StreamHandler()
-        #console_handler.setFormatter(formatter)
-        #logger.addHandler(console_handler)
+        # console_handler = logging.StreamHandler()
+        # console_handler.setFormatter(formatter)
+        # logger.addHandler(console_handler)
 
         logger.propagate = False
 

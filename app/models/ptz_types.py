@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
 
+
 class PTZType(Base):
     __tablename__ = "ptz_types"
 
