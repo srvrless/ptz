@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from threading import Event, Lock, Thread
 from typing import Generator, List, Optional
 
@@ -71,7 +72,19 @@ class CameraService:
             return CameraResponse.from_camera(camera)
 
     def get_camera_config(self, camera_id: str | int):
-        cam_cfg = config.cameras.get(int(camera_id))
+        # Convert camera_id to integer
+        # Handle formats like "camera1" → 1, "1" → 1, 1 → 1
+        if isinstance(camera_id, str):
+            # Extract numeric part from strings like "camera1"
+            match = re.search(r'\d+', camera_id)
+            if match:
+                camera_id_int = int(match.group())
+            else:
+                raise ValueError(f"Invalid camera_id format: {camera_id}")
+        else:
+            camera_id_int = int(camera_id)
+        
+        cam_cfg = config.cameras.get(camera_id_int)
         if not cam_cfg:
             logger.warning(f"Camera not found: {camera_id}")
             raise CameraNotFoundError(f"Camera not found: {camera_id}")
