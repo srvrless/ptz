@@ -49,7 +49,7 @@ class TestStreamsAPI:
 
                 assert response.status_code == 200
                 data = response.json()
-                assert data["selected_camera_id"] == str(camera_db_onvif.id)
+                assert data["selected_camera_id"] == camera_db_onvif.id
 
     def test_stop_selected_camera(self, client, auth_header):
         """Проверяет остановку выбранной камеры."""

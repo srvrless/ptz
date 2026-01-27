@@ -237,7 +237,7 @@ class CameraRepository:
 
         return camera
 
-    def delete_camera(self, camera_id: str, soft_delete: bool = True) -> bool:
+    def delete_camera(self, camera_id: int, soft_delete: bool = True) -> bool:
         """
         Удалить камеру.
 
@@ -248,12 +248,8 @@ class CameraRepository:
         Returns:
             True, если камера удалена, False если не найдена
         """
-        try:
-            camera_db_id = int(str(camera_id).replace("camera", ""))
-        except ValueError:
-            camera = self.session.scalar(select(Camera).where(Camera.name == camera_id))
-        else:
-            camera = self.session.get(Camera, camera_db_id)
+
+        camera = self.session.get(Camera, camera_id)
 
         if not camera:
             return False

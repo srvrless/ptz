@@ -7,7 +7,7 @@ router = APIRouter(prefix="/api", tags=["auto-ptz"])
 
 
 @router.post("/track/{camera_id}")
-def start_auto_tracking(camera_id: str, body: TrackRequest):
+def start_auto_tracking(camera_id: int, body: TrackRequest):
     """
     Включить слежение за объектом с указанным track_id.
     """
@@ -16,7 +16,7 @@ def start_auto_tracking(camera_id: str, body: TrackRequest):
 
 
 @router.post("/stop/{camera_id}")
-def stop_auto_tracking(camera_id: str):
+def stop_auto_tracking(camera_id: int):
     """
     Выключить автослежение для камеры.
     """
@@ -25,7 +25,7 @@ def stop_auto_tracking(camera_id: str):
 
 
 @router.get("/status/{camera_id}")
-def get_auto_tracking_status(camera_id: str):
+def get_auto_tracking_status(camera_id: int):
     """
     Получить текущий выбранный track_id (если есть).
     """

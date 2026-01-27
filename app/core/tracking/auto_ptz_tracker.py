@@ -24,7 +24,7 @@ class AutoPTZTracker:
 
     def __init__(
         self,
-        camera_id: str,
+        camera_id: int,
         *,
         kp_pan: float = 0.6,
         kp_tilt: float = 0.6,

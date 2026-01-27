@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 from typing import Any, Dict, Optional
 
 from app.config.settings import config
@@ -43,24 +42,11 @@ class PTZService:
         except IndexError:
             raise ValueError(f"Invalid radar_id: {radar_id}")
 
-    def _parse_camera_id(self, camera_id: str | int) -> int:
-        """
-        Convert camera_id to integer.
-        Handles formats: "camera1" -> 1, "1" -> 1, 1 -> 1
-        """
-        if isinstance(camera_id, str):
-            match = re.search(r'\d+', camera_id)
-            if match:
-                return int(match.group())
-            else:
-                raise ValueError(f"Invalid camera_id format: {camera_id}")
-        return int(camera_id)
-
     # ---------- high-level операции ----------
 
     def move_to_target(
         self,
-        camera_id: str | int,
+        camera_id: int,
         *,
         lat: float,
         lon: float,
@@ -79,15 +65,13 @@ class PTZService:
           - PTZMoveError
           - ValueError (если radar_id некорректен)
         """
-        # Convert camera_id string to int (e.g., "camera1" -> 1 or "1" -> 1)
-        camera_id_int = self._parse_camera_id(camera_id)
         radar_h = self._get_radar_height(radar_id)
 
         if restart_before_move:
             logger.info(f"Restart PTZ controller before move: {camera_id}")
-            ptz_camera_manager.restart_camera(camera_id_int)
+            ptz_camera_manager.restart_camera(camera_id)
 
-        controller = self._get_controller(camera_id_int)
+        controller = self._get_controller(camera_id)
 
         target_az = controller.search_target(
             target_lat=lat,
@@ -106,7 +90,7 @@ class PTZService:
 
     def continuous_move(
         self,
-        camera_id: str | int,
+        camera_id: int,
         *,
         x: float,
         y: float,
@@ -116,48 +100,40 @@ class PTZService:
         Непрерывное движение PTZ.
         x, y, zoom — скорости в диапазоне [-1, 1].
         """
-        # Convert camera_id string to int (e.g., "camera1" -> 1 or "1" -> 1)
-        camera_id_int = self._parse_camera_id(camera_id)
-        controller = self._get_controller(camera_id_int)
+        controller = self._get_controller(camera_id)
         controller.continuous_move(x, y, zoom)
         logger.info(
             f"PTZ continuous_move camera={camera_id}, x={x}, y={y}, zoom={zoom}"
         )
 
-    def stop(self, camera_id: str | int) -> Dict[str, Any]:
+    def stop(self, camera_id: int) -> Dict[str, Any]:
         """
         Остановить PTZ-движение и вернуть текущий азимут.
         """
-        # Convert camera_id string to int (e.g., "camera1" -> 1 or "1" -> 1)
-        camera_id_int = self._parse_camera_id(camera_id)
-        controller = self._get_controller(camera_id_int)
+        controller = self._get_controller(camera_id)
         controller.stop()
         # по аналогии со старым кодом — после остановки можно сделать restart
-        ptz_camera_manager.restart_camera(camera_id_int)
-        controller = self._get_controller(camera_id_int)
+        ptz_camera_manager.restart_camera(camera_id)
+        controller = self._get_controller(camera_id)
 
         azimut = controller.get_azimut()
         logger.info(f"PTZ stop camera={camera_id}, azimut={azimut}")
         return {"status": "ok", "azimut": azimut}
 
-    def set_zoom(self, camera_id: str | int, zoom_delta: float) -> None:
+    def set_zoom(self, camera_id: int, zoom_delta: float) -> None:
         """
         Изменить зум относительно текущего (zoom_delta может быть отрицательным).
         """
-        # Convert camera_id string to int (e.g., "camera1" -> 1 or "1" -> 1)
-        camera_id_int = self._parse_camera_id(camera_id)
-        controller = self._get_controller(camera_id_int)
+        controller = self._get_controller(camera_id)
         controller.set_zoom(zoom_delta)
         logger.info(f"PTZ set_zoom camera={camera_id}, delta={zoom_delta}")
 
-    def get_status(self, camera_id: str | int) -> Dict[str, Any]:
+    def get_status(self, camera_id: int) -> Dict[str, Any]:
         """
         Вернуть статус PTZ — пока только азимут.
         Можно расширить, добавив tilt/zoom и т.п.
         """
-        # Convert camera_id string to int (e.g., "camera1" -> 1 or "1" -> 1)
-        camera_id_int = self._parse_camera_id(camera_id)
-        controller = self._get_controller(camera_id_int)
+        controller = self._get_controller(camera_id)
         azimut = controller.get_azimut()
         return {"azimut": azimut}
         # при желании можно вернуть ещё и "сырые" данные:
