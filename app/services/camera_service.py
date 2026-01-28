@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-import re
 from threading import Event, Lock, Thread
 from typing import Generator, List, Optional
 
-from app.config.settings import config
-from app.core.camera.manager import CameraConnection, camera_manager
+from app.config.settings import AppConfig
+from app.core.camera.manager import CameraConnection, CameraManager, camera_manager
 from app.core.streaming.mjpeg import generate_mjpeg, run_detection_sender
-from app.db.session import Session
 from app.schemas.camera import (
     CameraResponse,
     CreateCamera,
@@ -26,12 +24,13 @@ class CameraNotFoundError(Exception):
 
 
 class CameraService:
-    def __init__(self) -> None:
+    def __init__(self, camera_manager: CameraManager, config: AppConfig) -> None:
+        self.camera_manager = camera_manager
+        self.config = config
         self._lock = Lock()
         self._selected_camera_id: Optional[str] = None
         self._worker_thread: Optional[Thread] = None
         self._stop_event: Optional[Event] = None
-        self.session = Session()
 
     def list_cameras(self, uow: InterfaceUnitOfWork) -> List[CameraResponse]:
         """Получить список всех камер в виде DTO"""
@@ -71,8 +70,8 @@ class CameraService:
                 return None
             return CameraResponse.from_camera(camera)
 
-    def get_camera_config(self, camera_id: int):        
-        cam_cfg = config.cameras.get(camera_id)
+    def get_camera_config(self, camera_id: int):
+        cam_cfg = self.config.cameras.get(camera_id)
         if not cam_cfg:
             logger.warning(f"Camera not found: {camera_id}")
             raise CameraNotFoundError(f"Camera not found: {camera_id}")
@@ -162,6 +161,3 @@ class CameraService:
 
         self._stop_event = None
         self._worker_thread = None
-
-
-camera_service_instance = CameraService()
