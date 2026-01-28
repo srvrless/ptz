@@ -1,8 +1,0 @@
-[flake8]
-max-line-length = 120
-exclude = .venv,venv,__pycache__,build,dist
-per-file-ignores =
-    app/db/base.py:F401
-    migration/env.py:F401
-    scripts/*.py:E402
-    tests/conftest.py:E402
