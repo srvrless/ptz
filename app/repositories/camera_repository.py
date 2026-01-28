@@ -43,7 +43,7 @@ class CameraRepository:
 
     def get_camera_by_id(self, camera_id: int) -> Optional[Camera]:
         try:
-            camera_db_id = int(str(camera_id).replace("camera", ""))
+            camera_db_id = int(camera_id)
         except ValueError:
             # Если camera_id не число, пробуем найти по name
             query = self._eager_load_query().where(Camera.name == camera_id)
@@ -122,7 +122,6 @@ class CameraRepository:
             type_id=ptz_type_obj.id,
         )
 
-        self.session.commit()
         logger.info(f"Created camera {camera.id} ({name})")
         return camera
 
@@ -150,7 +149,7 @@ class CameraRepository:
             Camera или None, если камера не найдена
         """
         try:
-            camera_db_id = int(str(camera_id).replace("camera", ""))
+            camera_db_id = int(camera_id)
         except ValueError:
             camera = self.session.scalar(select(Camera).where(Camera.name == camera_id))
         else:
@@ -232,7 +231,6 @@ class CameraRepository:
                     type_id=ptz_type_obj.id,
                 )
 
-        self.session.commit()
         logger.info(f"Updated camera {camera.id}")
 
         return camera
@@ -262,5 +260,4 @@ class CameraRepository:
             self.session.delete(camera)
             logger.info(f"Hard deleted camera {camera.id}")
 
-        self.session.commit()
         return True

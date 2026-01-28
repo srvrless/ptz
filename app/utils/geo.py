@@ -50,8 +50,11 @@ def azimuth_from_latlon(
     cam_rate_deg: float = 0.0,
 ) -> float:
     """
-    Азимут от камеры к цели в градусах относительно севера (0 = север, 90 = восток).
-    cam_rate_deg — поправка ориентации камеры относительно севера (смещение башки).
+    Географический азимут от камеры к цели в градусах относительно севера.
+    (0 = север, 90 = восток, 180 = юг, 270 = запад).
+    
+    Возвращает чистый географический азимут БЕЗ учёта cam_rate.
+    Преобразование в механические координаты камеры выполняется отдельно.
     """
     lat1, lon1 = map(math.radians, cam_latlon)
     lat2, lon2 = map(math.radians, target_latlon)
@@ -64,10 +67,7 @@ def azimuth_from_latlon(
     )
 
     brng = math.degrees(math.atan2(x, y))  # в диапазоне (-180, 180]
-    brng = normalize_deg(brng)  # -> [0, 360)
-
-    # учитываем угол установки камеры (rate)
-    return normalize_deg(brng + cam_rate_deg)
+    return normalize_deg(brng)  # -> [0, 360)
 
 
 def elevation_from_latlon(
@@ -104,6 +104,9 @@ def relative_camera_turn(
     """
     Как на сколько ПОВЕРНУТЬ камеру (°), чтобы посмотреть на цель.
     Положительное — вправо (по часовой), отрицательное — влево.
+    
+    current_cam_azimuth — мировой азимут камеры (из get_azimut), уже с учётом cam_rate.
+    target_az — географический азимут к цели (без cam_rate).
     """
-    target_az = azimuth_from_latlon(cam_latlon, target_latlon, cam_rate_deg)
+    target_az = azimuth_from_latlon(cam_latlon, target_latlon)
     return normalize_relative(target_az - current_cam_azimuth)

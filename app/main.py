@@ -1,7 +1,9 @@
+from contextlib import asynccontextmanager
+
+from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from sqladmin import Admin
-from dishka.integrations.fastapi import setup_dishka
 
 from app.api.v1.admin import (
     CameraAdmin,
@@ -9,34 +11,51 @@ from app.api.v1.admin import (
     CameraLocationAdmin,
     CameraPTZAdmin,
 )
-from app.api.v1.cameras import router as cameras_router
 from app.api.v1.auto_ptz import router as auto_ptz_router
+from app.api.v1.cameras import router as cameras_router
 from app.api.v1.ptz import router as ptz_router
 from app.api.v1.streams import router as streams_router
 from app.container import create_container
 from app.core.camera.manager import CameraManager
 from app.db.base import engine
-from app.services import CameraNotFoundError, PTZControllerNotFoundError, PTZMoveError
+from app.services import (
+    CameraNotFoundError,
+    PTZControllerNotFoundError,
+    PTZMoveError,
+)
 from logger.setup_logger import get_logger
 
 logger = get_logger("app")
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_database()
+    
+    logger.info("✅ Application startup complete")
+    
+    yield
+
+    container = app.state.container
+    with container() as request_container:
+        camera_manager = request_container.get(CameraManager)
+        logger.info("Остановка всех камер...")
+        camera_manager.stop_all()
+
+
 def create_app() -> FastAPI:
+    """Создает и конфигурирует FastAPI приложение."""
     app = FastAPI(
         title="PTZ Backend",
         version="1.0.0",
+        lifespan=lifespan
     )
-
-    # Инициализируем БД
-    init_database()
-    
-    # Создаём sync контейнер и настраиваем dishka
     container = create_container()
     setup_dishka(container, app)
-
-    # Создаём и интегрируем контейнер dishka
-
+    
+    app.state.container = container
+    logger.info("✅ Dishka container initialized")
+    
     # Админка
     admin = Admin(app, engine, base_url="/admin", title="PTZ Admin")
     admin.add_view(CameraAdmin)
@@ -52,20 +71,6 @@ def create_app() -> FastAPI:
 
     # Обработчики ошибок
     register_exception_handlers(app)
-
-    @app.on_event("shutdown")
-    def shutdown_event():
-        """
-        Останавливаем все камеры при завершении приложения.
-        Получаем CameraManager из контейнера dishka.0
-        """
-        logger.info("Остановка всех камер...")
-        with container() as request_container:
-            camera_manager = request_container.get(CameraManager)
-            camera_manager.stop_all()
-        
-        # Закрываем контейнер
-        container.close()
 
     return app
 
@@ -104,6 +109,8 @@ def init_database() -> None:
 
 
 def register_exception_handlers(app: FastAPI) -> None:
+    """Регистрирует обработчики ошибок."""
+    
     @app.exception_handler(CameraNotFoundError)
     async def camera_not_found_handler(request: Request, exc: CameraNotFoundError):
         return JSONResponse(
@@ -134,6 +141,7 @@ def register_exception_handlers(app: FastAPI) -> None:
         )
 
 
+# Создаём экземпляр приложения
 app = create_app()
 
 # Для запуска: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000

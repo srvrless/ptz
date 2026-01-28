@@ -6,7 +6,7 @@ from app.repositories.camera_repository import CameraRepository
 
 
 class InterfaceUnitOfWork(ABC):
-    camera: Type[CameraRepository]
+    camera: CameraRepository
 
     @abstractmethod
     def __init__(self): ...
@@ -24,21 +24,24 @@ class InterfaceUnitOfWork(ABC):
     def rollback(self): ...
 
 
-class UnitOfWork:
+class UnitOfWork(InterfaceUnitOfWork):
     def __init__(self):
-        self.session_factory = Session
+        self.session_factory =  Session
 
     def __enter__(self):
         self.session = self.session_factory()
-
         self.camera = CameraRepository(self.session)
+        return self
 
-    def __exit__(self, *args):
-        self.rollback()
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        if exc_type is None:
+            self.commit()
+        else:
+            self.rollback()
         self.session.close()
 
-    def commit(self):
+    def commit(self) -> None:
         self.session.commit()
 
-    def rollback(self):
+    def rollback(self) -> None:
         self.session.rollback()
