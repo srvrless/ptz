@@ -1,12 +1,11 @@
-from typing import Annotated
+from fastapi import APIRouter
+from dishka import FromDishka
+from dishka.integrations.fastapi import DishkaSyncRoute
 
-from fastapi import APIRouter, Depends
-
-from app.api.v1.dependencies import get_ptz_service
 from app.schemas.ptz import ContinuousMoveRequest, MoveRequest, ZoomRequest
 from app.services import PTZService
 
-router = APIRouter(prefix="/api", tags=["ptz"])
+router = APIRouter(prefix="/api", tags=["ptz"], route_class=DishkaSyncRoute)
 
 
 # ---------- MOVE ----------
@@ -17,7 +16,7 @@ def ptz_move(
     camera_id: int,
     body: MoveRequest,
     # _token: str = Depends(get_token),
-    ptz_service: Annotated[PTZService, Depends(get_ptz_service)],
+    ptz_service: FromDishka[PTZService],
 ):
     """
     Абсолютное позиционирование PTZ-камеры по координатам цели.
@@ -53,7 +52,7 @@ def ptz_continuous_move(
     camera_id: int,
     body: ContinuousMoveRequest,
     # _token: str = Depends(get_token),
-    ptz_service: Annotated[PTZService, Depends(get_ptz_service)],
+    ptz_service: FromDishka[PTZService],
 ):
     """
     Непрерывное движение PTZ.
@@ -83,8 +82,7 @@ def ptz_continuous_move(
 @router.post("/ptz/{camera_id}/stop/")
 def ptz_stop(
     camera_id: int,
-    # _token: str = Depends(get_token),
-    ptz_service: Annotated[PTZService, Depends(get_ptz_service)],
+    ptz_service: FromDishka[PTZService],
 ):
     """
     Остановить PTZ-движение.
@@ -103,8 +101,7 @@ def ptz_stop(
 def ptz_zoom(
     camera_id: int,
     body: ZoomRequest,
-    # _token: str = Depends(get_token),
-    ptz_service: Annotated[PTZService, Depends(get_ptz_service)],
+    ptz_service: FromDishka[PTZService],
 ):
     """
     Управление зумом PTZ.

@@ -1,8 +1,7 @@
-from contextlib import contextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from sqladmin import Admin
-from starlette.middleware.base import BaseHTTPMiddleware
+from dishka.integrations.fastapi import setup_dishka
 
 from app.api.v1.admin import (
     CameraAdmin,
@@ -10,8 +9,8 @@ from app.api.v1.admin import (
     CameraLocationAdmin,
     CameraPTZAdmin,
 )
-from app.api.v1.auto_ptz import router as auto_ptz_router
 from app.api.v1.cameras import router as cameras_router
+from app.api.v1.auto_ptz import router as auto_ptz_router
 from app.api.v1.ptz import router as ptz_router
 from app.api.v1.streams import router as streams_router
 from app.container import create_container
@@ -23,20 +22,6 @@ from logger.setup_logger import get_logger
 logger = get_logger("app")
 
 
-class DishkaMiddleware(BaseHTTPMiddleware):
-    """Middleware для управления контекстом Dishka в sync режиме."""
-    
-    def __init__(self, app, container):
-        super().__init__(app)
-        self.container = container
-    
-    async def dispatch(self, request: Request, call_next):
-        with self.container() as request_container:
-            request.state.dishka_container = request_container
-            response = await call_next(request)
-        return response
-
-
 def create_app() -> FastAPI:
     app = FastAPI(
         title="PTZ Backend",
@@ -46,10 +31,9 @@ def create_app() -> FastAPI:
     # Инициализируем БД
     init_database()
     
-    # Создаём контейнер и добавляем middleware для sync режима
+    # Создаём sync контейнер и настраиваем dishka
     container = create_container()
-    app.add_middleware(DishkaMiddleware, container=container)
-    app.state.dishka_container = container
+    setup_dishka(container, app)
 
     # Создаём и интегрируем контейнер dishka
 
@@ -70,18 +54,18 @@ def create_app() -> FastAPI:
     register_exception_handlers(app)
 
     @app.on_event("shutdown")
-    async def shutdown_event():
+    def shutdown_event():
         """
         Останавливаем все камеры при завершении приложения.
-        Получаем CameraManager из контейнера dishka.
+        Получаем CameraManager из контейнера dishka.0
         """
         logger.info("Остановка всех камер...")
         with container() as request_container:
-            camera_manager = await request_container.get(CameraManager)
+            camera_manager = request_container.get(CameraManager)
             camera_manager.stop_all()
         
         # Закрываем контейнер
-        await container.close()
+        container.close()
 
     return app
 

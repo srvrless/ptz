@@ -80,7 +80,7 @@ class DatabaseProvider(Provider):
             session.close()
     
     @provide(scope=Scope.REQUEST)
-    def get_uow(self, session: SQLAlchemySession) -> Iterator[InterfaceUnitOfWork]:
+    def get_uow(self, session: SQLAlchemySession) -> InterfaceUnitOfWork:
         """
         Создаёт UnitOfWork для каждого запроса.
         Использует сессию из провайдера get_db_session.
@@ -88,11 +88,7 @@ class DatabaseProvider(Provider):
         uow = UnitOfWork()
         # Переопределяем session_factory, чтобы использовать уже созданную сессию
         uow.session_factory = lambda: session
-        uow.__enter__()
-        try:
-            yield uow
-        finally:
-            uow.__exit__(None, None, None)
+        return uow
 
 
 class ServicesProvider(Provider):
