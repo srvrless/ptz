@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
@@ -88,6 +89,7 @@ def app(test_db, test_db_session_factory):
     который использует тестовую БД вместо production БД.
     """
     from dishka import make_container, Provider, provide, Scope
+    from dishka.integrations.fastapi import setup_dishka
     from app.container import (
         ConfigProvider, 
         ManagersProvider, 
@@ -102,9 +104,8 @@ def app(test_db, test_db_session_factory):
         """Провайдер, который использует тестовую БД вместо production."""
         
         @provide(scope=Scope.REQUEST)
-        def get_db_session(self):
+        def get_db_session(self) -> Iterator[SQLAlchemySession]:
             """Возвращает сессию из тестовой БД."""
-            from typing import Iterator
             session = test_db_session_factory()
             try:
                 yield session
@@ -112,16 +113,11 @@ def app(test_db, test_db_session_factory):
                 session.close()
         
         @provide(scope=Scope.REQUEST)
-        def get_uow(self, session: SQLAlchemySession):
+        def get_uow(self, session: SQLAlchemySession) -> InterfaceUnitOfWork:
             """Создаёт UnitOfWork с тестовой сессией."""
-            from typing import Iterator
             uow = UnitOfWork()
             uow.session_factory = lambda: session
-            uow.__enter__()
-            try:
-                yield uow
-            finally:
-                uow.__exit__(None, None, None)
+            return uow
     
     # Создаём провайдер тестовой конфигурации
     class TestConfigProvider(Provider):
@@ -166,30 +162,13 @@ def app(test_db, test_db_session_factory):
     # Создаём приложение БЕЗ вызова create_app(),
     # чтобы избежать двойной инициализации
     from fastapi import FastAPI
-    from starlette.middleware.base import BaseHTTPMiddleware
-    from fastapi import Request
-    
     app_instance = FastAPI(
         title="PTZ Backend Test",
         version="1.0.0-test",
     )
     
-    # Настраиваем sync dishka middleware
-    class DishkaMiddleware(BaseHTTPMiddleware):
-        """Middleware для управления контекстом Dishka в sync режиме."""
-        
-        def __init__(self, app, container):
-            super().__init__(app)
-            self.container = container
-        
-        async def dispatch(self, request: Request, call_next):
-            with self.container() as request_container:
-                request.state.dishka_container = request_container
-                response = await call_next(request)
-            return response
-    
-    app_instance.add_middleware(DishkaMiddleware, container=test_container)
-    app_instance.state.dishka_container = test_container
+    # Настраиваем dishka с тестовым контейнером
+    setup_dishka(test_container, app_instance)
     
     # Добавляем роутеры
     from app.api.v1.cameras import router as cameras_router
@@ -213,6 +192,61 @@ def app(test_db, test_db_session_factory):
 def client(app):
     """HTTP клиент для тестирования API."""
     return TestClient(app)
+
+
+@pytest.fixture
+def app_with_mocks(test_db, test_db_session_factory):
+    """
+    Создаёт приложение с моками для unit/integration тестов.
+    
+    Используйте этот фикстур когда нужно:
+    - Мокировать менеджеры (CameraManager, PTZCameraManager, AutoPTZManager)
+    - Тестировать сервисы через dishka DI
+    
+    Возвращает tuple: (app, container, mocks_dict)
+    где mocks_dict содержит: {'camera_manager', 'ptz_manager', 'auto_ptz_manager'}
+    
+    ВАЖНО: Используйте тот же test_db, что и в db_session фикстуре,
+    чтобы тестовые данные были видны сервисам.
+    """
+    from unittest.mock import MagicMock
+    from tests.dishka_overrides import create_test_app_with_mocks
+    from app.core.camera.manager import CameraManager
+    from app.core.ptz.manager import PTZCameraManager
+    from app.core.tracking.auto_ptz_manager import AutoPTZManager
+    
+    # Создаём моки
+    camera_manager_mock = MagicMock(spec=CameraManager)
+    ptz_manager_mock = MagicMock(spec=PTZCameraManager)
+    auto_ptz_manager_mock = MagicMock(spec=AutoPTZManager)
+    
+    # Создаём приложение с моками
+    app_instance, container = create_test_app_with_mocks(
+        test_db_session_factory,
+        camera_manager_mock=camera_manager_mock,
+        ptz_manager_mock=ptz_manager_mock,
+        auto_ptz_manager_mock=auto_ptz_manager_mock,
+    )
+    
+    mocks = {
+        'camera_manager': camera_manager_mock,
+        'ptz_manager': ptz_manager_mock,
+        'auto_ptz_manager': auto_ptz_manager_mock,
+    }
+    
+    yield app_instance, container, mocks
+    
+    # Cleanup
+    container.close()
+
+
+@pytest.fixture
+def client_with_mocks(app_with_mocks):
+    """HTTP клиент с моками для тестирования."""
+    app_instance, container, mocks = app_with_mocks
+    client = TestClient(app_instance)
+    # Возвращаем клиент и моки для удобства
+    return client, mocks
 
 
 @pytest.fixture

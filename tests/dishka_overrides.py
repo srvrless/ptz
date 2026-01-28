@@ -1,10 +1,4 @@
-"""
-Вспомогательные функции для переопределения зависимостей dishka в тестах.
-
-Этот модуль предоставляет удобные способы подмены зависимостей
-в контейнере dishka для изолированного тестирования.
-"""
-from typing import Any, Callable
+from typing import Any, Callable, Iterator
 from unittest.mock import MagicMock
 
 from dishka import Provider, Scope, make_container, provide
@@ -13,6 +7,7 @@ from dishka.integrations.fastapi import setup_dishka
 from app.container import ConfigProvider, ServicesProvider
 from app.core.camera.manager import CameraManager
 from app.core.ptz.manager import PTZCameraManager
+from app.core.tracking.auto_ptz_manager import AutoPTZManager
 
 
 class MockManagersProvider(Provider):
@@ -22,7 +17,8 @@ class MockManagersProvider(Provider):
     Использование:
         provider = MockManagersProvider(
             camera_manager_mock=mock_camera_manager,
-            ptz_manager_mock=mock_ptz_manager
+            ptz_manager_mock=mock_ptz_manager,
+            auto_ptz_manager_mock=mock_auto_ptz_manager
         )
     """
     
@@ -30,10 +26,12 @@ class MockManagersProvider(Provider):
         self,
         camera_manager_mock: CameraManager = None,
         ptz_manager_mock: PTZCameraManager = None,
+        auto_ptz_manager_mock: AutoPTZManager = None,
     ):
         super().__init__()
         self._camera_manager_mock = camera_manager_mock or MagicMock(spec=CameraManager)
         self._ptz_manager_mock = ptz_manager_mock or MagicMock(spec=PTZCameraManager)
+        self._auto_ptz_manager_mock = auto_ptz_manager_mock or MagicMock(spec=AutoPTZManager)
     
     @provide(scope=Scope.APP)
     def get_camera_manager(self) -> CameraManager:
@@ -44,12 +42,18 @@ class MockManagersProvider(Provider):
     def get_ptz_camera_manager(self) -> PTZCameraManager:
         """Возвращает мок PTZCameraManager."""
         return self._ptz_manager_mock
+    
+    @provide(scope=Scope.APP)
+    def get_auto_ptz_manager(self) -> AutoPTZManager:
+        """Возвращает мок AutoPTZManager."""
+        return self._auto_ptz_manager_mock
 
 
 def create_test_app_with_mocks(
     test_db_session_factory,
     camera_manager_mock: CameraManager = None,
     ptz_manager_mock: PTZCameraManager = None,
+    auto_ptz_manager_mock: AutoPTZManager = None,
 ):
     """
     Создаёт тестовое FastAPI приложение с мок-зависимостями.
@@ -58,6 +62,7 @@ def create_test_app_with_mocks(
         test_db_session_factory: Фабрика сессий тестовой БД
         camera_manager_mock: Мок для CameraManager (опционально)
         ptz_manager_mock: Мок для PTZCameraManager (опционально)
+        auto_ptz_manager_mock: Мок для AutoPTZManager (опционально)
     
     Returns:
         FastAPI приложение с настроенными моками
@@ -65,7 +70,8 @@ def create_test_app_with_mocks(
     Пример:
         app = create_test_app_with_mocks(
             test_db_session_factory,
-            ptz_manager_mock=my_mock
+            ptz_manager_mock=my_mock,
+            auto_ptz_manager_mock=my_auto_ptz_mock
         )
         client = TestClient(app)
     """
@@ -77,7 +83,7 @@ def create_test_app_with_mocks(
     # Тестовый провайдер БД
     class TestDatabaseProvider(Provider):
         @provide(scope=Scope.REQUEST)
-        def get_db_session(self) -> SQLAlchemySession:
+        def get_db_session(self) -> Iterator[SQLAlchemySession]:
             session = test_db_session_factory()
             try:
                 yield session
@@ -96,6 +102,7 @@ def create_test_app_with_mocks(
         MockManagersProvider(
             camera_manager_mock=camera_manager_mock,
             ptz_manager_mock=ptz_manager_mock,
+            auto_ptz_manager_mock=auto_ptz_manager_mock,
         ),
         TestDatabaseProvider(),
         ServicesProvider(),
