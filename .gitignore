@@ -347,3 +347,4 @@ __pycache__/
 
 # test databases
 tests/*.db
+logs
