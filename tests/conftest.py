@@ -195,19 +195,18 @@ def client(app):
 
 
 @pytest.fixture
-def app_with_mocks(test_db, test_db_session_factory):
+def client_with_mocks(test_db, test_db_session_factory):
     """
-    Создаёт приложение с моками для unit/integration тестов.
+    HTTP клиент с замоканными менеджерами для API тестов.
     
-    Используйте этот фикстур когда нужно:
-    - Мокировать менеджеры (CameraManager, PTZCameraManager, AutoPTZManager)
-    - Тестировать сервисы через dishka DI
-    
-    Возвращает tuple: (app, container, mocks_dict)
+    Возвращает: (client, mocks_dict)
     где mocks_dict содержит: {'camera_manager', 'ptz_manager', 'auto_ptz_manager'}
     
-    ВАЖНО: Используйте тот же test_db, что и в db_session фикстуре,
-    чтобы тестовые данные были видны сервисам.
+    Использование:
+        def test_api(self, client_with_mocks):
+            client, mocks = client_with_mocks
+            mocks['ptz_manager'].some_method.return_value = "test"
+            response = client.get("/api/...")
     """
     from unittest.mock import MagicMock
     from tests.dishka_overrides import create_test_app_with_mocks
@@ -234,19 +233,12 @@ def app_with_mocks(test_db, test_db_session_factory):
         'auto_ptz_manager': auto_ptz_manager_mock,
     }
     
-    yield app_instance, container, mocks
+    client = TestClient(app_instance)
+    
+    yield client, mocks
     
     # Cleanup
     container.close()
-
-
-@pytest.fixture
-def client_with_mocks(app_with_mocks):
-    """HTTP клиент с моками для тестирования."""
-    app_instance, container, mocks = app_with_mocks
-    client = TestClient(app_instance)
-    # Возвращаем клиент и моки для удобства
-    return client, mocks
 
 
 @pytest.fixture

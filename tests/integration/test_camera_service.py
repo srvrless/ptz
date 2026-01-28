@@ -1,70 +1,70 @@
-import pytest
-from dishka import FromDishka
-from dishka.integrations.fastapi import inject
+"""
+Integration тесты для CameraService.
 
+Эти тесты проверяют взаимодействие сервиса с реальной БД,
+но с замоканными внешними зависимостями (менеджеры).
+"""
+from unittest.mock import MagicMock
+
+from app.config.settings import AppConfig
+from app.core.camera.manager import CameraManager
+from app.core.tracking.auto_ptz_manager import AutoPTZManager
+from app.repositories.camera_repository import CameraRepository
 from app.services.camera_service import CameraService
-from app.utils.uow import InterfaceUnitOfWork
+from app.utils.uow import UnitOfWork
 
 
 class TestCameraService:
-    """Интеграционные тесты для CameraService."""
+    """Integration тесты для CameraService с реальной БД."""
 
-    def test_list_cameras(
-        self, app_with_mocks, db_session, camera_db_onvif, camera_db_tms20
-    ):
-        """Проверяет получение списка камер через dishka DI."""
-        app_instance, container, mocks = app_with_mocks
+    def test_list_cameras(self, db_session, camera_db_onvif, camera_db_tms20):
+        """Проверяет получение списка камер."""
+        # Простые моки без DI контейнера
+        service = CameraService(
+            camera_manager=MagicMock(spec=CameraManager),
+            auto_ptz_manager=MagicMock(spec=AutoPTZManager),
+            config=MagicMock(spec=AppConfig),
+        )
         
-        # Получаем сервис и UoW из контейнера dishka
-        with container() as request_container:
-            service = request_container.get(CameraService)
-            uow = request_container.get(InterfaceUnitOfWork)
-            
-            cameras = service.list_cameras(uow)
-            
-            assert len(cameras) >= 0  # может быть пусто, если софт-дилит
-            # или >= 2, если обе камеры активны
+        uow = UnitOfWork()
+        uow.session = db_session
+        uow.camera = CameraRepository(db_session)
+        
+        cameras = service.list_cameras(uow)
+        
+        assert len(cameras) >= 0
 
-    def test_get_camera_by_id_success(self, app_with_mocks, db_session, camera_db_onvif):
-        """Проверяет получение активной камеры по ID через dishka DI."""
-        app_instance, container, mocks = app_with_mocks
+    def test_get_camera_by_id_success(self, db_session, camera_db_onvif):
+        """Проверяет получение активной камеры по ID."""
+        service = CameraService(
+            camera_manager=MagicMock(spec=CameraManager),
+            auto_ptz_manager=MagicMock(spec=AutoPTZManager),
+            config=MagicMock(spec=AppConfig),
+        )
         
-        # Получаем сервис и UoW из контейнера dishka
-        with container() as request_container:
-            service = request_container.get(CameraService)
-            uow = request_container.get(InterfaceUnitOfWork)
-            
-            # Камера должна быть активна
-            assert camera_db_onvif.enabled is True
-            
-            camera = service.get_camera_by_id(uow, camera_db_onvif.id)
-            
-            if camera:
-                assert camera.name == "Test Camera ONVIF"
+        uow = UnitOfWork()
+        uow.session = db_session
+        uow.camera = CameraRepository(db_session)
+        
+        assert camera_db_onvif.enabled is True
+        
+        camera = service.get_camera_by_id(uow, camera_db_onvif.id)
+        
+        if camera:
+            assert camera.name == "Test Camera ONVIF"
 
-    def test_get_camera_by_id_disabled_returns_none(
-        self, app_with_mocks, db_session, disabled_camera
-    ):
-        """Проверяет, что отключённая камера возвращает None через dishka DI."""
-        app_instance, container, mocks = app_with_mocks
+    def test_get_camera_by_id_disabled_returns_none(self, db_session, disabled_camera):
+        """Проверяет, что отключённая камера возвращает None."""
+        service = CameraService(
+            camera_manager=MagicMock(spec=CameraManager),
+            auto_ptz_manager=MagicMock(spec=AutoPTZManager),
+            config=MagicMock(spec=AppConfig),
+        )
         
-        # Получаем сервис и UoW из контейнера dishka
-        with container() as request_container:
-            service = request_container.get(CameraService)
-            uow = request_container.get(InterfaceUnitOfWork)
-            
-            camera = service.get_camera_by_id(uow, disabled_camera.id)
-            
-            # Отключённые камеры не возвращаются
-            assert camera is None
-    
-    def test_service_has_mocked_managers(self, app_with_mocks):
-        """Проверяет, что сервис получает моки через DI."""
-        app_instance, container, mocks = app_with_mocks
+        uow = UnitOfWork()
+        uow.session = db_session
+        uow.camera = CameraRepository(db_session)
         
-        with container() as request_container:
-            service = request_container.get(CameraService)
-            
-            # Проверяем, что менеджеры действительно замокированы
-            assert service.camera_manager is mocks['camera_manager']
-            assert service.auto_ptz_manager is mocks['auto_ptz_manager']
+        camera = service.get_camera_by_id(uow, disabled_camera.id)
+        
+        assert camera is None
