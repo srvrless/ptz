@@ -18,7 +18,7 @@ class TestStreamsAPI:
                 mock_manager.get_or_create.return_value = mock_camera
 
                 # Мокируем конфиг, чтобы камера была найдена
-                from app.config.settings import CameraConfig
+                from app.config.settings import CameraConfig, AppConfig
 
                 config_dict = {
                     camera_db_onvif.id: CameraConfig(
@@ -37,9 +37,12 @@ class TestStreamsAPI:
                     )
                 }
 
+                # Patch get_config to return mocked config
+                mock_config = MagicMock(spec=AppConfig)
+                mock_config.cameras = config_dict
                 monkeypatch.setattr(
-                    "app.services.camera_service.config.cameras",
-                    config_dict,
+                    "app.api.v1.dependencies.get_config",
+                    lambda: mock_config,
                 )
 
                 response = client.post(

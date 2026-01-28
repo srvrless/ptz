@@ -1,6 +1,10 @@
+from unittest.mock import MagicMock
+
 from app.repositories.camera_repository import CameraRepository
 from app.services.camera_service import CameraService
 from app.utils.uow import UnitOfWork
+from app.config.settings import AppConfig
+from app.core.camera.manager import CameraManager
 
 
 class TestCameraService:
@@ -8,7 +12,11 @@ class TestCameraService:
 
     def test_list_cameras(self, db_session, camera_db_onvif, camera_db_tms20):
         """Проверяет получение списка камер."""
-        service = CameraService()
+        # Create mock dependencies
+        mock_camera_manager = MagicMock(spec=CameraManager)
+        mock_config = MagicMock(spec=AppConfig)
+        
+        service = CameraService(camera_manager=mock_camera_manager, config=mock_config)
         uow = UnitOfWork()
         uow.session = db_session
         uow.camera = CameraRepository(db_session)
@@ -20,7 +28,11 @@ class TestCameraService:
 
     def test_get_camera_by_id_success(self, db_session, camera_db_onvif):
         """Проверяет получение активной камеры по ID."""
-        service = CameraService()
+        # Create mock dependencies
+        mock_camera_manager = MagicMock(spec=CameraManager)
+        mock_config = MagicMock(spec=AppConfig)
+        
+        service = CameraService(camera_manager=mock_camera_manager, config=mock_config)
         uow = UnitOfWork()
         uow.session = db_session
         uow.camera = CameraRepository(db_session)
@@ -35,7 +47,11 @@ class TestCameraService:
 
     def test_get_camera_by_id_disabled_returns_none(self, db_session, disabled_camera):
         """Проверяет, что отключённая камера возвращает None."""
-        service = CameraService()
+        # Create mock dependencies
+        mock_camera_manager = MagicMock(spec=CameraManager)
+        mock_config = MagicMock(spec=AppConfig)
+        
+        service = CameraService(camera_manager=mock_camera_manager, config=mock_config)
         uow = UnitOfWork()
         uow.session = db_session
         uow.camera = CameraRepository(db_session)
