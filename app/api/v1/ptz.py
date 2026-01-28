@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 
 from app.api.v1.dependencies import get_ptz_service
@@ -15,7 +17,7 @@ def ptz_move(
     camera_id: int,
     body: MoveRequest,
     # _token: str = Depends(get_token),
-    ptz_service: PTZService = Depends(get_ptz_service),
+    ptz_service: Annotated[PTZService, Depends(get_ptz_service)],
 ):
     """
     Абсолютное позиционирование PTZ-камеры по координатам цели.
@@ -51,7 +53,7 @@ def ptz_continuous_move(
     camera_id: int,
     body: ContinuousMoveRequest,
     # _token: str = Depends(get_token),
-    ptz_service: PTZService = Depends(get_ptz_service),
+    ptz_service: Annotated[PTZService, Depends(get_ptz_service)],
 ):
     """
     Непрерывное движение PTZ.
@@ -82,7 +84,7 @@ def ptz_continuous_move(
 def ptz_stop(
     camera_id: int,
     # _token: str = Depends(get_token),
-    ptz_service: PTZService = Depends(get_ptz_service),
+    ptz_service: Annotated[PTZService, Depends(get_ptz_service)],
 ):
     """
     Остановить PTZ-движение.
@@ -102,7 +104,7 @@ def ptz_zoom(
     camera_id: int,
     body: ZoomRequest,
     # _token: str = Depends(get_token),
-    ptz_service: PTZService = Depends(get_ptz_service),
+    ptz_service: Annotated[PTZService, Depends(get_ptz_service)],
 ):
     """
     Управление зумом PTZ.

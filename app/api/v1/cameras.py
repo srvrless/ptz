@@ -1,8 +1,8 @@
-from typing import List
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.v1.dependencies import get_camera_service
+from app.api.v1.dependencies import get_camera_service, get_uow
 from app.schemas.camera import (
     CameraResponse,
     CreateCamera,
@@ -10,16 +10,15 @@ from app.schemas.camera import (
     UpdateCamera,
 )
 from app.services import CameraService
-
-from .dependencies import UOWDep
+from app.utils.uow import InterfaceUnitOfWork
 
 router = APIRouter(prefix="/api", tags=["cameras"])
 
 
 @router.get("/cameras")
 def list_cameras(
-    uow: UOWDep,
-    camera_service: CameraService = Depends(get_camera_service),
+    uow: Annotated[InterfaceUnitOfWork, Depends(get_uow)],
+    camera_service: Annotated[CameraService, Depends(get_camera_service)],
 ) -> List[CameraResponse]:
     """
     Вернуть список всех камер из конфига.
@@ -34,9 +33,9 @@ def list_cameras(
 
 @router.post("/camera")
 def create_camera(
-    uow: UOWDep,
+    uow: Annotated[InterfaceUnitOfWork, Depends(get_uow)],
     camera: CreateCamera,
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: Annotated[CameraService, Depends(get_camera_service)],
 ) -> CreateCameraResponse:
     """
     Создать новую камеру в конфиге.
@@ -47,9 +46,9 @@ def create_camera(
 @router.patch("/camera/{camera_id}")
 def patch_camera(
     camera_id: int,
-    uow: UOWDep,
+    uow: Annotated[InterfaceUnitOfWork, Depends(get_uow)],
     camera: UpdateCamera,
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: Annotated[CameraService, Depends(get_camera_service)],
 ):
     """
     Обновить данные камеры.
@@ -63,8 +62,8 @@ def patch_camera(
 @router.delete("/camera/{camera_id}")
 def soft_delete_camera(
     camera_id: int,
-    uow: UOWDep,
-    camera_service: CameraService = Depends(get_camera_service),
+    uow: Annotated[InterfaceUnitOfWork, Depends(get_uow)],
+    camera_service: Annotated[CameraService, Depends(get_camera_service)],
 ):
     """
     Пометить камеру как удалённую в конфиге.
@@ -79,9 +78,9 @@ def soft_delete_camera(
 
 @router.get("/camera/{camera_id}")
 def one_camera(
-    uow: UOWDep,
+    uow: Annotated[InterfaceUnitOfWork, Depends(get_uow)],
     camera_id: int,
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: Annotated[CameraService, Depends(get_camera_service)],
 ) -> CameraResponse:
     camera_response = camera_service.get_camera_by_id(uow, camera_id)
 

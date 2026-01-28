@@ -81,10 +81,133 @@ def db_session(test_db_session_factory):
 
 @pytest.fixture(scope="session")
 def app(test_db, test_db_session_factory):
-    """FastAPI приложение для тестов."""
-    app_instance = create_app()
-    return app_instance
-
+    """
+    FastAPI приложение для тестов.
+    
+    Создаёт приложение с тестовым контейнером dishka,
+    который использует тестовую БД вместо production БД.
+    """
+    from dishka import make_container, Provider, provide, Scope
+    from app.container import (
+        ConfigProvider, 
+        ManagersProvider, 
+        ServicesProvider
+    )
+    from app.utils.uow import UnitOfWork, InterfaceUnitOfWork
+    from sqlalchemy.orm import Session as SQLAlchemySession
+    from app.config.settings import AppConfig, CameraConfig
+    
+    # Создаём провайдер для тестовой БД
+    class TestDatabaseProvider(Provider):
+        """Провайдер, который использует тестовую БД вместо production."""
+        
+        @provide(scope=Scope.REQUEST)
+        def get_db_session(self):
+            """Возвращает сессию из тестовой БД."""
+            from typing import Iterator
+            session = test_db_session_factory()
+            try:
+                yield session
+            finally:
+                session.close()
+        
+        @provide(scope=Scope.REQUEST)
+        def get_uow(self, session: SQLAlchemySession):
+            """Создаёт UnitOfWork с тестовой сессией."""
+            from typing import Iterator
+            uow = UnitOfWork()
+            uow.session_factory = lambda: session
+            uow.__enter__()
+            try:
+                yield uow
+            finally:
+                uow.__exit__(None, None, None)
+    
+    # Создаём провайдер тестовой конфигурации
+    class TestConfigProvider(Provider):
+        """Провайдер конфигурации для тестов."""
+        
+        @provide(scope=Scope.APP)
+        def get_test_config(self) -> AppConfig:
+            """
+            Возвращает тестовую конфигурацию.
+            Камеры загружаются из тестовой БД.
+            """
+            from app.repositories.camera_repository import CameraRepository
+            
+            # Создаём базовую конфигурацию
+            config = AppConfig()
+            
+            # Загружаем камеры из тестовой БД
+            session = test_db_session_factory()
+            try:
+                repo = CameraRepository(session)
+                cameras = repo.get_all_cameras(enabled_only=True)
+                
+                # Конвертируем в CameraConfig
+                cameras_dict = {}
+                for camera in cameras:
+                    cameras_dict[camera.id] = CameraConfig.from_db_model(camera)
+                
+                config.cameras = cameras_dict
+            finally:
+                session.close()
+            
+            return config
+    
+    # Создаём тестовый контейнер
+    test_container = make_container(
+        TestConfigProvider(),  # используем тестовый конфиг
+        ManagersProvider(),
+        TestDatabaseProvider(),  # используем тестовый провайдер БД
+        ServicesProvider(),
+    )
+    
+    # Создаём приложение БЕЗ вызова create_app(),
+    # чтобы избежать двойной инициализации
+    from fastapi import FastAPI
+    from starlette.middleware.base import BaseHTTPMiddleware
+    from fastapi import Request
+    
+    app_instance = FastAPI(
+        title="PTZ Backend Test",
+        version="1.0.0-test",
+    )
+    
+    # Настраиваем sync dishka middleware
+    class DishkaMiddleware(BaseHTTPMiddleware):
+        """Middleware для управления контекстом Dishka в sync режиме."""
+        
+        def __init__(self, app, container):
+            super().__init__(app)
+            self.container = container
+        
+        async def dispatch(self, request: Request, call_next):
+            with self.container() as request_container:
+                request.state.dishka_container = request_container
+                response = await call_next(request)
+            return response
+    
+    app_instance.add_middleware(DishkaMiddleware, container=test_container)
+    app_instance.state.dishka_container = test_container
+    
+    # Добавляем роутеры
+    from app.api.v1.cameras import router as cameras_router
+    from app.api.v1.ptz import router as ptz_router
+    from app.api.v1.streams import router as streams_router
+    
+    app_instance.include_router(cameras_router)
+    app_instance.include_router(streams_router)
+    app_instance.include_router(ptz_router)
+    
+    # Регистрируем обработчики ошибок
+    from app.main import register_exception_handlers
+    register_exception_handlers(app_instance)
+    
+    yield app_instance
+    
+    # Cleanup: закрываем контейнер после всех тестов
+    test_container.close()
 
 @pytest.fixture
 def client(app):

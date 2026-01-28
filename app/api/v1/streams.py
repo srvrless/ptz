@@ -1,5 +1,7 @@
 # app/api/v1/streams.py
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 
 from app.api.v1.dependencies import get_camera_service
@@ -11,7 +13,7 @@ router = APIRouter(prefix="/api", tags=["streams"])
 @router.post("/camera/select/{camera_id}")
 def select_camera(
     camera_id: int,
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: Annotated[CameraService, Depends(get_camera_service)],
 ):
     """
     Фронт сообщает выбранную камеру.
@@ -25,7 +27,7 @@ def select_camera(
 
 @router.post("/camera/stop")
 def stop_selected_camera(
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: Annotated[CameraService, Depends(get_camera_service)],
 ):
     camera_service.stop_selected_camera()
     return {"stopped": True}

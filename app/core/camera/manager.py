@@ -140,6 +140,3 @@ class CameraManager:
         for cam in cams:
             cam.stop()
         logger.info("Все камеры остановлены")
-
-
-camera_manager = CameraManager()

@@ -1,13 +1,20 @@
-from fastapi import APIRouter
+from typing import Annotated
 
-from app.core.tracking.auto_ptz_manager import auto_ptz_manager
+from fastapi import APIRouter, Depends
+
+from app.api.v1.dependencies import get_auto_ptz_manager
+from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.schemas.auto_ptz import TrackRequest
 
 router = APIRouter(prefix="/api", tags=["auto-ptz"])
 
 
 @router.post("/track/{camera_id}")
-def start_auto_tracking(camera_id: int, body: TrackRequest):
+def start_auto_tracking(
+    camera_id: int,
+    body: TrackRequest,
+    auto_ptz_manager: Annotated[AutoPTZManager, Depends(get_auto_ptz_manager)],
+):
     """
     Включить слежение за объектом с указанным track_id.
     """
@@ -16,7 +23,10 @@ def start_auto_tracking(camera_id: int, body: TrackRequest):
 
 
 @router.post("/stop/{camera_id}")
-def stop_auto_tracking(camera_id: int):
+def stop_auto_tracking(
+    camera_id: int,
+    auto_ptz_manager: Annotated[AutoPTZManager, Depends(get_auto_ptz_manager)],
+):
     """
     Выключить автослежение для камеры.
     """
@@ -25,7 +35,10 @@ def stop_auto_tracking(camera_id: int):
 
 
 @router.get("/status/{camera_id}")
-def get_auto_tracking_status(camera_id: int):
+def get_auto_tracking_status(
+    camera_id: int,
+    auto_ptz_manager: Annotated[AutoPTZManager, Depends(get_auto_ptz_manager)],
+):
     """
     Получить текущий выбранный track_id (если есть).
     """
