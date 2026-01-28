@@ -1,28 +1,16 @@
-from typing import Annotated
+"""
+Этот файл больше не используется.
 
-from fastapi import Depends
+Зависимости теперь управляются через dishka (app/container.py).
 
-from app.services import (
-    CameraService,
-    PTZService,
-)
-from app.utils.uow import InterfaceUnitOfWork, UnitOfWork
+Все сервисы (CameraService, PTZService, UnitOfWork) внедряются
+автоматически через FromDishka[...] в роутерах.
 
-from app.config.settings import get_config
-from app.core.camera.manager import camera_manager
-from app.core.ptz.manager import ptz_camera_manager
+Для примеров использования смотрите:
+- app/container.py - определение провайдеров
+- app/api/v1/cameras.py - примеры использования FromDishka
+- app/main.py - настройка контейнера
 
-
-
-def get_camera_service() -> CameraService:
-    return CameraService(
-        camera_manager=camera_manager,
-        config=get_config(),
-    )
-def get_ptz_service() -> PTZService:
-    return PTZService(
-        ptz_manager=ptz_camera_manager,
-        config=get_config(),
-    )
-
-UOWDep = Annotated[InterfaceUnitOfWork, Depends(UnitOfWork)]
+Этот файл можно безопасно удалить после проверки,
+что все тесты работают корректно.
+"""

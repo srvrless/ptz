@@ -5,7 +5,7 @@ import time
 from typing import Any, List, Optional, Tuple
 
 from app.core.ptz.base import BasePTZController
-from app.core.ptz.manager import ptz_camera_manager
+from app.core.ptz.manager import PTZCameraManager
 from logger.setup_logger import get_logger
 
 logger = get_logger("auto_ptz_tracker")
@@ -25,6 +25,7 @@ class AutoPTZTracker:
     def __init__(
         self,
         camera_id: int,
+        ptz_manager: PTZCameraManager,
         *,
         kp_pan: float = 0.6,
         kp_tilt: float = 0.6,
@@ -40,7 +41,7 @@ class AutoPTZTracker:
         self.min_speed = min_speed
 
         self._controller: Optional[BasePTZController] = (
-            ptz_camera_manager.get_controller(camera_id)
+            ptz_manager.get_controller(camera_id)
         )
         if self._controller is None:
             logger.warning("AutoPTZ: контроллер для камеры %s не найден", camera_id)

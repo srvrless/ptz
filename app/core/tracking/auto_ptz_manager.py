@@ -3,6 +3,7 @@ from __future__ import annotations
 from threading import Lock
 from typing import Dict, Optional
 
+from app.core.ptz.manager import PTZCameraManager
 from app.core.tracking.auto_ptz_tracker import AutoPTZTracker
 
 
@@ -10,9 +11,12 @@ class AutoPTZManager:
     """
     Хранит AutoPTZTracker по camera_id, чтобы один и тот же трекер
     использовался и стримом, и API.
+    
+    После интеграции dishka получает PTZCameraManager через конструктор.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, ptz_manager: PTZCameraManager) -> None:
+        self._ptz_manager = ptz_manager
         self._trackers: Dict[str, AutoPTZTracker] = {}
         self._lock = Lock()
 
@@ -20,7 +24,7 @@ class AutoPTZManager:
         with self._lock:
             tracker = self._trackers.get(camera_id)
             if tracker is None:
-                tracker = AutoPTZTracker(camera_id)
+                tracker = AutoPTZTracker(camera_id, self._ptz_manager)
                 self._trackers[camera_id] = tracker
             return tracker
 
@@ -35,6 +39,3 @@ class AutoPTZManager:
     def get_target(self, camera_id: int) -> Optional[int]:
         tracker = self.get_or_create(camera_id)
         return tracker.get_target()
-
-
-auto_ptz_manager = AutoPTZManager()

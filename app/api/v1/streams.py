@@ -1,17 +1,18 @@
 # app/api/v1/streams.py
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
+from dishka import FromDishka
+from dishka.integrations.fastapi import DishkaSyncRoute
 
-from app.api.v1.dependencies import get_camera_service
 from app.services import CameraService
 
-router = APIRouter(prefix="/api", tags=["streams"])
+router = APIRouter(prefix="/api", tags=["streams"], route_class=DishkaSyncRoute)
 
 
 @router.post("/camera/select/{camera_id}")
 def select_camera(
     camera_id: int,
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: FromDishka[CameraService],
 ):
     """
     Фронт сообщает выбранную камеру.
@@ -25,7 +26,7 @@ def select_camera(
 
 @router.post("/camera/stop")
 def stop_selected_camera(
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: FromDishka[CameraService],
 ):
     camera_service.stop_selected_camera()
     return {"stopped": True}

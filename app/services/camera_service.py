@@ -4,8 +4,9 @@ from threading import Event, Lock, Thread
 from typing import Generator, List, Optional
 
 from app.config.settings import AppConfig
-from app.core.camera.manager import CameraConnection, CameraManager, camera_manager
+from app.core.camera.manager import CameraConnection, CameraManager
 from app.core.streaming.mjpeg import generate_mjpeg, run_detection_sender
+from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.schemas.camera import (
     CameraResponse,
     CreateCamera,
@@ -24,8 +25,14 @@ class CameraNotFoundError(Exception):
 
 
 class CameraService:
-    def __init__(self, camera_manager: CameraManager, config: AppConfig) -> None:
+    def __init__(
+        self,
+        camera_manager: CameraManager,
+        auto_ptz_manager: AutoPTZManager,
+        config: AppConfig,
+    ) -> None:
         self.camera_manager = camera_manager
+        self.auto_ptz_manager = auto_ptz_manager
         self.config = config
         self._lock = Lock()
         self._selected_camera_id: Optional[str] = None
@@ -86,7 +93,7 @@ class CameraService:
         cam_cfg = self.get_camera_config(camera_id)
 
         conn = CameraConnection(url=cam_cfg.rtsp_url)
-        camera = camera_manager.get_or_create(camera_id, conn)
+        camera = self.camera_manager.get_or_create(camera_id, conn)
 
         logger.info(
             f"Запуск MJPEG-стрима для {camera_id}, "
@@ -95,6 +102,7 @@ class CameraService:
         return generate_mjpeg(
             camera,
             camera_id=camera_id,
+            auto_ptz_manager=self.auto_ptz_manager,
             enable_detection=enable_detection,
             enable_auto_tracking=True,
         )
@@ -109,7 +117,7 @@ class CameraService:
         cam_cfg = self.get_camera_config(camera_id)
 
         conn = CameraConnection(url=cam_cfg.rtsp_url)
-        camera = camera_manager.get_or_create(camera_id, conn)
+        camera = self.camera_manager.get_or_create(camera_id, conn)
 
         with self._lock:
             # если уже выбрана и поток жив — ничего не делаем
@@ -129,6 +137,7 @@ class CameraService:
                 kwargs=dict(
                     camera=camera,
                     camera_id=camera_id,
+                    auto_ptz_manager=self.auto_ptz_manager,
                     enable_detection=enable_detection,
                     enable_auto_tracking=enable_auto_tracking,
                     stop_event=stop_event,

@@ -1,8 +1,9 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
+from dishka import FromDishka
+from dishka.integrations.fastapi import DishkaSyncRoute
 
-from app.api.v1.dependencies import get_camera_service
 from app.schemas.camera import (
     CameraResponse,
     CreateCamera,
@@ -10,16 +11,15 @@ from app.schemas.camera import (
     UpdateCamera,
 )
 from app.services import CameraService
+from app.utils.uow import InterfaceUnitOfWork
 
-from .dependencies import UOWDep
-
-router = APIRouter(prefix="/api", tags=["cameras"])
+router = APIRouter(prefix="/api", tags=["cameras"], route_class=DishkaSyncRoute)
 
 
 @router.get("/cameras")
 def list_cameras(
-    uow: UOWDep,
-    camera_service: CameraService = Depends(get_camera_service),
+    uow: FromDishka[InterfaceUnitOfWork],
+    camera_service: FromDishka[CameraService],
 ) -> List[CameraResponse]:
     """
     Вернуть список всех камер из конфига.
@@ -34,9 +34,9 @@ def list_cameras(
 
 @router.post("/camera")
 def create_camera(
-    uow: UOWDep,
+    uow: FromDishka[InterfaceUnitOfWork],
     camera: CreateCamera,
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: FromDishka[CameraService],
 ) -> CreateCameraResponse:
     """
     Создать новую камеру в конфиге.
@@ -47,9 +47,9 @@ def create_camera(
 @router.patch("/camera/{camera_id}")
 def patch_camera(
     camera_id: int,
-    uow: UOWDep,
+    uow: FromDishka[InterfaceUnitOfWork],
     camera: UpdateCamera,
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: FromDishka[CameraService],
 ):
     """
     Обновить данные камеры.
@@ -63,8 +63,8 @@ def patch_camera(
 @router.delete("/camera/{camera_id}")
 def soft_delete_camera(
     camera_id: int,
-    uow: UOWDep,
-    camera_service: CameraService = Depends(get_camera_service),
+    uow: FromDishka[InterfaceUnitOfWork],
+    camera_service: FromDishka[CameraService],
 ):
     """
     Пометить камеру как удалённую в конфиге.
@@ -79,9 +79,9 @@ def soft_delete_camera(
 
 @router.get("/camera/{camera_id}")
 def one_camera(
-    uow: UOWDep,
+    uow: FromDishka[InterfaceUnitOfWork],
     camera_id: int,
-    camera_service: CameraService = Depends(get_camera_service),
+    camera_service: FromDishka[CameraService],
 ) -> CameraResponse:
     camera_response = camera_service.get_camera_by_id(uow, camera_id)
 
