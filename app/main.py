@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from sqladmin import Admin
+from contextlib import asynccontextmanager
 
 from app.api.v1.admin import (
     CameraAdmin,
@@ -20,14 +21,24 @@ from logger.setup_logger import get_logger
 logger = get_logger("app")
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_database()
+    logger.info("Application startup complete")
+
+    yield
+    
+    logger.info("Остановка всех камер...")
+    camera_manager.stop_all()
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title="PTZ Backend",
         version="1.0.0",
+        lifespan=lifespan
     )
 
-    # Инициализируем БД
-    init_database()
 
     # Админка
     admin = Admin(app, engine, base_url="/admin", title="PTZ Admin")
@@ -44,11 +55,6 @@ def create_app() -> FastAPI:
 
     # Обработчики ошибок
     register_exception_handlers(app)
-
-    @app.on_event("shutdown")
-    async def shutdown_event():
-        logger.info("Остановка всех камер...")
-        camera_manager.stop_all()
 
     return app
 
