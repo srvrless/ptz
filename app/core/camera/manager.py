@@ -105,7 +105,7 @@ class CameraManager:
         self._cameras: Dict[str, Camera] = {}
         self._lock = threading.Lock()
 
-    def get_or_create(self, camera_id: str, conn: CameraConnection) -> Camera:
+    def get_or_create(self, camera_id: int, conn: CameraConnection) -> Camera:
         """
         Получить объект камеры по ID. Если ещё не создан — создать.
         """
@@ -117,11 +117,11 @@ class CameraManager:
                 self._cameras[camera_id] = cam
             return cam
 
-    def get(self, camera_id: str) -> Optional[Camera]:
+    def get(self, camera_id: int) -> Optional[Camera]:
         with self._lock:
             return self._cameras.get(camera_id)
 
-    def release(self, camera_id: str) -> None:
+    def release(self, camera_id: int) -> None:
         """
         Остановить и удалить конкретную камеру.
         """

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from threading import Event, Lock, Thread
 from typing import Generator, List, Optional
 
@@ -70,8 +71,8 @@ class CameraService:
                 return None
             return CameraResponse.from_camera(camera)
 
-    def get_camera_config(self, camera_id: str | int):
-        cam_cfg = config.cameras.get(int(camera_id))
+    def get_camera_config(self, camera_id: int):        
+        cam_cfg = config.cameras.get(camera_id)
         if not cam_cfg:
             logger.warning(f"Camera not found: {camera_id}")
             raise CameraNotFoundError(f"Camera not found: {camera_id}")
@@ -80,7 +81,7 @@ class CameraService:
     # старое оставляем (если нужно для отладки MJPEG)
     def get_mjpeg_stream(
         self,
-        camera_id: str,
+        camera_id: int,
         enable_detection: bool = True,
     ) -> Generator[bytes, None, None]:
         cam_cfg = self.get_camera_config(camera_id)
@@ -102,7 +103,7 @@ class CameraService:
     # НОВОЕ: выбрать камеру и запустить фоновую обработку (без MJPEG)
     def select_camera(
         self,
-        camera_id: str,
+        camera_id: int,
         enable_detection: bool = True,
         enable_auto_tracking: bool = True,
     ) -> None:

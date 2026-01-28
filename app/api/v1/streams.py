@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api", tags=["streams"])
 
 @router.post("/camera/select/{camera_id}")
 def select_camera(
-    camera_id: str,
+    camera_id: int,
     camera_service: CameraService = Depends(get_camera_service),
 ):
     """

@@ -11,7 +11,7 @@ logger = get_logger("streaming")
 
 class ProcessFrame(object):
     def __init__(
-        self, camera_id: str, enable_auto_tracking: bool, enable_detection: bool
+        self, camera_id: int, enable_auto_tracking: bool, enable_detection: bool
     ):
         self.camera_id = camera_id
         self.enable_auto_tracking = enable_auto_tracking

@@ -16,7 +16,7 @@ class AutoPTZManager:
         self._trackers: Dict[str, AutoPTZTracker] = {}
         self._lock = Lock()
 
-    def get_or_create(self, camera_id: str) -> AutoPTZTracker:
+    def get_or_create(self, camera_id: int) -> AutoPTZTracker:
         with self._lock:
             tracker = self._trackers.get(camera_id)
             if tracker is None:
@@ -24,15 +24,15 @@ class AutoPTZManager:
                 self._trackers[camera_id] = tracker
             return tracker
 
-    def set_target(self, camera_id: str, track_id: Optional[int]) -> None:
+    def set_target(self, camera_id: int, track_id: Optional[int]) -> None:
         tracker = self.get_or_create(camera_id)
         tracker.set_target(track_id)
 
-    def clear_target(self, camera_id: str) -> None:
+    def clear_target(self, camera_id: int) -> None:
         tracker = self.get_or_create(camera_id)
         tracker.clear_target()
 
-    def get_target(self, camera_id: str) -> Optional[int]:
+    def get_target(self, camera_id: int) -> Optional[int]:
         tracker = self.get_or_create(camera_id)
         return tracker.get_target()
 

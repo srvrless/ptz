@@ -38,7 +38,7 @@ def _default_connection_factory() -> SocketConnection:
 
 def run_detection_sender(
     camera,
-    camera_id: str,
+    camera_id: int,
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
     stop_event: Optional[Event] = None,
@@ -92,7 +92,7 @@ def run_detection_sender(
 
 def generate_mjpeg(
     camera,
-    camera_id: str,
+    camera_id: int,
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
     connection_config: Optional[ConnectionConfig] = None,

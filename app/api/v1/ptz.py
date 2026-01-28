@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api", tags=["ptz"])
 
 @router.post("/ptz/{camera_id}/move/")
 def ptz_move(
-    camera_id: str,
+    camera_id: int,
     body: MoveRequest,
     # _token: str = Depends(get_token),
     ptz_service: PTZService = Depends(get_ptz_service),
@@ -48,7 +48,7 @@ def ptz_move(
 
 @router.post("/ptz/{camera_id}/continuous_move/")
 def ptz_continuous_move(
-    camera_id: str,
+    camera_id: int,
     body: ContinuousMoveRequest,
     # _token: str = Depends(get_token),
     ptz_service: PTZService = Depends(get_ptz_service),
@@ -80,7 +80,7 @@ def ptz_continuous_move(
 
 @router.post("/ptz/{camera_id}/stop/")
 def ptz_stop(
-    camera_id: str,
+    camera_id: int,
     # _token: str = Depends(get_token),
     ptz_service: PTZService = Depends(get_ptz_service),
 ):
@@ -99,7 +99,7 @@ def ptz_stop(
 
 @router.post("/ptz/{camera_id}/zoom/")
 def ptz_zoom(
-    camera_id: str,
+    camera_id: int,
     body: ZoomRequest,
     # _token: str = Depends(get_token),
     ptz_service: PTZService = Depends(get_ptz_service),

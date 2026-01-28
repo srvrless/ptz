@@ -90,7 +90,7 @@ class PTZService:
 
     def continuous_move(
         self,
-        camera_id: str,
+        camera_id: int,
         *,
         x: float,
         y: float,
@@ -128,7 +128,7 @@ class PTZService:
         controller.set_zoom(zoom_delta)
         logger.info(f"PTZ set_zoom camera={camera_id}, delta={zoom_delta}")
 
-    def get_status(self, camera_id: str) -> Dict[str, Any]:
+    def get_status(self, camera_id: int) -> Dict[str, Any]:
         """
         Вернуть статус PTZ — пока только азимут.
         Можно расширить, добавив tilt/zoom и т.п.
