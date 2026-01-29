@@ -4,18 +4,11 @@ from typing import Any, Dict, Optional
 
 from app.config.settings import AppConfig
 from app.core.ptz.controller import PTZController
-from app.core.ptz.manager import PTZCameraManager
+from app.core.ptz.manager import ptz_camera_manager
+from app.exceptions import PTZControllerNotFoundError, PTZMoveError
 from logger.setup_logger import get_logger
 
 logger = get_logger("ptz_service")
-
-
-class PTZControllerNotFoundError(Exception):
-    """PTZ-контроллер для указанной камеры не найден."""
-
-
-class PTZMoveError(Exception):
-    """Ошибка при наведении PTZ на цель."""
 
 
 class PTZService:
@@ -34,9 +27,7 @@ class PTZService:
         controller = self._ptz_manager.get_controller(camera_id)
         if controller is None:
             logger.warning(f"PTZController not found for camera {camera_id}")
-            raise PTZControllerNotFoundError(
-                f"PTZController not found for camera {camera_id}"
-            )
+            raise PTZControllerNotFoundError(camera_id)
         return controller
 
     def _get_radar_height(self, radar_id: int) -> float:
@@ -86,7 +77,7 @@ class PTZService:
 
         if target_az is None:
             logger.error(f"PTZ move_to_target failed for {camera_id}")
-            raise PTZMoveError("Failed to move PTZ to target")
+            raise PTZMoveError(camera_id=camera_id, reason="target_az is None")
 
         logger.info(f"PTZ {camera_id} moved to azimuth {target_az:.2f}")
         return {"status": "ok", "azimut": float(target_az)}

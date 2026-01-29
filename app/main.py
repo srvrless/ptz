@@ -18,11 +18,7 @@ from app.api.v1.streams import router as streams_router
 from app.container import create_container
 from app.core.camera.manager import CameraManager
 from app.db.base import engine
-from app.services import (
-    CameraNotFoundError,
-    PTZControllerNotFoundError,
-    PTZMoveError,
-)
+from app.exceptions import CameraNotFoundError, PTZControllerNotFoundError, PTZMoveError
 from logger.setup_logger import get_logger
 
 logger = get_logger("app")

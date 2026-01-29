@@ -6,13 +6,16 @@ from typing import Optional
 from app.core.ptz.base import BasePTZController
 from app.utils.geo import normalize_relative
 from logger.setup_logger import get_logger
+from app.config.settings import CameraConfig
+from app.core.ptz.factory import PTZControllerFactory
 from TCP_COMP import (
     Tms20TCP,
-)  # файл TCP_COMP.py лежит в корне проекта :contentReference[oaicite:0]{index=0}
+)  # файл TCP_COMP.py лежит в корне проекта
 
 logger = get_logger("tms20_controller")
 
 
+@PTZControllerFactory.register("tms20")
 class Tms20PTZController(BasePTZController):
     """
     PTZ-контроллер для головы по протоколу TMS-20.
@@ -44,6 +47,18 @@ class Tms20PTZController(BasePTZController):
             self._tcp.power_on_cam()
         except Exception as e:
             logger.error(f"TMS-20 power on error: {e}")
+
+    @classmethod
+    def from_config(cls, config: CameraConfig) -> "Tms20PTZController":
+        """Создать контроллер из конфига камеры."""
+        return cls(
+            host=config.host,
+            port=config.port or 1470,
+            cam_lat=config.lat,
+            cam_lon=config.lon,
+            cam_h=config.height,
+            cam_rate=config.rate,
+        )
 
     # ---------- реализация абстрактных методов ----------
 
