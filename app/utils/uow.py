@@ -25,8 +25,8 @@ class InterfaceUnitOfWork(ABC):
 
 
 class UnitOfWork(InterfaceUnitOfWork):
-    def __init__(self, session_factory=None):
-        self.session_factory = session_factory or Session
+    def __init__(self):
+        self.session_factory =  Session
 
     def __enter__(self):
         self.session = self.session_factory()

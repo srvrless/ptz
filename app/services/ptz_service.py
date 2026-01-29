@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from app.config.settings import config
+from app.config.settings import AppConfig
 from app.core.ptz.controller import PTZController
 from app.core.ptz.manager import ptz_camera_manager
 from app.exceptions import PTZControllerNotFoundError, PTZMoveError
@@ -19,9 +19,12 @@ class PTZService:
       - работу с radar_id / heights,
       - решение, когда делать restart камеры.
     """
+    def __init__(self, ptz_manager: PTZCameraManager, config: AppConfig):
+        self._ptz_manager = ptz_manager
+        self.config = config
 
     def _get_controller(self, camera_id: int) -> PTZController:
-        controller = ptz_camera_manager.get_controller(camera_id)
+        controller = self._ptz_manager.get_controller(camera_id)
         if controller is None:
             logger.warning(f"PTZController not found for camera {camera_id}")
             raise PTZControllerNotFoundError(camera_id)
@@ -29,7 +32,7 @@ class PTZService:
 
     def _get_radar_height(self, radar_id: int) -> float:
         try:
-            return config.heights[radar_id - 1]
+            return self.config.heights[radar_id - 1]
         except IndexError:
             raise ValueError(f"Invalid radar_id: {radar_id}")
 
@@ -60,7 +63,7 @@ class PTZService:
 
         if restart_before_move:
             logger.info(f"Restart PTZ controller before move: {camera_id}")
-            ptz_camera_manager.restart_camera(camera_id)
+            self._ptz_manager.restart_camera(camera_id)
 
         controller = self._get_controller(camera_id)
 
@@ -104,7 +107,7 @@ class PTZService:
         controller = self._get_controller(camera_id)
         controller.stop()
         # по аналогии со старым кодом — после остановки можно сделать restart
-        ptz_camera_manager.restart_camera(camera_id)
+        self._ptz_manager.restart_camera(camera_id)
         controller = self._get_controller(camera_id)
 
         azimut = controller.get_azimut()
@@ -130,6 +133,3 @@ class PTZService:
         # при желании можно вернуть ещё и "сырые" данные:
         # return {"azimut": azimut, "raw": asdict(...)}
         # (если сделаем отдельную dataclass-модель статуса)
-
-
-ptz_service_instance = PTZService()

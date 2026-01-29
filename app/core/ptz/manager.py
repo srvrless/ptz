@@ -63,6 +63,3 @@ class PTZCameraManager:
         if controller:
             self._controllers[camera_id] = controller
         return controller
-
-
-ptz_camera_manager = PTZCameraManager()

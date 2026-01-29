@@ -197,6 +197,15 @@ wheels = [
 ]
 
 [[package]]
+name = "dishka"
+version = "1.7.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/af/53/41679bbc5f738655c320b3f32eb957111a89abb4a0c5cd652a7cb4cb244b/dishka-1.7.1.tar.gz", hash = "sha256:a5a5eee9f2cd233c08ddaa11e95b8b0229dd9b712e2117ee39ce475c2d65f597", size = 67891, upload-time = "2025-09-13T16:37:13.296Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3a/41/fae3b2ee895ea5b3f42a5572e17e19ab0085cb4d92f9ac8feecdaa8bd19f/dishka-1.7.1-py3-none-any.whl", hash = "sha256:42f756f685ebc71c126e82dd9e002b7f277d97c8c7868c1ee412d265a3c98b63", size = 94567, upload-time = "2025-09-13T16:37:11.671Z" },
+]
+
+[[package]]
 name = "distlib"
 version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1282,6 +1291,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "alembic" },
     { name = "black" },
+    { name = "dishka" },
     { name = "environs" },
     { name = "fastapi" },
     { name = "flake8" },
@@ -1312,6 +1322,7 @@ dev = [
 requires-dist = [
     { name = "alembic", specifier = ">=1.18.1" },
     { name = "black", specifier = ">=25.9.0" },
+    { name = "dishka", extras = ["fastapi"], specifier = "==1.7.1" },
     { name = "environs", specifier = ">=14.3.0" },
     { name = "fastapi", specifier = ">=0.123.3" },
     { name = "flake8", specifier = ">=7.3.0" },

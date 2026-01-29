@@ -39,6 +39,7 @@ def _default_connection_factory() -> SocketConnection:
 def run_detection_sender(
     camera,
     camera_id: int,
+    auto_ptz_manager,
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
     stop_event: Optional[Event] = None,
@@ -46,9 +47,19 @@ def run_detection_sender(
     """
     Читает кадры из camera.get_frame(), детектит/трекает и шлёт JSON по сокету.
     НИЧЕГО не стримит как видео (нет yield).
+    
+    Args:
+        camera: Camera instance
+        camera_id: ID камеры
+        auto_ptz_manager: AutoPTZManager для управления слежением
+        enable_detection: Включить детекцию объектов
+        enable_auto_tracking: Включить автоматическое слежение
+        stop_event: Event для остановки потока
     """
 
-    prcocess_manager = ProcessFrame(camera_id, enable_auto_tracking, enable_detection)
+    prcocess_manager = ProcessFrame(
+        camera_id, auto_ptz_manager, enable_auto_tracking, enable_detection
+    )
 
     factory = _default_connection_factory
 
@@ -93,11 +104,25 @@ def run_detection_sender(
 def generate_mjpeg(
     camera,
     camera_id: int,
+    auto_ptz_manager,
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
     connection_config: Optional[ConnectionConfig] = None,
 ) -> Generator[bytes, None, None]:
-    prcocess_manager = ProcessFrame(camera_id, enable_auto_tracking, enable_detection)
+    """
+    Генерирует MJPEG стрим с детекцией и трекингом.
+    
+    Args:
+        camera: Camera instance
+        camera_id: ID камеры
+        auto_ptz_manager: AutoPTZManager для управления слежением
+        enable_detection: Включить детекцию объектов
+        enable_auto_tracking: Включить автоматическое слежение
+        connection_config: Конфигурация сокет-подключения
+    """
+    prcocess_manager = ProcessFrame(
+        camera_id, auto_ptz_manager, enable_auto_tracking, enable_detection
+    )
 
     with _default_connection_factory() as s:
         while True:

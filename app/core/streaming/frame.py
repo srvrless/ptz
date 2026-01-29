@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from app.core.detection.yolo_detector import Detection, ObjectDetector, get_detector
-from app.core.tracking.auto_ptz_manager import auto_ptz_manager
+from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.core.tracking.auto_ptz_tracker import AutoPTZTracker
 from app.core.tracking.centroid_tracker import CentroidTracker
 from logger.setup_logger import get_logger
@@ -11,7 +11,11 @@ logger = get_logger("streaming")
 
 class ProcessFrame(object):
     def __init__(
-        self, camera_id: int, enable_auto_tracking: bool, enable_detection: bool
+        self,
+        camera_id: int,
+        auto_ptz_manager: AutoPTZManager,
+        enable_auto_tracking: bool,
+        enable_detection: bool,
     ):
         self.camera_id = camera_id
         self.enable_auto_tracking = enable_auto_tracking
