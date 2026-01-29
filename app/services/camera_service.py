@@ -16,13 +16,10 @@ from app.schemas.camera import (
     UpdateCameraResponse,
 )
 from app.utils.uow import InterfaceUnitOfWork
+from app.exceptions import CameraNotFoundError
 from logger.setup_logger import get_logger
 
 logger = get_logger("camera_service")
-
-
-class CameraNotFoundError(Exception):
-    """Камера с указанным ID не найдена в конфиге."""
 
 
 class CameraService:
@@ -54,7 +51,7 @@ class CameraService:
                 camera_id, **camera_data.dict_for_repo()
             )
             if camera_obj is None:
-                return None
+                raise CameraNotFoundError(camera_id)
             return UpdateCameraResponse.from_camera(camera_obj)
 
     def soft_delete_camera(self, uow: InterfaceUnitOfWork, camera_id: int) -> bool:
@@ -68,14 +65,14 @@ class CameraService:
         with uow:
             camera = uow.camera.get_camera_by_id(camera_id)
             if camera is None:
-                return None
+                raise CameraNotFoundError(camera_id)
             return CameraResponse.from_camera(camera)
 
     def get_camera_config(self, camera_id: int):        
         cam_cfg = config.cameras.get(camera_id)
         if not cam_cfg:
             logger.warning(f"Camera not found: {camera_id}")
-            raise CameraNotFoundError(f"Camera not found: {camera_id}")
+            raise CameraNotFoundError(camera_id)
         return cam_cfg
 
     # старое оставляем (если нужно для отладки MJPEG)

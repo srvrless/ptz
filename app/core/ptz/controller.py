@@ -5,7 +5,9 @@ from typing import Optional
 from onvif import ONVIFCamera
 
 from app.core.ptz.base import BasePTZController
+from app.core.ptz.factory import PTZControllerFactory
 from app.utils.geo import normalize_deg
+from app.config.settings import CameraConfig
 from logger.setup_logger import get_logger
 
 logger = get_logger("ptz_controller")
@@ -13,6 +15,7 @@ logger = get_logger("ptz_controller")
 MAX_TILT_ANGLE = 45.0  # максимально допустимый угол места в градусах
 
 
+@PTZControllerFactory.register("onvif")
 class PTZController(BasePTZController):
     """
     ONVIF PTZ-контроллер.
@@ -48,6 +51,20 @@ class PTZController(BasePTZController):
         self.status = None
 
         self._connect()
+
+    @classmethod
+    def from_config(cls, config: CameraConfig) -> "PTZController":
+        """Создать контроллер из конфига камеры."""
+        return cls(
+            host=config.host,
+            user=config.user,
+            password=config.password,
+            port=config.port,
+            cam_rate=config.rate,
+            cam_lat=config.lat,
+            cam_lon=config.lon,
+            cam_h=config.height,
+        )
 
     # ---------- подключение ----------
 
