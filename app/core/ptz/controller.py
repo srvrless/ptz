@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from typing import Optional
 
 from onvif import ONVIFCamera
@@ -11,6 +12,11 @@ from logger.setup_logger import get_logger
 logger = get_logger("ptz_controller")
 
 MAX_TILT_ANGLE = 45.0  # максимально допустимый угол места в градусах
+
+# Состояния zoom для предотвращения спама команд
+ZOOM_STATE_STOP = 0
+ZOOM_STATE_IN = 1
+ZOOM_STATE_OUT = -1
 
 
 class PTZController(BasePTZController):
@@ -47,6 +53,17 @@ class PTZController(BasePTZController):
         self.profile = None
         self.status = None
 
+        # Отслеживание состояния zoom чтобы не спамить одинаковые команды
+        self._current_zoom_state: int = ZOOM_STATE_STOP
+
+        # Кэш статуса чтобы не делать сетевой запрос на каждый вызов continuous_move
+        self._status_cache_time: float = 0.0
+        self._status_cache_ttl: float = 1.0  # Обновлять статус не чаще раза в секунду
+
+        # Метрики для диагностики
+        self._cmd_count: int = 0
+        self._zoom_cmd_count: int = 0
+
         self._connect()
 
     # ---------- подключение ----------
@@ -80,11 +97,22 @@ class PTZController(BasePTZController):
             self.profile = None
             self.status = None
 
-    def _refresh_status(self) -> None:
+    def _refresh_status(self, force: bool = False) -> None:
+        """
+        Обновить статус камеры.
+        Используется кэширование чтобы не делать сетевые запросы слишком часто.
+        force=True — принудительно обновить игнорируя кэш.
+        """
         if not self.ptz or not self.profile:
             return
+
+        now = time.monotonic()
+        if not force and (now - self._status_cache_time) < self._status_cache_ttl:
+            return  # Используем кэшированный статус
+
         try:
             self.status = self.ptz.GetStatus({"ProfileToken": self.profile.token})
+            self._status_cache_time = now
         except Exception as e:
             logger.error(f"Ошибка получения статуса PTZ: {e}")
 
@@ -95,7 +123,7 @@ class PTZController(BasePTZController):
         Текущий азимут камеры в градусах [0, 360) с учётом cam_rate.
         Переводит pan [-1,1] в градусы.
         """
-        self._refresh_status()
+        self._refresh_status(force=True)  # Нужен актуальный статус
         if not self.status:
             return None
         try:
@@ -135,7 +163,7 @@ class PTZController(BasePTZController):
             return
 
         try:
-            self._refresh_status()
+            self._refresh_status(force=True)  # Нужен актуальный статус для позиции
             request = self.ptz.create_type("AbsoluteMove")
             request.ProfileToken = self.profile.token
             request.Position = self.status.Position
@@ -150,17 +178,49 @@ class PTZController(BasePTZController):
                 request.Position.Zoom.x = self.status.Position.Zoom.x
 
             self.ptz.AbsoluteMove(request)
-            self._refresh_status()
+            self._refresh_status(force=True)
         except Exception as e:
             logger.error(f"PTZ AbsoluteMove error: {e}")
 
     def continuous_move(self, x: float, y: float, zoom: float = 0.0) -> None:
+        """
+        Непрерывное движение камеры.
+        x, y: скорость pan/tilt [-1, 1]
+        zoom: скорость zoom [-1, 1], где >0 = zoom in, <0 = zoom out, 0 = stop
+
+        Оптимизации:
+        - Кэширование статуса (не запрашивать при каждом вызове)
+        - Отслеживание состояния zoom (логирование изменений)
+        """
         if not self.ptz or not self.profile:
             logger.error("PTZ-сервис не инициализирован")
             return
 
+        self._cmd_count += 1
+
+        # Определяем желаемое состояние zoom для логирования
+        if zoom > 0:
+            desired_zoom_state = ZOOM_STATE_IN
+        elif zoom < 0:
+            desired_zoom_state = ZOOM_STATE_OUT
+        else:
+            desired_zoom_state = ZOOM_STATE_STOP
+
+        # Логируем изменения состояния zoom
+        if desired_zoom_state != self._current_zoom_state:
+            self._zoom_cmd_count += 1
+            if desired_zoom_state == ZOOM_STATE_IN:
+                logger.debug("ONVIF ZOOM: IN (zoom=%.3f)", zoom)
+            elif desired_zoom_state == ZOOM_STATE_OUT:
+                logger.debug("ONVIF ZOOM: OUT (zoom=%.3f)", zoom)
+            else:
+                logger.debug("ONVIF ZOOM: STOP")
+            self._current_zoom_state = desired_zoom_state
+
         try:
+            # Используем кэшированный статус (обновляется не чаще раза в секунду)
             self._refresh_status()
+
             request = self.ptz.create_type("ContinuousMove")
             request.ProfileToken = self.profile.token
 
@@ -184,6 +244,14 @@ class PTZController(BasePTZController):
             request.PanTilt = pan_tilt
             request.Zoom = zoom
             self.ptz.Stop(request)
+
+            # Обновляем состояние zoom
+            if zoom and self._current_zoom_state != ZOOM_STATE_STOP:
+                logger.debug(
+                    "ONVIF ZOOM: STOP via stop() (prev_state=%d)",
+                    self._current_zoom_state
+                )
+                self._current_zoom_state = ZOOM_STATE_STOP
         except Exception as e:
             logger.error(f"PTZ stop error: {e}")
 
@@ -196,7 +264,7 @@ class PTZController(BasePTZController):
             logger.error("PTZ-сервис не инициализирован")
             return
 
-        self._refresh_status()
+        self._refresh_status(force=True)  # Нужен актуальный статус для текущего zoom
         try:
             current = getattr(self.status.Position.Zoom, "x", 0.0) or 0.0
             new_zoom = max(0.0, min(1.0, current + delta))
@@ -207,7 +275,7 @@ class PTZController(BasePTZController):
             request.Position.Zoom.x = new_zoom
 
             self.ptz.AbsoluteMove(request)
-            self._refresh_status()
+            self._refresh_status(force=True)
         except Exception as e:
             logger.error(f"PTZ set_zoom error: {e}")
 

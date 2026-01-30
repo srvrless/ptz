@@ -8,9 +8,14 @@ from app.utils.geo import normalize_relative
 from logger.setup_logger import get_logger
 from TCP_COMP import (
     Tms20TCP,
-)  # файл TCP_COMP.py лежит в корне проекта :contentReference[oaicite:0]{index=0}
+)  # файл TCP_COMP.py лежит в корне проекта
 
 logger = get_logger("tms20_controller")
+
+# Состояния zoom для предотвращения спама команд
+ZOOM_STATE_STOP = 0
+ZOOM_STATE_IN = 1
+ZOOM_STATE_OUT = -1
 
 
 class Tms20PTZController(BasePTZController):
@@ -39,9 +44,23 @@ class Tms20PTZController(BasePTZController):
         self._tcp = Tms20TCP(ip=host, port=port, pt_addr=pt_addr, cam_addr=cam_addr)
         self._last_azimut: Optional[float] = None
 
+        # Отслеживание состояния zoom чтобы не спамить одинаковые команды
+        self._current_zoom_state: int = ZOOM_STATE_STOP
+
+        # Метрики для диагностики
+        self._metrics_enabled: bool = False
+        self._last_cmd_time: float = 0.0
+        self._cmd_count: int = 0
+        self._zoom_cmd_count: int = 0
+
+        # Состояние тепловизора
+        self._thermal_enabled: bool = False
+
         try:
             self._tcp.power_on_pt()
             self._tcp.power_on_cam()
+            # self._tcp.power_on_ir()  # тепловизор включается вместе с камерой
+            # self._thermal_enabled = True
         except Exception as e:
             logger.error(f"TMS-20 power on error: {e}")
 
@@ -68,7 +87,9 @@ class Tms20PTZController(BasePTZController):
     def continuous_move(self, x: float, y: float, zoom: float = 0.0) -> None:
         """
         x, y в [-1, 1] → скорость 0..63 по протоколу.
+        zoom: > 0 — приближение, < 0 — отдаление, = 0 — остановка zoom.
         """
+        cmd_start = time.perf_counter()
 
         def speed(v: float) -> int:
             return max(0, min(63, int(abs(v) * 63)))
@@ -93,24 +114,63 @@ class Tms20PTZController(BasePTZController):
             elif x < 0 and y < 0:
                 self._tcp.move_down_left(speed(x), speed(y))
         except Exception as e:
-            logger.error(f"TMS-20 continuous_move error: {e}")
+            logger.error(f"TMS-20 continuous_move pan/tilt error: {e}")
 
-        # zoom управление (по желанию):
-        if zoom != 0:
+        # ====== ZOOM с защитой от спама ======
+        # Определяем желаемое состояние zoom
+        if zoom > 0:
+            desired_zoom_state = ZOOM_STATE_IN
+        elif zoom < 0:
+            desired_zoom_state = ZOOM_STATE_OUT
+        else:
+            desired_zoom_state = ZOOM_STATE_STOP
+
+        # Отправляем команду ТОЛЬКО если состояние изменилось
+        if desired_zoom_state != self._current_zoom_state:
             try:
-                if zoom > 0:
+                if desired_zoom_state == ZOOM_STATE_IN:
                     self._tcp.zoom_in()
-                else:
+                    self._zoom_cmd_count += 1
+                    logger.debug("TMS-20 ZOOM: IN (zoom_cmd=%.3f)", zoom)
+                elif desired_zoom_state == ZOOM_STATE_OUT:
                     self._tcp.zoom_out()
+                    self._zoom_cmd_count += 1
+                    logger.debug("TMS-20 ZOOM: OUT (zoom_cmd=%.3f)", zoom)
+                else:  # ZOOM_STATE_STOP
+                    self._tcp.zoom_stop()
+                    self._zoom_cmd_count += 1
+                    logger.debug("TMS-20 ZOOM: STOP (zoom_cmd=%.3f)", zoom)
+
+                self._current_zoom_state = desired_zoom_state
             except Exception as e:
-                logger.error(f"TMS-20 zoom move error: {e}")
+                logger.error(f"TMS-20 zoom command error: {e}")
+
+        # ====== Метрики ======
+        cmd_duration = time.perf_counter() - cmd_start
+        self._cmd_count += 1
+
+        # Логируем каждые 100 команд или если команда заняла много времени
+        if self._cmd_count % 100 == 0 or cmd_duration > 0.05:
+            logger.info(
+                "TMS-20 METRICS: cmd_count=%d, zoom_cmds=%d, last_cmd_ms=%.1f, "
+                "x=%.3f, y=%.3f, zoom=%.3f, zoom_state=%d",
+                self._cmd_count, self._zoom_cmd_count, cmd_duration * 1000,
+                x, y, zoom, self._current_zoom_state
+            )
 
     def stop(self, pan_tilt: bool = True, zoom: bool = True) -> None:
         try:
             if pan_tilt:
                 self._tcp.stop()
             if zoom:
+                # Логируем на debug уровне только если состояние менялось
+                if self._current_zoom_state != ZOOM_STATE_STOP:
+                    logger.debug(
+                        "TMS-20 ZOOM: STOP via stop() (prev_state=%d)",
+                        self._current_zoom_state
+                    )
                 self._tcp.zoom_stop()
+                self._current_zoom_state = ZOOM_STATE_STOP
         except Exception as e:
             logger.error(f"TMS-20 stop error: {e}")
 
