@@ -1,10 +1,18 @@
 from __future__ import annotations
 
+from enum import Enum
 from functools import lru_cache
 from typing import Dict, Optional
 
 from pydantic import BaseModel, Field, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class DetectorMode(str, Enum):
+    """Режим детектора: оптический или тепловизионный."""
+
+    OPTICAL = "optical"
+    THERMAL = "thermal"
 
 # ---------- Модель камеры ----------
 
@@ -73,9 +81,17 @@ class AppConfig(BaseSettings):
     cameras_raw: str = Field("", alias="CAMERAS")
 
     # DETECTION
-    detector_weights: Optional[str] = Field(
-        default="best.pt",
-        description="Файл весов YOLO (относительно корня проекта)",
+    detector_weights_optical: str = Field(
+        default="optical.pt",
+        description="Файл весов YOLO для оптического режима (относительно корня проекта)",
+    )
+    detector_weights_thermal: str = Field(
+        default="thermal.pt",
+        description="Файл весов YOLO для тепловизионного режима (относительно корня проекта)",
+    )
+    detector_default_mode: DetectorMode = Field(
+        default=DetectorMode.OPTICAL,
+        description="Режим детектора по умолчанию при старте",
     )
     detector_conf: float = Field(0.3, ge=0, le=1)
     detector_device: Optional[str] = None  # cpu / cuda / xpu — если нужно форсить

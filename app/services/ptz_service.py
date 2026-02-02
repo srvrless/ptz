@@ -4,7 +4,6 @@ from typing import Any, Dict, Optional
 
 from app.config.settings import AppConfig
 from app.core.ptz.controller import PTZController
-from app.core.ptz.manager import ptz_camera_manager
 from app.exceptions import PTZControllerNotFoundError, PTZMoveError
 from logger.setup_logger import get_logger
 
