@@ -1,33 +1,42 @@
 # app/api/v1/detector.py
 
-from app.schemas.detector import DetectorModeRequest, DetectorModeResponse, DetectorStatusResponse
+from dishka import FromDishka
+from dishka.integrations.fastapi import DishkaSyncRoute
 from fastapi import APIRouter, HTTPException
 
 from app.config.settings import DetectorMode
-from app.core.detection.yolo_detector import get_detector_manager
+from app.core.detection.yolo_detector import DetectorManager
+from app.schemas.detector import (
+    DetectorModeRequest,
+    DetectorModeResponse,
+    DetectorStatusResponse,
+)
 
-router = APIRouter(prefix="/api/detector", tags=["detector"])
-
-
+router = APIRouter(
+    prefix="/api/detector", tags=["detector"], route_class=DishkaSyncRoute
+)
 
 
 @router.get("/status", response_model=DetectorStatusResponse)
-def get_detector_status():
+def get_detector_status(
+    detector_manager: FromDishka[DetectorManager],
+):
     """
     Получить текущий статус детектора.
     Возвращает текущий режим и доступные режимы с информацией о весах.
     """
-    manager = get_detector_manager()
-    current_mode = manager.get_current_mode()
-
+    current_mode = detector_manager.get_current_mode()
     return DetectorStatusResponse(
         current_mode=current_mode.value if current_mode else None,
-        available_modes=manager.get_available_modes(),
+        available_modes=detector_manager.get_available_modes(),
     )
 
 
 @router.post("/mode", response_model=DetectorModeResponse)
-def switch_detector_mode(request: DetectorModeRequest):
+def switch_detector_mode(
+    request: DetectorModeRequest,
+    detector_manager: FromDishka[DetectorManager],
+):
     """
     Переключить режим детектора между optical и thermal.
 
@@ -36,10 +45,7 @@ def switch_detector_mode(request: DetectorModeRequest):
 
     Потоки детекции автоматически начнут использовать новый детектор.
     """
-    manager = get_detector_manager()
-
-    # Проверяем доступность весов для запрошенного режима
-    available = manager.get_available_modes()
+    available = detector_manager.get_available_modes()
     mode_info = available.get(request.mode.value)
 
     if not mode_info or not mode_info["available"]:
@@ -50,7 +56,7 @@ def switch_detector_mode(request: DetectorModeRequest):
         )
 
     try:
-        new_mode = manager.switch_mode(request.mode)
+        new_mode = detector_manager.switch_mode(request.mode)
         return DetectorModeResponse(
             current_mode=new_mode.value,
             message=f"Detector switched to {new_mode.value} mode",
@@ -64,12 +70,22 @@ def switch_detector_mode(request: DetectorModeRequest):
 
 
 @router.post("/mode/optical", response_model=DetectorModeResponse)
-def switch_to_optical():
+def switch_to_optical(
+    detector_manager: FromDishka[DetectorManager],
+):
     """Быстрое переключение на оптический режим."""
-    return switch_detector_mode(DetectorModeRequest(mode=DetectorMode.OPTICAL))
+    return switch_detector_mode(
+        DetectorModeRequest(mode=DetectorMode.OPTICAL),
+        detector_manager,
+    )
 
 
 @router.post("/mode/thermal", response_model=DetectorModeResponse)
-def switch_to_thermal():
+def switch_to_thermal(
+    detector_manager: FromDishka[DetectorManager],
+):
     """Быстрое переключение на тепловизионный режим."""
-    return switch_detector_mode(DetectorModeRequest(mode=DetectorMode.THERMAL))
+    return switch_detector_mode(
+        DetectorModeRequest(mode=DetectorMode.THERMAL),
+        detector_manager,
+    )

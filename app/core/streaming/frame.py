@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from app.core.detection.yolo_detector import (
     Detection,
+    DetectorManager,
     ObjectDetector,
-    get_detector,
     get_detector_manager,
 )
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
@@ -20,6 +20,8 @@ class ProcessFrame(object):
 
     Автоматически отслеживает переключение режима детектора (optical/thermal)
     и использует актуальный детектор без необходимости перезапуска стрима.
+
+    detector_manager: при передаче из Dishka используется он; иначе — get_detector_manager().
     """
 
     def __init__(
@@ -28,11 +30,13 @@ class ProcessFrame(object):
         auto_ptz_manager: AutoPTZManager,
         enable_auto_tracking: bool,
         enable_detection: bool,
+        detector_manager: Optional[DetectorManager] = None,
     ):
         self.camera_id = camera_id
         self.enable_auto_tracking = enable_auto_tracking
         self.enable_detection = enable_detection
         self.auto_ptz_manager = auto_ptz_manager
+        self._detector_manager = detector_manager
 
         # Кешируем детектор и отслеживаем его режим
         self._cached_detector: Optional[ObjectDetector] = None
@@ -50,6 +54,10 @@ class ProcessFrame(object):
             else None
         )
 
+    def _get_manager(self) -> DetectorManager:
+        """Детектор-менеджер: переданный из Dishka или глобальный синглтон."""
+        return self._detector_manager or get_detector_manager()
+
     def _init_detector(self) -> None:
         """Инициализирует детектор и запоминает текущий режим."""
         if not self.enable_detection:
@@ -58,7 +66,7 @@ class ProcessFrame(object):
             return
 
         try:
-            manager = get_detector_manager()
+            manager = self._get_manager()
             self._cached_detector = manager.get_detector()
             self._cached_mode = manager.get_current_mode()
         except Exception as exc:
@@ -75,7 +83,7 @@ class ProcessFrame(object):
             return None
 
         try:
-            manager = get_detector_manager()
+            manager = self._get_manager()
             current_mode = manager.get_current_mode()
 
             # Если режим изменился — обновляем детектор

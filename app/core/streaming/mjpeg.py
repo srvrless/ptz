@@ -9,7 +9,7 @@ from typing import Generator, Optional
 
 import cv2
 
-from app.core.detection.yolo_detector import ObjectDetector, get_detector
+from app.core.detection.yolo_detector import DetectorManager, ObjectDetector, get_detector
 from app.core.streaming.frame import ProcessFrame
 from app.core.streaming.sockets_con import (
     ConnectionConfig,
@@ -43,11 +43,12 @@ def run_detection_sender(
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
     stop_event: Optional[Event] = None,
+    detector_manager: Optional[DetectorManager] = None,
 ) -> None:
     """
     Читает кадры из camera.get_frame(), детектит/трекает и шлёт JSON по сокету.
     НИЧЕГО не стримит как видео (нет yield).
-    
+
     Args:
         camera: Camera instance
         camera_id: ID камеры
@@ -55,10 +56,14 @@ def run_detection_sender(
         enable_detection: Включить детекцию объектов
         enable_auto_tracking: Включить автоматическое слежение
         stop_event: Event для остановки потока
+        detector_manager: DetectorManager (из Dishka). Если None — используется get_detector().
     """
-
     prcocess_manager = ProcessFrame(
-        camera_id, auto_ptz_manager, enable_auto_tracking, enable_detection
+        camera_id=camera_id,
+        auto_ptz_manager=auto_ptz_manager,
+        enable_auto_tracking=enable_auto_tracking,
+        enable_detection=enable_detection,
+        detector_manager=detector_manager,
     )
 
     factory = _default_connection_factory
@@ -108,10 +113,11 @@ def generate_mjpeg(
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
     connection_config: Optional[ConnectionConfig] = None,
+    detector_manager: Optional[DetectorManager] = None,
 ) -> Generator[bytes, None, None]:
     """
     Генерирует MJPEG стрим с детекцией и трекингом.
-    
+
     Args:
         camera: Camera instance
         camera_id: ID камеры
@@ -119,9 +125,14 @@ def generate_mjpeg(
         enable_detection: Включить детекцию объектов
         enable_auto_tracking: Включить автоматическое слежение
         connection_config: Конфигурация сокет-подключения
+        detector_manager: DetectorManager (из Dishka). Если None — используется get_detector().
     """
     prcocess_manager = ProcessFrame(
-        camera_id, auto_ptz_manager, enable_auto_tracking, enable_detection
+        camera_id=camera_id,
+        auto_ptz_manager=auto_ptz_manager,
+        enable_auto_tracking=enable_auto_tracking,
+        enable_detection=enable_detection,
+        detector_manager=detector_manager,
     )
 
     with _default_connection_factory() as s:
