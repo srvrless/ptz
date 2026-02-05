@@ -272,7 +272,10 @@ class PTZController(BasePTZController):
             request = self.ptz.create_type("AbsoluteMove")
             request.ProfileToken = self.profile.token
             request.Position = self.status.Position
-            request.Position.Zoom.x = new_zoom
+            if delta == 0.0:
+                request.Position.Zoom.x = 0.0
+            else:
+                request.Position.Zoom.x = new_zoom
 
             self.ptz.AbsoluteMove(request)
             self._refresh_status(force=True)

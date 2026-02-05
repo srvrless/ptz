@@ -179,7 +179,10 @@ class Tms20PTZController(BasePTZController):
         Относительный зум: delta > 0 — немного приблизить, delta < 0 — отдалить.
         """
         try:
-            if delta > 0:
+            if delta == 0.0:
+                delta = -10.0
+                self._tcp.zoom_out()
+            elif delta > 0:
                 self._tcp.zoom_in()
             elif delta < 0:
                 self._tcp.zoom_out()

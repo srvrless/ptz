@@ -165,9 +165,11 @@ class AutoPTZTracker:
 
         try:
             if self._controller is not None:
+                # Unzoom camera to minimum zoom level
                 self._controller.stop(pan_tilt=True, zoom=True)
+                self._controller.set_zoom(0.0)
         except Exception as exc:
-            logger.exception(f"AutoPTZ: ошибка при stop() в clear_target {exc}")
+            logger.exception(f"AutoPTZ: ошибка при stop()/set_zoom() в clear_target {exc}")
         logger.info("AutoPTZ: clear_target camera=%s", self.camera_id)
 
     def get_target(self) -> Optional[int]:
