@@ -180,17 +180,21 @@ class Tms20PTZController(BasePTZController):
         """
         try:
             if delta == 0.0:
-                delta = -10.0
-                self._tcp.zoom_out()
-            elif delta > 0:
-                self._tcp.zoom_in()
-            elif delta < 0:
-                self._tcp.zoom_out()
+                zoom_position = self._tcp.get_zoom_position()
+                while zoom_position > 100:
+                    zoom_position = self._tcp.get_zoom_position()
+                    self._tcp.zoom_out()
+                self._tcp.zoom_stop()
             else:
-                return
+                if delta > 0:
+                    self._tcp.zoom_in()
+                elif delta < 0:
+                    self._tcp.zoom_out()
+                else:
+                    return
 
-            time.sleep(0.2 * abs(delta))
-            self._tcp.zoom_stop()
+                time.sleep(0.2 * abs(delta))
+                self._tcp.zoom_stop()
         except Exception as e:
             logger.error(f"TMS-20 set_zoom error: {e}")
 
