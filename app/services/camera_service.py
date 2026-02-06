@@ -5,6 +5,7 @@ from typing import Generator, List, Optional
 
 from app.config.settings import AppConfig
 from app.core.camera.manager import CameraConnection, CameraManager
+from app.core.detection.yolo_detector import DetectorManager
 from app.core.streaming.mjpeg import generate_mjpeg, run_detection_sender
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.schemas.camera import (
@@ -26,10 +27,12 @@ class CameraService:
         self,
         camera_manager: CameraManager,
         auto_ptz_manager: AutoPTZManager,
+        detector_manager: DetectorManager,
         config: AppConfig,
     ) -> None:
         self.camera_manager = camera_manager
         self.auto_ptz_manager = auto_ptz_manager
+        self.detector_manager = detector_manager
         self.config = config
         self._lock = Lock()
         self._selected_camera_id: Optional[str] = None
@@ -71,7 +74,7 @@ class CameraService:
         with uow:
             camera = uow.camera.get_camera_by_id(camera_id)
             if camera is None:
-                raise CameraNotFoundError(camera_id)
+                return None
             return CameraResponse.from_camera(camera)
 
     def get_camera_config(self, camera_id: int):
@@ -100,6 +103,7 @@ class CameraService:
             camera,
             camera_id=camera_id,
             auto_ptz_manager=self.auto_ptz_manager,
+            detector_manager=self.detector_manager,
             enable_detection=enable_detection,
             enable_auto_tracking=True,
         )
@@ -135,6 +139,7 @@ class CameraService:
                     camera=camera,
                     camera_id=camera_id,
                     auto_ptz_manager=self.auto_ptz_manager,
+                    detector_manager=self.detector_manager,
                     enable_detection=enable_detection,
                     enable_auto_tracking=enable_auto_tracking,
                     stop_event=stop_event,

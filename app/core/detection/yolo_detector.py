@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 import torch
 
+from app.config.settings import DetectorMode, get_config
 from logger.setup_logger import get_logger
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -163,17 +164,146 @@ class ObjectDetector:
         return self.draw(frame, detections)
 
 
-# --- ленивый синглтон детектора ---
+# --- DetectorManager: управление детектором с поддержкой переключения режимов ---
 
-_detector: Optional[ObjectDetector] = None
+
+class DetectorManager:
+    """
+    Менеджер детектора с поддержкой горячего переключения между
+    оптическим и тепловизионным режимами.
+
+    Singleton-паттерн. Обеспечивает thread-safe переключение весов.
+    """
+
+    _instance: Optional["DetectorManager"] = None
+    _instance_lock = Lock()
+
+    def __new__(cls) -> "DetectorManager":
+        if cls._instance is None:
+            with cls._instance_lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+                    cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self) -> None:
+        if self._initialized:
+            return
+        self._initialized = True
+
+        self._lock = Lock()
+        self._detector: Optional[ObjectDetector] = None
+        self._current_mode: Optional[DetectorMode] = None
+
+        # Загружаем конфиг
+        config = get_config()
+        self._weights_map = {
+            DetectorMode.OPTICAL: PROJECT_ROOT / config.detector_weights_optical,
+            DetectorMode.THERMAL: PROJECT_ROOT / config.detector_weights_thermal,
+        }
+        self._conf = config.detector_conf
+        self._device = config.detector_device
+        self._default_mode = config.detector_default_mode
+
+        logger.info(
+            f"DetectorManager initialized. "
+            f"Optical: {self._weights_map[DetectorMode.OPTICAL]}, "
+            f"Thermal: {self._weights_map[DetectorMode.THERMAL]}, "
+            f"Default mode: {self._default_mode.value}"
+        )
+
+    def get_detector(self) -> ObjectDetector:
+        """
+        Возвращает текущий детектор. При первом вызове инициализирует
+        детектор с режимом по умолчанию.
+        """
+        with self._lock:
+            if self._detector is None:
+                self._load_detector(self._default_mode)
+            return self._detector
+
+    def switch_mode(self, mode: DetectorMode) -> DetectorMode:
+        """
+        Переключает детектор на указанный режим.
+        Возвращает новый текущий режим.
+
+        Thread-safe: блокирует на время переключения.
+        """
+        with self._lock:
+            if self._current_mode == mode:
+                logger.info(f"Detector already in {mode.value} mode, skipping reload")
+                return self._current_mode
+
+            logger.info(f"Switching detector mode: {self._current_mode} -> {mode}")
+            self._unload_detector()
+            self._load_detector(mode)
+            return self._current_mode
+
+    def get_current_mode(self) -> Optional[DetectorMode]:
+        """Возвращает текущий режим детектора (None если не инициализирован)."""
+        with self._lock:
+            return self._current_mode
+
+    def get_available_modes(self) -> dict:
+        """Возвращает доступные режимы и их статус (есть ли файл весов)."""
+        return {
+            mode.value: {
+                "weights_path": str(path),
+                "available": path.exists(),
+            }
+            for mode, path in self._weights_map.items()
+        }
+
+    def _load_detector(self, mode: DetectorMode) -> None:
+        """Загружает детектор с указанными весами. Вызывать под lock."""
+        weights_path = self._weights_map[mode]
+
+        if not weights_path.exists():
+            raise FileNotFoundError(
+                f"Weights for {mode.value} mode not found: {weights_path}"
+            )
+
+        self._detector = ObjectDetector(
+            weights_path=weights_path,
+            conf=self._conf,
+            device=self._device,
+        )
+        self._current_mode = mode
+        logger.info(f"Detector loaded in {mode.value} mode")
+
+    def _unload_detector(self) -> None:
+        """Выгружает текущий детектор из памяти. Вызывать под lock."""
+        if self._detector is not None:
+            # Явно освобождаем GPU память
+            if hasattr(self._detector, "model"):
+                del self._detector.model
+            del self._detector
+            self._detector = None
+
+            # Принудительная очистка GPU памяти
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            if hasattr(torch, "xpu") and torch.xpu.is_available():
+                torch.xpu.empty_cache()
+
+            logger.info("Previous detector unloaded, GPU memory cleared")
+
+# --- глобальный доступ через менеджер ---
+
+_manager: Optional[DetectorManager] = None
+
+
+def get_detector_manager() -> DetectorManager:
+    """Возвращает singleton DetectorManager."""
+    global _manager
+    if _manager is None:
+        _manager = DetectorManager()
+    return _manager
 
 
 def get_detector() -> ObjectDetector:
     """
-    Возвращает синглтон детектора, чтобы не грузить веса каждый запрос.
-    Бросит исключение, если не удалось инициализировать.
+    Возвращает текущий детектор.
+    Обратная совместимость с существующим кодом.
     """
-    global _detector
-    if _detector is None:
-        _detector = ObjectDetector()
-    return _detector
+    return get_detector_manager().get_detector()

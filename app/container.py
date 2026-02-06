@@ -5,13 +5,14 @@
 - Application scope: конфигурация, менеджеры (создаются один раз при старте)
 - Request scope: сессии БД, сервисы (создаются для каждого запроса)
 """
-from typing import Iterator, Iterator
+from typing import Iterator
 
 from dishka import Provider, Scope, make_container, provide
 from sqlalchemy.orm import Session as SQLAlchemySession
 
 from app.config.settings import AppConfig, get_config
 from app.core.camera.manager import CameraManager
+from app.core.detection.yolo_detector import DetectorManager
 from app.core.ptz.manager import PTZCameraManager
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.services.camera_service import CameraService
@@ -32,8 +33,8 @@ class ConfigProvider(Provider):
 
 
 class ManagersProvider(Provider):
-    """Провайдер для менеджеров камер, PTZ и auto-tracking."""
-    
+    """Провайдер для менеджеров камер, PTZ, детектора и auto-tracking."""
+
     @provide(scope=Scope.APP)
     def get_camera_manager(self) -> CameraManager:
         """
@@ -41,7 +42,7 @@ class ManagersProvider(Provider):
         Заменяет глобальный синглтон camera_manager.
         """
         return CameraManager()
-    
+
     @provide(scope=Scope.APP)
     def get_ptz_camera_manager(self) -> PTZCameraManager:
         """
@@ -49,7 +50,15 @@ class ManagersProvider(Provider):
         Заменяет глобальный синглтон ptz_camera_manager.
         """
         return PTZCameraManager()
-    
+
+    @provide(scope=Scope.APP)
+    def get_detector_manager(self) -> DetectorManager:
+        """
+        Создаёт DetectorManager один раз при старте приложения.
+        Конфигурация весов (optical/thermal) берётся из AppConfig.
+        """
+        return DetectorManager()
+
     @provide(scope=Scope.APP)
     def get_auto_ptz_manager(
         self,
@@ -99,18 +108,20 @@ class ServicesProvider(Provider):
         self,
         camera_manager: CameraManager,
         auto_ptz_manager: AutoPTZManager,
+        detector_manager: DetectorManager,
         config: AppConfig,
     ) -> CameraService:
         """
         Создаёт CameraService для каждого запроса.
         Внедряет зависимости через конструктор.
-        
-        Примечание: camera_manager и auto_ptz_manager из APP scope
+
+        Примечание: camera_manager, auto_ptz_manager, detector_manager из APP scope
         автоматически доступны в REQUEST scope через dishka.
         """
         return CameraService(
             camera_manager=camera_manager,
             auto_ptz_manager=auto_ptz_manager,
+            detector_manager=detector_manager,
             config=config,
         )
     

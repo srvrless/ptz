@@ -348,3 +348,5 @@ __pycache__/
 # test databases
 tests/*.db
 logs
+optical.pt
+thermal.pt
