@@ -1,5 +1,6 @@
 import socket
 import time
+from typing import Optional
 
 
 class Tms20TCP:
@@ -25,12 +26,14 @@ class Tms20TCP:
         port: int = 1470,
         pt_addr: int = 0x04,
         cam_addr: int = 0x01,
+        ir_addr: int = 0x02,
         timeout: float = 2.0,
     ):
         self.ip = ip
         self.port = port
         self.pt_addr = pt_addr
         self.cam_addr = cam_addr
+        self.ir_addr = ir_addr  # Адрес тепловизора (IR Cam)
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(timeout)
@@ -62,6 +65,10 @@ class Tms20TCP:
     def _send_cam(self, cmd: int, data1: int, data2: int):
         self._send_to(self.cam_addr, cmd, data1, data2)
 
+    def _send_ir(self, cmd: int, data1: int, data2: int):
+        """Отправить команду на IR камеру (тепловизор)."""
+        self._send_to(self.ir_addr, cmd, data1, data2)
+
     def close(self):
         try:
             self.sock.close()
@@ -83,6 +90,24 @@ class Tms20TCP:
         """
         cmd = 0x8800
         self._send_cam(cmd, 0x00, 0x00)
+
+    # ---------------- Тепловизор (IR Cam) ----------------
+
+    def power_on_ir(self):
+        """
+        Power On (0x8800) для IR камеры (тепловизор).
+        Включает тепловизор, не влияя на EO камеру.
+        """
+        cmd = 0x8800
+        self._send_ir(cmd, 0x00, 0x00)
+
+    def power_off_ir(self):
+        """
+        Power Off (0x0800) для IR камеры (тепловизор).
+        Выключает тепловизор, не влияя на EO камеру.
+        """
+        cmd = 0x0800
+        self._send_ir(cmd, 0x00, 0x00)
 
     # ---------------- PT: ручное управление ----------------
 
@@ -181,17 +206,35 @@ class Tms20TCP:
     #   0x0100 = Focus Near
     #   0x0080 = Focus Far
 
-    def zoom_stop(self):
-        """Остановить зум (Zoom/Focus Stop)."""
+    def zoom_stop(self, sync_ir: bool = True):
+        """
+        Остановить зум (Zoom/Focus Stop).
+        sync_ir: если True, также останавливает зум на тепловизоре.
+        """
         self._send_cam(0x0000, 0x00, 0x00)
+        if sync_ir:
+            self._send_ir(0x0000, 0x00, 0x00)
 
-    def zoom_in(self):
-        """Зум в сторону Tele (приближение)."""
+    def zoom_in(self, sync_ir: bool = True):
+        """
+        Зум в сторону Tele (приближение).
+        sync_ir: если True, также зумит тепловизор.
+        """
         self._send_cam(0x0020, 0x00, 0x00)
+        if sync_ir:
+            self._send_ir(0x0020, 0x00, 0x00)
+            
+    def cuurent_zoom(self, sync_ir: bool = True):
+        pass
 
-    def zoom_out(self):
-        """Зум в сторону Wide (отдаление)."""
+    def zoom_out(self, sync_ir: bool = True):
+        """
+        Зум в сторону Wide (отдаление).
+        sync_ir: если True, также зумит тепловизор.
+        """
         self._send_cam(0x0040, 0x00, 0x00)
+        if sync_ir:
+            self._send_ir(0x0040, 0x00, 0x00)
 
     def focus_stop(self):
         """Остановить фокус (Zoom/Focus Stop)."""
@@ -205,10 +248,34 @@ class Tms20TCP:
         """Фокус дальше (Focus Far = 0x0080)."""
         self._send_cam(0x0080, 0x00, 0x00)
 
+
+    def thermal_on(self):
+        """
+        Включить тепловизор (IR Cam).
+        Power On (0x8800) для адреса 0x02.
+        """
+        self.power_on_ir()
+
+    def thermal_off(self):
+        """
+        Выключить тепловизор (IR Cam).
+        Power Off (0x0800) для адреса 0x02.
+        """
+        self.power_off_ir()
+
     # 4.4 Auto Focus Trigger (0x002B)
-    def auto_focus(self):
-        """Запуск автофокуса (Auto Focus Trigger)."""
+    def auto_focus(self, sync_ir: bool = True):
+        """
+        Запуск автофокуса (Auto Focus Trigger).
+        sync_ir: если True, также запускает автофокус на тепловизоре.
+        """
         self._send_cam(0x002B, 0x00, 0x00)
+        if sync_ir:
+            self._send_ir(0x002B, 0x00, 0x00)
+
+    def auto_focus_ir(self):
+        """Запуск автофокуса только для тепловизора (IR Cam)."""
+        self._send_ir(0x002B, 0x00, 0x00)
 
     # --------- при желании: абсолютный zoom/focus ---------
     # Zoom Direct (0x004F) / Focus Direct (0x005F)
@@ -232,6 +299,48 @@ class Tms20TCP:
         lsb = value & 0xFF
         self._send_cam(0x005F, msb, lsb)
 
+
+    def _receive_response(self, expected_cmd: int) -> Optional[int]:
+        """
+        Получить ответ от устройства.
+        expected_cmd - ожидаемая команда в ответе (например, 0x005D для Call Zoom Position).
+        Возвращает значение из ответа (MSB << 8 | LSB) или None при ошибке.
+        """
+        # Читаем пакет: 0xFF Add Cmd1 Cmd2 Data1 Data2 Sum (7 байт)
+        response = self.sock.recv(7)
+        
+        addr = response[1]
+        cmd1 = response[2]
+        cmd2 = response[3]
+        cmd = (cmd1 << 8) | cmd2
+        
+        if cmd != expected_cmd:
+            return None
+        
+        # Проверяем checksum
+        data1 = response[4]
+        data2 = response[5]
+        received_sum = response[6]
+        calculated_sum = self._checksum(addr, cmd1, cmd2, data1, data2)
+        
+        if received_sum != calculated_sum:
+            return None
+        
+        # Возвращаем значение (MSB << 8 | LSB)
+        value = (data1 << 8) | data2
+        return value
+
+    def get_zoom_position(self) -> Optional[int]:
+        """
+        Получить текущую позицию зума (Call Zoom Position, 0x0055).
+        
+        Возвращает позицию зума в единицах протокола (0x0000 - 0xFFFF) или None при ошибке.
+        Ответ: 0xFF Add 0x00 0x5D MSB LSB Sum
+        """
+        # Отправляем команду Call Zoom Position (0x0055)
+        self._send_cam(0x0055, 0x00, 0x00)
+        # Получаем ответ с командой 0x005D
+        return self._receive_response(0x005D)
 
 if __name__ == "__main__":
     ptz = Tms20TCP("192.168.1.100")
