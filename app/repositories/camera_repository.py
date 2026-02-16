@@ -121,6 +121,7 @@ class CameraRepository:
             camera_id=camera.id,
             type_id=ptz_type_obj.id,
         )
+        camera.ptz.ptz_type = ptz_type_obj  # set relationship so ptz_type_name works before flush
 
         logger.info(f"Created camera {camera.id} ({name})")
         return camera

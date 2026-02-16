@@ -25,6 +25,7 @@ class CameraConfig(BaseModel):
     password: str = Field(..., description="Пароль ONVIF/RTSP")
     port: int = Field(554, description="Порт ONVIF/RTSP, по умолчанию 554")
     rtsp_url: str = Field(..., description="Полный RTSP URL")
+    rtsp_url_ik: str = Field(..., description="Полный RTSP URL")
 
     lat: float = Field(..., description="Широта камеры")
     lon: float = Field(..., description="Долгота камеры")
@@ -52,6 +53,7 @@ class CameraConfig(BaseModel):
             password=camera.connection.password,
             port=camera.connection.port,
             rtsp_url=camera.connection.rtsp_url,
+            rtsp_url_ik=camera.connection.rtsp_url_ik,
             lat=camera.location.lat,
             lon=camera.location.lon,
             height=camera.location.height,
@@ -155,6 +157,7 @@ def _load_cameras_from_settings(cfg: AppConfig) -> Dict[int, CameraConfig]:
             password = getattr(cfg, f"camera{cam_num}_password")
             port_raw = getattr(cfg, f"camera{cam_num}_port", 554)
             rtsp_url = getattr(cfg, f"camera{cam_num}_rtsp_url")
+            rtsp_url_ik = getattr(cfg, f"camera{cam_num}_rtsp_url_ik")
 
             lat_raw = getattr(cfg, f"camera{cam_num}_lat")
             lon_raw = getattr(cfg, f"camera{cam_num}_lon")
@@ -169,6 +172,7 @@ def _load_cameras_from_settings(cfg: AppConfig) -> Dict[int, CameraConfig]:
                 password=str(password),
                 port=int(port_raw),
                 rtsp_url=str(rtsp_url),
+                rtsp_url_ik=str(rtsp_url_ik),
                 lat=float(lat_raw),
                 lon=float(lon_raw),
                 height=float(height_raw),
