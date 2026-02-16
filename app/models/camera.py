@@ -65,4 +65,4 @@ class Camera(Base):
 
     @property
     def ptz_type(self) -> str:
-        return self.ptz.ptz_type.type
+        return self.ptz.ptz_type

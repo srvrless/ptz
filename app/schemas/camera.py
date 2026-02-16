@@ -7,6 +7,7 @@ class ConnectionResponse(BaseModel):
     """DTO для данных подключения камеры"""
 
     rtsp_url: str
+    rtsp_url_ik: str
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 

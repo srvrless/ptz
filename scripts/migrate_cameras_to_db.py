@@ -79,7 +79,7 @@ def migrate_cameras_from_env_to_db() -> None:
                 host=cam_cfg.host,
                 port=cam_cfg.port,
                 rtsp_url=cam_cfg.rtsp_url,
-                rtsp_url_ik=cam_cfg.rtsp_url,
+                rtsp_url_ik=cam_cfg.rtsp_url_ik,
                 username=cam_cfg.user,
                 password=cam_cfg.password,
             )

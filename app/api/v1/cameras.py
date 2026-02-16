@@ -21,14 +21,7 @@ def list_cameras(
     uow: FromDishka[InterfaceUnitOfWork],
     camera_service: FromDishka[CameraService],
 ) -> List[CameraResponse]:
-    """
-    Вернуть список всех камер из конфига.
-    Формат:
-    {
-      "camera1": {...},
-      "camera2": {...}
-    }
-    """
+
     return camera_service.list_cameras(uow)
 
 
