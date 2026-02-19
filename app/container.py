@@ -130,14 +130,16 @@ class ServicesProvider(Provider):
         self,
         ptz_manager: PTZCameraManager,
         config: AppConfig,
+        uow: InterfaceUnitOfWork,
     ) -> PTZService:
         """
         Создаёт PTZService для каждого запроса.
-        Внедряет зависимости через конструктор.
+        UoW используется для получения данных камеры из БД при каждом действии.
         """
         return PTZService(
             ptz_manager=ptz_manager,
             config=config,
+            uow=uow,
         )
 
 

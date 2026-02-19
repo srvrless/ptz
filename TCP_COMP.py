@@ -235,6 +235,18 @@ class Tms20TCP:
         self._send_cam(0x0040, 0x00, 0x00)
         if sync_ir:
             self._send_ir(0x0040, 0x00, 0x00)
+    
+    def zoom_in_ir(self):
+        """Зум IR камеры в сторону Tele (приближение)."""
+        self._send_ir(0x0020, 0x00, 0x00)
+    
+    def zoom_out_ir(self):
+        """Зум IR камеры в сторону Wide (отдаление)."""
+        self._send_ir(0x0040, 0x00, 0x00)
+    
+    def zoom_stop_ir(self):
+        """Остановить зум IR камеры."""
+        self._send_ir(0x0000, 0x00, 0x00)
 
     def focus_stop(self):
         """Остановить фокус (Zoom/Focus Stop)."""
@@ -339,8 +351,12 @@ class Tms20TCP:
         """
         # Отправляем команду Call Zoom Position (0x0055)
         self._send_cam(0x0055, 0x00, 0x00)
+        response_cam = self._receive_response(0x005D)
+        
+        self._send_ir(0x0055, 0x00, 0x00)
+        response_ir = self._receive_response(0x005D)
         # Получаем ответ с командой 0x005D
-        return self._receive_response(0x005D)
+        return response_cam, response_ir
 
 if __name__ == "__main__":
     ptz = Tms20TCP("192.168.1.100")

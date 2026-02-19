@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from app.core.detection.yolo_detector import (
     Detection,
@@ -11,6 +11,9 @@ from app.core.tracking.auto_ptz_tracker import AutoPTZTracker
 from app.core.tracking.centroid_tracker import CentroidTracker
 from logger.setup_logger import get_logger
 
+if TYPE_CHECKING:
+    from app.config.settings import CameraConfig
+
 logger = get_logger("streaming")
 
 
@@ -18,10 +21,8 @@ class ProcessFrame(object):
     """
     Процессор кадров с детекцией и трекингом.
 
-    Автоматически отслеживает переключение режима детектора (optical/thermal)
-    и использует актуальный детектор без необходимости перезапуска стрима.
-
     detector_manager: при передаче из Dishka используется он; иначе — get_detector_manager().
+    cam_cfg: конфиг камеры из БД (для PTZ-трекера).
     """
 
     def __init__(
@@ -30,6 +31,8 @@ class ProcessFrame(object):
         auto_ptz_manager: AutoPTZManager,
         enable_auto_tracking: bool,
         enable_detection: bool,
+        cam_cfg: "CameraConfig",
+        *,
         detector_manager: Optional[DetectorManager] = None,
     ):
         self.camera_id = camera_id
@@ -37,6 +40,7 @@ class ProcessFrame(object):
         self.enable_detection = enable_detection
         self.auto_ptz_manager = auto_ptz_manager
         self._detector_manager = detector_manager
+        self._cam_cfg = cam_cfg
 
         # Кешируем детектор и отслеживаем его режим
         self._cached_detector: Optional[ObjectDetector] = None
@@ -49,7 +53,7 @@ class ProcessFrame(object):
             CentroidTracker() if self._cached_detector else None
         )
         self.auto_ptz: Optional[AutoPTZTracker] = (
-            auto_ptz_manager.get_or_create(self.camera_id)
+            auto_ptz_manager.get_or_create(self.camera_id, self._cam_cfg)
             if (self._cached_detector is not None and self.enable_auto_tracking)
             else None
         )

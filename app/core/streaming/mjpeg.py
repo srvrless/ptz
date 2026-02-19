@@ -40,6 +40,8 @@ def run_detection_sender(
     camera,
     camera_id: int,
     auto_ptz_manager,
+    cam_cfg,
+    *,
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
     stop_event: Optional[Event] = None,
@@ -47,22 +49,19 @@ def run_detection_sender(
 ) -> None:
     """
     Читает кадры из camera.get_frame(), детектит/трекает и шлёт JSON по сокету.
-    НИЧЕГО не стримит как видео (нет yield).
 
     Args:
         camera: Camera instance
         camera_id: ID камеры
         auto_ptz_manager: AutoPTZManager для управления слежением
-        enable_detection: Включить детекцию объектов
-        enable_auto_tracking: Включить автоматическое слежение
-        stop_event: Event для остановки потока
-        detector_manager: DetectorManager (из Dishka). Если None — используется get_detector().
+        cam_cfg: Конфиг камеры из БД (для PTZ-трекера)
     """
     prcocess_manager = ProcessFrame(
         camera_id=camera_id,
         auto_ptz_manager=auto_ptz_manager,
         enable_auto_tracking=enable_auto_tracking,
         enable_detection=enable_detection,
+        cam_cfg=cam_cfg,
         detector_manager=detector_manager,
     )
 
@@ -110,6 +109,8 @@ def generate_mjpeg(
     camera,
     camera_id: int,
     auto_ptz_manager,
+    cam_cfg,
+    *,
     enable_detection: bool = True,
     enable_auto_tracking: bool = True,
     connection_config: Optional[ConnectionConfig] = None,
@@ -119,19 +120,14 @@ def generate_mjpeg(
     Генерирует MJPEG стрим с детекцией и трекингом.
 
     Args:
-        camera: Camera instance
-        camera_id: ID камеры
-        auto_ptz_manager: AutoPTZManager для управления слежением
-        enable_detection: Включить детекцию объектов
-        enable_auto_tracking: Включить автоматическое слежение
-        connection_config: Конфигурация сокет-подключения
-        detector_manager: DetectorManager (из Dishka). Если None — используется get_detector().
+        cam_cfg: Конфиг камеры из БД (для PTZ-трекера)
     """
     prcocess_manager = ProcessFrame(
         camera_id=camera_id,
         auto_ptz_manager=auto_ptz_manager,
         enable_auto_tracking=enable_auto_tracking,
         enable_detection=enable_detection,
+        cam_cfg=cam_cfg,
         detector_manager=detector_manager,
     )
 
