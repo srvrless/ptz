@@ -121,35 +121,11 @@ def app(test_db, test_db_session_factory):
     
     # Создаём провайдер тестовой конфигурации
     class TestConfigProvider(Provider):
-        """Провайдер конфигурации для тестов."""
-        
+        """Провайдер конфигурации для тестов. Камеры берутся из БД при запросе."""
+
         @provide(scope=Scope.APP)
         def get_test_config(self) -> AppConfig:
-            """
-            Возвращает тестовую конфигурацию.
-            Камеры загружаются из тестовой БД.
-            """
-            from app.repositories.camera_repository import CameraRepository
-            
-            # Создаём базовую конфигурацию
-            config = AppConfig()
-            
-            # Загружаем камеры из тестовой БД
-            session = test_db_session_factory()
-            try:
-                repo = CameraRepository(session)
-                cameras = repo.get_all_cameras(enabled_only=True)
-                
-                # Конвертируем в CameraConfig
-                cameras_dict = {}
-                for camera in cameras:
-                    cameras_dict[camera.id] = CameraConfig.from_db_model(camera)
-                
-                config.cameras = cameras_dict
-            finally:
-                session.close()
-            
-            return config
+            return AppConfig()
     
     # Создаём тестовый контейнер
     test_container = make_container(
@@ -171,13 +147,15 @@ def app(test_db, test_db_session_factory):
     setup_dishka(test_container, app_instance)
     
     # Добавляем роутеры
+    from app.api.v1.auto_ptz import router as auto_ptz_router
     from app.api.v1.cameras import router as cameras_router
     from app.api.v1.ptz import router as ptz_router
     from app.api.v1.streams import router as streams_router
-    
+
     app_instance.include_router(cameras_router)
     app_instance.include_router(streams_router)
     app_instance.include_router(ptz_router)
+    app_instance.include_router(auto_ptz_router)
     
     # Регистрируем обработчики ошибок
     from app.main import register_exception_handlers

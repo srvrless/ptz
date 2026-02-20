@@ -62,8 +62,8 @@ class Tms20PTZController(BasePTZController):
         try:
             self._tcp.power_on_pt()
             self._tcp.power_on_cam()
-            # self._tcp.power_on_ir()  # тепловизор включается вместе с камерой
-            # self._thermal_enabled = True
+            self._tcp.power_on_ir()  # тепловизор включается вместе с камерой
+            self._thermal_enabled = True
         except Exception as e:
             logger.error(f"TMS-20 power on error: {e}")
 
@@ -194,10 +194,11 @@ class Tms20PTZController(BasePTZController):
         Относительный зум: delta > 0 — немного приблизить, delta < 0 — отдалить.
         """
         try:
-            if delta == 0.0:
-                zoom_position = self._tcp.get_zoom_position()
+            if delta == 0.0:    
+                zoom_position, zoom_position_ir = self._tcp.get_zoom_position()
+                
                 while zoom_position > 100:
-                    zoom_position = self._tcp.get_zoom_position()
+                    zoom_position, zoom_position_ir = self._tcp.get_zoom_position()
                     self._tcp.zoom_out()
                 self._tcp.zoom_stop()
             else:

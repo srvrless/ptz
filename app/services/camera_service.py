@@ -77,20 +77,29 @@ class CameraService:
                 return None
             return CameraResponse.from_camera(camera)
 
-    def get_camera_config(self, camera_id: int):
-        cam_cfg = self.config.cameras.get(camera_id)
-        if not cam_cfg:
-            logger.warning(f"Camera not found: {camera_id}")
-            raise CameraNotFoundError(camera_id)
-        return cam_cfg
+    def get_camera_config(
+        self,
+        uow: InterfaceUnitOfWork,
+        camera_id: int,
+    ):
+        """Получить конфиг камеры из БД. Конвертация внутри with — объект не detached."""
+        from app.config.settings import CameraConfig
+
+        with uow:
+            camera = uow.camera.get_camera_by_id(camera_id)
+            if camera is None:
+                logger.warning(f"Camera not found: {camera_id}")
+                raise CameraNotFoundError(camera_id)
+            return CameraConfig.from_db_model(camera)
 
     # старое оставляем (если нужно для отладки MJPEG)
     def get_mjpeg_stream(
         self,
+        uow: InterfaceUnitOfWork,
         camera_id: int,
         enable_detection: bool = True,
     ) -> Generator[bytes, None, None]:
-        cam_cfg = self.get_camera_config(camera_id)
+        cam_cfg = self.get_camera_config(uow, camera_id)
 
         conn = CameraConnection(url=cam_cfg.rtsp_url)
         camera = self.camera_manager.get_or_create(camera_id, conn)
@@ -103,6 +112,7 @@ class CameraService:
             camera,
             camera_id=camera_id,
             auto_ptz_manager=self.auto_ptz_manager,
+            cam_cfg=cam_cfg,
             detector_manager=self.detector_manager,
             enable_detection=enable_detection,
             enable_auto_tracking=True,
@@ -111,11 +121,12 @@ class CameraService:
     # НОВОЕ: выбрать камеру и запустить фоновую обработку (без MJPEG)
     def select_camera(
         self,
+        uow: InterfaceUnitOfWork,
         camera_id: int,
         enable_detection: bool = True,
         enable_auto_tracking: bool = True,
     ) -> None:
-        cam_cfg = self.get_camera_config(camera_id)
+        cam_cfg = self.get_camera_config(uow, camera_id)
 
         conn = CameraConnection(url=cam_cfg.rtsp_url)
         camera = self.camera_manager.get_or_create(camera_id, conn)
@@ -139,6 +150,7 @@ class CameraService:
                     camera=camera,
                     camera_id=camera_id,
                     auto_ptz_manager=self.auto_ptz_manager,
+                    cam_cfg=cam_cfg,
                     detector_manager=self.detector_manager,
                     enable_detection=enable_detection,
                     enable_auto_tracking=enable_auto_tracking,

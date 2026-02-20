@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import math
 import time
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 
 from app.core.ptz.base import BasePTZController
 from app.core.ptz.manager import PTZCameraManager
 from logger.setup_logger import get_logger
+
+if TYPE_CHECKING:
+    from app.config.settings import CameraConfig
 
 logger = get_logger("auto_ptz_tracker")
 
@@ -26,6 +29,7 @@ class AutoPTZTracker:
         self,
         camera_id: int,
         ptz_manager: PTZCameraManager,
+        cam_cfg: "CameraConfig",
         *,
         kp_pan: float = 0.6,
         kp_tilt: float = 0.6,
@@ -41,10 +45,8 @@ class AutoPTZTracker:
         self.min_speed = min_speed
 
         self._controller: Optional[BasePTZController] = (
-            ptz_manager.get_controller(camera_id)
+            ptz_manager.get_or_init_controller(camera_id, cam_cfg)
         )
-        if self._controller is None:
-            logger.warning("AutoPTZ: контроллер для камеры %s не найден", camera_id)
 
         # track_id текущей цели, задаётся ИЗВНЕ
         self._current_target_id: Optional[int] = None

@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from app.config.settings import AppConfig
+from app.config.settings import AppConfig, CameraConfig
 from app.core.ptz.controller import PTZController
+from app.core.ptz.manager import PTZCameraManager
 from app.exceptions import PTZControllerNotFoundError, PTZMoveError
+from app.utils.uow import InterfaceUnitOfWork
 from logger.setup_logger import get_logger
 
 logger = get_logger("ptz_service")
@@ -13,25 +15,38 @@ logger = get_logger("ptz_service")
 class PTZService:
     """
     Сервисный слой для управления PTZ-камерами.
-    Здесь инкапсулируем:
-      - поиск контроллера,
-      - работу с radar_id / heights,
-      - решение, когда делать restart камеры.
+    Конфиг запрашивается из БД только при первом обращении к камере (select / первый PTZ).
+    Дальше используется кэш в PTZCameraManager — без доп. запросов к БД.
     """
-    def __init__(self, ptz_manager: PTZCameraManager, config: AppConfig):
+    def __init__(
+        self,
+        ptz_manager: PTZCameraManager,
+        config: AppConfig,
+        uow: InterfaceUnitOfWork,
+    ):
         self._ptz_manager = ptz_manager
         self.config = config
+        self._uow = uow
+
+    def _fetch_camera_config_from_db(self, camera_id: int) -> CameraConfig:
+        """Запрос конфига из БД. Конвертация внутри with — объект не detached."""
+        with self._uow:
+            camera = self._uow.camera.get_camera_by_id(camera_id)
+            if camera is None:
+                logger.warning(f"Camera not found in DB: {camera_id}")
+                raise PTZControllerNotFoundError(camera_id)
+            return CameraConfig.from_db_model(camera)
 
     def _get_controller(self, camera_id: int) -> PTZController:
-        controller = self._ptz_manager.get_controller(camera_id)
-        if controller is None:
-            logger.warning(f"PTZController not found for camera {camera_id}")
-            raise PTZControllerNotFoundError(camera_id)
-        return controller
+        """Контроллер из кэша. При первом обращении — запрос в БД и init_camera."""
+        if not self._ptz_manager.is_initialized(camera_id):
+            cam_cfg = self._fetch_camera_config_from_db(camera_id)
+            self._ptz_manager.init_camera(camera_id, cam_cfg)
+        return self._ptz_manager.get_controller(camera_id)
 
     def _get_radar_height(self, radar_id: int) -> float:
         try:
-            return self.config.heights[radar_id - 1]
+            return self.config.heights[radar_id]
         except IndexError:
             raise ValueError(f"Invalid radar_id: {radar_id}")
 
@@ -59,10 +74,9 @@ class PTZService:
           - ValueError (если radar_id некорректен)
         """
         radar_h = self._get_radar_height(radar_id)
-
         if restart_before_move:
             logger.info(f"Restart PTZ controller before move: {camera_id}")
-            self._ptz_manager.restart_camera(camera_id)
+            self._ptz_manager.restart_controller(camera_id)
 
         controller = self._get_controller(camera_id)
 
@@ -106,7 +120,7 @@ class PTZService:
         controller = self._get_controller(camera_id)
         controller.stop()
         # по аналогии со старым кодом — после остановки можно сделать restart
-        self._ptz_manager.restart_camera(camera_id)
+        self._ptz_manager.restart_controller(camera_id)
         controller = self._get_controller(camera_id)
 
         azimut = controller.get_azimut()
@@ -131,4 +145,4 @@ class PTZService:
         return {"azimut": azimut}
         # при желании можно вернуть ещё и "сырые" данные:
         # return {"azimut": azimut, "raw": asdict(...)}
-        # (если сделаем отдельную dataclass-модель статуса)
+        # (если сделаем отдельную datacl    ass-модель статуса)

@@ -109,116 +109,13 @@ class AppConfig(BaseSettings):
     )
 
 
-def _load_cameras_from_db() -> list:
-    """
-    Загружает все включённые камеры из БД.
-    Преобразует SQLAlchemy модели в Pydantic CameraConfig.
-    """
-    from app.db.session import Session
-    from app.repositories.camera_repository import CameraRepository
-
-    try:
-        db_session = Session()
-        repo = CameraRepository(db_session)
-        cameras = repo.get_all_cameras(enabled_only=True)
-        db_session.close()
-        return cameras
-    except Exception as exc:
-        from logger.setup_logger import get_logger
-
-        logger = get_logger("settings")
-        logger.error(f"Failed to load cameras from database: {exc}")
-        # Возвращаем пусто, чтобы приложение могло стартануть
-        return {}
-
-
-def _load_cameras_from_settings(cfg: AppConfig) -> Dict[int, CameraConfig]:
-    """
-    DEPRECATED: Собираем камеры из .env (для обратной совместимости).
-    Используется только если БД пуста.
-    """
-    cameras: Dict[int, CameraConfig] = {}
-
-    cam_ids_raw = cfg.cameras_raw
-    if not cam_ids_raw:
-        return cameras
-
-    for cam_num in cam_ids_raw.split(","):
-        cam_num = cam_num.strip()
-        if not cam_num:
-            continue
-
-        cam_id_int = int(cam_num)
-        cam_id_str = f"camera{cam_num}"
-
-        try:
-            host = getattr(cfg, f"camera{cam_num}_host")
-            user = getattr(cfg, f"camera{cam_num}_user")
-            password = getattr(cfg, f"camera{cam_num}_password")
-            port_raw = getattr(cfg, f"camera{cam_num}_port", 554)
-            rtsp_url = getattr(cfg, f"camera{cam_num}_rtsp_url")
-            rtsp_url_ik = getattr(cfg, f"camera{cam_num}_rtsp_url_ik")
-
-            lat_raw = getattr(cfg, f"camera{cam_num}_lat")
-            lon_raw = getattr(cfg, f"camera{cam_num}_lon")
-            height_raw = getattr(cfg, f"camera{cam_num}_height")
-            rate_raw = getattr(cfg, f"camera{cam_num}_rate", 0)
-            ptz_type = getattr(cfg, f"camera{cam_num}_ptz_type", "onvif")
-
-            cam_cfg = CameraConfig(
-                id=cam_id_int,
-                host=str(host),
-                user=str(user),
-                password=str(password),
-                port=int(port_raw),
-                rtsp_url=str(rtsp_url),
-                rtsp_url_ik=str(rtsp_url_ik),
-                lat=float(lat_raw),
-                lon=float(lon_raw),
-                height=float(height_raw),
-                rate=float(rate_raw),
-                ptz_type=str(ptz_type),
-            )
-        except (AttributeError, TypeError, ValueError, ValidationError) as exc:
-            raise ValueError(f"Invalid configuration for {cam_id_str}: {exc}")
-
-        cameras[cam_id_int] = cam_cfg
-
-    return cameras
-
-
 @lru_cache
 def get_config() -> AppConfig:
-    from logger.setup_logger import get_logger
-
-    logger = get_logger("settings")
-
-    cfg = AppConfig()
-
-    # Сначала пробуем загрузить из БД
-    cameras_from_db = _load_cameras_from_db()
-
-    if cameras_from_db:
-        # Конвертируем SQLAlchemy модели в CameraConfig через classmethod
-        cameras_dict = {
-            camera.id: CameraConfig.from_db_model(camera) for camera in cameras_from_db
-        }
-        cfg.cameras = cameras_dict
-        logger.info(f"Loaded {len(cameras_dict)} cameras from database")
-    else:
-        # Fallback на .env, если БД пуста
-        cameras_from_env = _load_cameras_from_settings(cfg)
-        cfg.cameras = cameras_from_env
-        if cameras_from_env:
-            logger.warning(
-                f"Loaded {len(cameras_from_env)} cameras from .env (database is empty)"
-            )
-        else:
-            logger.warning("No cameras loaded from database or .env")
-
-        logger.info(f"Total cameras loaded: {len(cfg.cameras)}")
-    print(cfg.cameras)
-    return cfg
+    """
+    Возвращает конфигурацию приложения.
+    Камеры НЕ загружаются при старте — данные берутся из БД при каждом запросе.
+    """
+    return AppConfig()
 
 
 config = get_config()
