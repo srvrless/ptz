@@ -15,6 +15,7 @@ from app.core.camera.manager import CameraManager
 from app.core.detection.yolo_detector import DetectorManager
 from app.core.ptz.manager import PTZCameraManager
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
+from app.services.auto_ptz_service import AutoPTZService
 from app.services.camera_service import CameraService
 from app.services.ptz_service import PTZService
 from app.utils.uow import InterfaceUnitOfWork, UnitOfWork
@@ -132,13 +133,24 @@ class ServicesProvider(Provider):
         config: AppConfig,
         uow: InterfaceUnitOfWork,
     ) -> PTZService:
-        """
-        Создаёт PTZService для каждого запроса.
-        UoW используется для получения данных камеры из БД при каждом действии.
-        """
+        """Создаёт PTZService для каждого запроса."""
         return PTZService(
             ptz_manager=ptz_manager,
             config=config,
+            uow=uow,
+        )
+
+    @provide(scope=Scope.REQUEST)
+    def get_auto_ptz_service(
+        self,
+        auto_ptz_manager: AutoPTZManager,
+        ptz_manager: PTZCameraManager,
+        uow: InterfaceUnitOfWork,
+    ) -> AutoPTZService:
+        """Создаёт AutoPTZService для каждого запроса."""
+        return AutoPTZService(
+            auto_ptz_manager=auto_ptz_manager,
+            ptz_manager=ptz_manager,
             uow=uow,
         )
 
