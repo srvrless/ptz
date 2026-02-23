@@ -39,6 +39,7 @@ class PTZController(BasePTZController):
         cam_lon: float,
         cam_h: float,
         wsdl_dir: Optional[str] = None,
+        zoom_speed: float = 0.3,
     ):
         super().__init__(
             cam_lat=cam_lat, cam_lon=cam_lon, cam_h=cam_h, cam_rate=cam_rate
@@ -49,6 +50,7 @@ class PTZController(BasePTZController):
         self.password = password
         self.port = port
         self.wsdl_dir = wsdl_dir
+        self._zoom_speed = max(0.0, min(1.0, zoom_speed))
 
         self.camera: Optional[ONVIFCamera] = None
         self.media = None
@@ -244,7 +246,8 @@ class PTZController(BasePTZController):
             request.Velocity = self.status.Position
             request.Velocity.PanTilt.x = max(-1.0, min(1.0, x))
             request.Velocity.PanTilt.y = max(-1.0, min(1.0, y))
-            request.Velocity.Zoom.x = max(-1.0, min(1.0, zoom))
+            scaled_zoom = zoom * self._zoom_speed
+            request.Velocity.Zoom.x = max(-1.0, min(1.0, scaled_zoom))
 
             self.ptz.ContinuousMove(request)
         except Exception as e:
@@ -284,7 +287,8 @@ class PTZController(BasePTZController):
         self._refresh_status(force=True)  # Нужен актуальный статус для текущего zoom
         try:
             current = getattr(self.status.Position.Zoom, "x", 0.0) or 0.0
-            new_zoom = max(0.0, min(1.0, current + delta))
+            scaled_delta = delta * self._zoom_speed
+            new_zoom = max(0.0, min(1.0, current + scaled_delta))
 
             request = self.ptz.create_type("AbsoluteMove")
             request.ProfileToken = self.profile.token
