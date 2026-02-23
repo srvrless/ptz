@@ -34,7 +34,12 @@ class CameraConfig(BaseModel):
         0.0,
         description="Смещение камеры относительно севера (°). Компенсация ориентации корпуса.",
     )
-
+    zoom_speed: float = Field(
+        0.3,
+        ge=0.0,
+        le=1.0,
+        description="Множитель скорости зума (0.0–1.0). 1.0 = максимальная скорость камеры.",
+    )
     ptz_type: str = Field(
         "onvif",
         description="Тип PTZ контроллера: 'onvif' или 'tms20'",
