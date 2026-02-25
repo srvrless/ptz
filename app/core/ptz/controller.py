@@ -191,7 +191,7 @@ class PTZController(BasePTZController):
             request.Position.PanTilt.y = max(-1.0, min(1.0, y))
 
             if zoom is not None:
-                request.Position.Zoom.x = max(0.0, min(1.0, zoom))
+                request.Position.Zoom.x = self.status.Position.Zoom.x
             else:
                 # Если не задаём zoom — оставляем текущий
                 request.Position.Zoom.x = self.status.Position.Zoom.x
