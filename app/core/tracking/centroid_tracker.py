@@ -55,10 +55,15 @@ class CentroidTracker:
 
         self._tracks: Dict[int, _Track] = {}
 
-        # оценка "сдвига камеры" (dx, dy) между кадрами
         self._cam_dx: float = 0.0
         self._cam_dy: float = 0.0
 
+    def reset(self) -> None:
+        """Сброс всех треков (например, при переключении видеопотока)."""
+        self._tracks.clear()
+        self._next_id = 1
+        self._cam_dx = 0.0
+        self._cam_dy = 0.0
     @staticmethod
     def _centroid(bbox: Tuple[int, int, int, int]) -> Tuple[float, float]:
         x1, y1, x2, y2 = bbox

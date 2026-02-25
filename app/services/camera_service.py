@@ -3,7 +3,7 @@ from __future__ import annotations
 from threading import Event, Lock, Thread
 from typing import Generator, List, Optional
 
-from app.config.settings import AppConfig
+from app.config.settings import AppConfig, DetectorMode
 from app.core.camera.manager import CameraConnection, CameraManager
 from app.core.detection.yolo_detector import DetectorManager
 from app.core.streaming.mjpeg import generate_mjpeg, run_detection_sender
@@ -92,6 +92,21 @@ class CameraService:
                 raise CameraNotFoundError(camera_id)
             return CameraConfig.from_db_model(camera)
 
+    def _rtsp_url_for_current_mode(self, cam_cfg) -> str:
+        """Возвращает RTSP URL, соответствующий текущему режиму детектора."""
+        current_mode = self.detector_manager.get_current_mode()
+        if current_mode == DetectorMode.THERMAL:
+            return cam_cfg.rtsp_url_ik
+        return cam_cfg.rtsp_url
+
+    def _get_camera_for_current_mode(self, camera_id: int, cam_cfg):
+        """Создаёт/получает камеру и гарантирует, что она на правильном потоке."""
+        url = self._rtsp_url_for_current_mode(cam_cfg)
+        conn = CameraConnection(url=url)
+        camera = self.camera_manager.get_or_create(camera_id, conn)
+        camera.switch_url(url)
+        return camera
+
     # старое оставляем (если нужно для отладки MJPEG)
     def get_mjpeg_stream(
         self,
@@ -100,9 +115,7 @@ class CameraService:
         enable_detection: bool = True,
     ) -> Generator[bytes, None, None]:
         cam_cfg = self.get_camera_config(uow, camera_id)
-
-        conn = CameraConnection(url=cam_cfg.rtsp_url)
-        camera = self.camera_manager.get_or_create(camera_id, conn)
+        camera = self._get_camera_for_current_mode(camera_id, cam_cfg)
 
         logger.info(
             f"Запуск MJPEG-стрима для {camera_id}, "
@@ -127,9 +140,7 @@ class CameraService:
         enable_auto_tracking: bool = True,
     ) -> None:
         cam_cfg = self.get_camera_config(uow, camera_id)
-
-        conn = CameraConnection(url=cam_cfg.rtsp_url)
-        camera = self.camera_manager.get_or_create(camera_id, conn)
+        camera = self._get_camera_for_current_mode(camera_id, cam_cfg)
 
         with self._lock:
             # если уже выбрана и поток жив — ничего не делаем
