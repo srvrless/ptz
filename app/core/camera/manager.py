@@ -80,6 +80,41 @@ class Camera:
         """
         with self._frame_lock:
             return self._last_frame.copy() if self._last_frame is not None else None
+    def switch_url(self, new_url: str) -> None:
+        """
+        Горячее переключение на другой RTSP-поток (например optical ↔ thermal).
+        Останавливает текущий reader, переподключается к новому URL.
+        """
+        if self._conn.url == new_url:
+            logger.info(f"Переключение не требуется, уже на потоке: {new_url}")
+            return
+
+        old_url = self._conn.url
+        logger.info(f"Переключение потока: {old_url} -> {new_url}")
+
+        self._running = False
+        if self._thread and self._thread.is_alive():
+            self._thread.join(timeout=2.0)
+
+        if self._cap.isOpened():
+            self._cap.release()
+
+        self._conn = CameraConnection(url=new_url)
+        self._cap = cv2.VideoCapture(new_url)
+
+        with self._frame_lock:
+            self._last_frame = None
+
+        if not self._cap.isOpened():
+            logger.error(f"Не удалось открыть новый поток: {new_url}")
+        else:
+            logger.info(f"Новый поток открыт: {new_url}")
+
+        self.start()
+
+    @property
+    def current_url(self) -> str:
+        return self._conn.url
 
     def stop(self) -> None:
         """

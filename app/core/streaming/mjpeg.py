@@ -62,6 +62,7 @@ def run_detection_sender(
         enable_auto_tracking=enable_auto_tracking,
         enable_detection=enable_detection,
         cam_cfg=cam_cfg,
+        camera=camera,
         detector_manager=detector_manager,
     )
 
@@ -128,6 +129,7 @@ def generate_mjpeg(
         enable_auto_tracking=enable_auto_tracking,
         enable_detection=enable_detection,
         cam_cfg=cam_cfg,
+        camera=camera,
         detector_manager=detector_manager,
     )
 
