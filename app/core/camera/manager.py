@@ -119,14 +119,17 @@ class Camera:
     def stop(self) -> None:
         """
         Останавливает чтение и освобождает ресурсы.
+        После вызова get_frame() возвращает None.
         """
         if not self._running:
             return
         self._running = False
         if self._thread and self._thread.is_alive():
-            self._thread.join(timeout=2.0)
+            self._thread.join(timeout=3.0)
         if self._cap.isOpened():
             self._cap.release()
+        with self._frame_lock:
+            self._last_frame = None
         logger.info(f"Камера остановлена: {self._conn.url}")
 
 

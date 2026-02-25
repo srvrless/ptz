@@ -131,7 +131,6 @@ class CameraService:
             enable_auto_tracking=True,
         )
 
-    # НОВОЕ: выбрать камеру и запустить фоновую обработку (без MJPEG)
     def select_camera(
         self,
         uow: InterfaceUnitOfWork,
@@ -140,10 +139,8 @@ class CameraService:
         enable_auto_tracking: bool = True,
     ) -> None:
         cam_cfg = self.get_camera_config(uow, camera_id)
-        camera = self._get_camera_for_current_mode(camera_id, cam_cfg)
 
         with self._lock:
-            # если уже выбрана и поток жив — ничего не делаем
             if (
                 self._selected_camera_id == camera_id
                 and self._worker_thread is not None
@@ -151,8 +148,18 @@ class CameraService:
             ):
                 return
 
-            # стопаем старый воркер
+            old_camera_id = self._selected_camera_id
+
+            # 1. Останавливаем старый detection-воркер
             self._stop_worker_locked()
+
+            # 2. Останавливаем старую камеру (reader thread + VideoCapture)
+            #    чтобы get_frame() возвращал None и воркер точно не слал данные
+            if old_camera_id is not None and old_camera_id != camera_id:
+                self.camera_manager.release(old_camera_id)
+
+            # 3. Создаём/получаем камеру для нового ID
+            camera = self._get_camera_for_current_mode(camera_id, cam_cfg)
 
             stop_event = Event()
             worker = Thread(
@@ -183,7 +190,10 @@ class CameraService:
 
     def stop_selected_camera(self) -> None:
         with self._lock:
+            old_camera_id = self._selected_camera_id
             self._stop_worker_locked()
+            if old_camera_id is not None:
+                self.camera_manager.release(old_camera_id)
             self._selected_camera_id = None
 
     def _stop_worker_locked(self) -> None:
@@ -191,7 +201,12 @@ class CameraService:
             self._stop_event.set()
 
         if self._worker_thread is not None and self._worker_thread.is_alive():
-            self._worker_thread.join(timeout=2)
+            self._worker_thread.join(timeout=5)
+            if self._worker_thread.is_alive():
+                logger.error(
+                    f"Detection worker for camera {self._selected_camera_id} "
+                    f"did not stop within 5s — possible data leak to socket"
+                )
 
         self._stop_event = None
         self._worker_thread = None
