@@ -67,7 +67,6 @@ class ProcessFrame(object):
     def _url_for_mode(self, mode: Optional[DetectorMode]) -> str:
         """Возвращает RTSP URL, соответствующий режиму детектора."""
         if mode == DetectorMode.THERMAL:
-            print("current mode thermal")
             return self._cam_cfg.rtsp_url_ik
         return self._cam_cfg.rtsp_url
 
@@ -84,7 +83,6 @@ class ProcessFrame(object):
             self._cached_mode = manager.get_current_mode()
 
             if self._camera is not None:
-                print("camera switched to another mode")
                 correct_url = self._url_for_mode(self._cached_mode)
                 self._camera.switch_url(correct_url)
         except Exception as exc:

@@ -104,7 +104,7 @@ class DatabaseProvider(Provider):
 class ServicesProvider(Provider):
     """Провайдер для сервисного слоя."""
     
-    @provide(scope=Scope.REQUEST)
+    @provide(scope=Scope.APP)
     def get_camera_service(
         self,
         camera_manager: CameraManager,
@@ -113,11 +113,10 @@ class ServicesProvider(Provider):
         config: AppConfig,
     ) -> CameraService:
         """
-        Создаёт CameraService для каждого запроса.
-        Внедряет зависимости через конструктор.
-
-        Примечание: camera_manager, auto_ptz_manager, detector_manager из APP scope
-        автоматически доступны в REQUEST scope через dishka.
+        CameraService — APP scope, т.к. хранит состояние воркера
+        (_worker_thread, _stop_event, _selected_camera_id),
+        которое должно пережить отдельный HTTP-запрос.
+        Все зависимости уже APP scope, uow передаётся через аргументы методов.
         """
         return CameraService(
             camera_manager=camera_manager,
