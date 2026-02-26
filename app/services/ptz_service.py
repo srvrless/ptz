@@ -5,9 +5,11 @@ from typing import Any, Dict, Optional
 from app.config.settings import AppConfig, CameraConfig
 from app.core.ptz.controller import PTZController
 from app.core.ptz.manager import PTZCameraManager
-from app.exceptions import PTZControllerNotFoundError, PTZMoveError
+from app.exceptions import CameraNotFoundError, PTZControllerNotFoundError, PTZMoveError
 from app.utils.uow import InterfaceUnitOfWork
 from logger.setup_logger import get_logger
+from app.schemas.camera import CameraResponse
+
 
 logger = get_logger("ptz_service")
 
@@ -94,6 +96,62 @@ class PTZService:
 
         logger.info(f"PTZ {camera_id} moved to azimuth {target_az:.2f}")
         return {"status": "ok", "azimut": float(target_az)}
+
+    def move_to_target_with_excluded_cameras(
+        self,
+        *,
+        excluded_cameras_id: list[int] | None,
+        lat: float,
+        lon: float,
+        height: float,
+        zoom: Optional[float] = None,
+        radar_id: int = 1,
+        restart_before_move: bool = True,
+    ) -> Dict[str, Any]:
+        """
+        Выбирает ближайшую камеру и наводит её на цель по гео-координатам
+        Возвращает CameraResponse? с результатом:
+        { "camera": CameraResponse, "azimut": <float> }
+
+        Бросает:
+          - PTZControllerNotFoundError
+          - PTZMoveError
+          - ValueError (если radar_id некорректен)
+        """
+        with self._uow:
+            camera = self._uow.camera.get_nearest_camera_by_geo(
+                lat, lon, excluded_cameras_id
+            )
+            if camera is None:
+                logger.warning(
+                    "No available camera for target lat=%s lon=%s (excluded=%s)",
+                    lat,
+                    lon,
+                    excluded_cameras_id,
+                )
+                raise CameraNotFoundError("nearest")
+
+            camera_id = camera.id
+            camera_response = CameraResponse.from_camera(camera)
+        radar_h = self._get_radar_height(radar_id)
+        if restart_before_move:
+            controller = self._ptz_manager.restart_controller(camera_id)
+
+        target_az = controller.search_target(
+            target_lat=lat,
+            target_lon=lon,
+            target_h=height,
+            radar_h=radar_h,
+            zoom=zoom,
+        )
+
+        if target_az is None:
+            logger.error(f"PTZ move_to_target failed for {camera_id}")
+            raise PTZMoveError(camera_id=camera_id, reason="target_az is None")
+
+        logger.info(f"PTZ {camera_id} moved to azimuth {target_az:.2f}")
+        
+        return {"camera": camera_response, "azimut": float(target_az)}
 
     def continuous_move(
         self,

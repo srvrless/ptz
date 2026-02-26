@@ -56,6 +56,24 @@ class CameraRepository:
             return None
 
         return camera
+    def get_nearest_camera_by_geo(
+        self,
+        lat: float,
+        lon: float,
+        excluded_cameras_id: list[int] | None,
+    ) -> Optional[Camera]:
+        query = self._eager_load_query().join(Camera.location).where(Camera.enabled.is_(True))
+
+        if excluded_cameras_id:
+            query = query.where(Camera.id.not_in(excluded_cameras_id))
+
+        # Compare squared distance to avoid extra sqrt in SQL.
+        distance_sq = (CameraLocation.lat - lat) * (CameraLocation.lat - lat) + (
+            CameraLocation.lon - lon
+        ) * (CameraLocation.lon - lon)
+
+        query = query.order_by(distance_sq.asc()).limit(1)
+        return self.session.scalar(query)
 
     def create_camera(
         self,

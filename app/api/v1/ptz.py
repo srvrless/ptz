@@ -2,7 +2,8 @@ from fastapi import APIRouter
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaSyncRoute
 
-from app.schemas.ptz import ContinuousMoveRequest, MoveRequest, ZoomRequest
+from app.schemas.camera import CameraResponse
+from app.schemas.ptz import ContinuousMoveRequest, MoveExcludedCameras, MoveRequest, ZoomRequest
 from app.services import PTZService
 
 router = APIRouter(prefix="/api", tags=["ptz"], route_class=DishkaSyncRoute)
@@ -35,6 +36,32 @@ def ptz_move(
     """
     result = ptz_service.move_to_target(
         camera_id=camera_id,
+        lat=body.lat,
+        lon=body.lon,
+        height=body.height,
+        zoom=body.zoom,
+        radar_id=body.radar_id,
+    )
+    return result
+
+@router.post("/ptz/move/")
+def ptz_move_to_target(
+    body: MoveExcludedCameras,
+    ptz_service: FromDishka[PTZService],
+) -> CameraResponse:
+    """
+    Абсолютное позиционирование PTZ-камеры по координатам цели.
+
+    Ожидает JSON:
+    {
+        "excluded_cameras": list[int]
+    }
+
+    Возвращает:
+    { "camera": CameraResponse, "azimut": float }
+    """
+    result = ptz_service.move_to_target_with_excluded_cameras(
+        excluded_cameras_id=body.excluded_cameras_id,
         lat=body.lat,
         lon=body.lon,
         height=body.height,
