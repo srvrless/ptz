@@ -17,7 +17,7 @@ from unittest.mock import MagicMock, call, patch
 from app.config.settings import CameraConfig, DetectorMode
 from app.core.detection.yolo_detector import DetectorManager, ObjectDetector
 from app.core.streaming.frame import ProcessFrame
-from app.core.tracking.centroid_tracker import CentroidTracker
+from app.core.tracking.botsort_tracker import BOTSortTracker
 
 OPTICAL_URL = "rtsp://192.168.1.100:554/optical"
 THERMAL_URL = "rtsp://192.168.1.100:554/thermal_ik"
@@ -170,7 +170,7 @@ def test_multiple_switches_correct_url_sequence(make_pf, mock_camera):
 ], ids=["mode_changed", "mode_same"])
 def test_tracker_reset_depends_on_mode_change(make_pf, do_switch, expect_reset):
     pf, dm, _ = make_pf()
-    pf.tracker = MagicMock(spec=CentroidTracker)
+    pf.tracker = MagicMock(spec=BOTSortTracker)
 
     if do_switch:
         dm.get_current_mode.return_value = DetectorMode.THERMAL
