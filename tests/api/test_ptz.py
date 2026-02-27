@@ -20,8 +20,8 @@ class TestPTZAPI:
         mock_controller = MagicMock()
         mock_controller.search_target.return_value = 45.5
         mocks['ptz_manager'].get_controller.return_value = mock_controller
-        mocks['ptz_manager'].restart_camera.return_value = mock_controller
-
+        mocks['ptz_manager'].restart_controller.return_value = mock_controller
+        
         payload = {
             "lat": 55.75,
             "lon": 37.62,
@@ -68,7 +68,7 @@ class TestPTZAPI:
         mock_controller = MagicMock()
         mock_controller.get_azimut.return_value = 123.45
         mocks['ptz_manager'].get_controller.return_value = mock_controller
-        mocks['ptz_manager'].restart_camera.return_value = mock_controller
+        mocks['ptz_manager'].restart_controller.return_value = mock_controller
 
         response = client.post(
             f"/api/ptz/{camera_db_onvif.id}/stop/",
