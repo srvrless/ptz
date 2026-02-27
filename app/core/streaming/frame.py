@@ -9,7 +9,7 @@ from app.core.detection.yolo_detector import (
 )
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.core.tracking.auto_ptz_tracker import AutoPTZTracker
-from app.core.tracking.centroid_tracker import CentroidTracker
+from app.core.tracking.botsort_tracker import BOTSortTracker
 from logger.setup_logger import get_logger
 
 if TYPE_CHECKING:
@@ -51,8 +51,8 @@ class ProcessFrame(object):
 
         self._init_detector()
 
-        self.tracker: Optional[CentroidTracker] = (
-            CentroidTracker() if self._cached_detector else None
+        self.tracker: Optional[BOTSortTracker] = (
+            BOTSortTracker() if self._cached_detector else None
         )
         self.auto_ptz: Optional[AutoPTZTracker] = (
             auto_ptz_manager.get_or_create(self.camera_id, self._cam_cfg)
@@ -137,7 +137,7 @@ class ProcessFrame(object):
             detections = detector.detect(frame)
 
             if self.tracker is not None:
-                tracked_objects = self.tracker.update(detections)
+                tracked_objects = self.tracker.update(detections, frame)
             else:
                 tracked_objects = detections
 
