@@ -29,10 +29,12 @@ class PTZCameraManager:
         Регистрирует конфиг камеры и создаёт контроллер.
         Вызывается при первом обращении (select, первый PTZ, track).
         """
-        self._config_cache[camera_id] = cam_cfg
+        # ВАЖНО: не кэшируем конфиг, если контроллер не был успешно создан.
         controller = PTZControllerFactory.create(cam_cfg.ptz_type, cam_cfg)
         if controller is None:
             raise ValueError(f"Не удалось создать PTZ-контроллер для камеры {camera_id}")
+
+        self._config_cache[camera_id] = cam_cfg
         self._controllers[camera_id] = controller
         logger.info(f"Создан {cam_cfg.ptz_type} контроллер для камеры {camera_id}")
         return controller
@@ -66,8 +68,14 @@ class PTZCameraManager:
         return cam_cfg
 
     def is_initialized(self, camera_id: int) -> bool:
-        """Камера уже инициализирована (конфиг и контроллер в кэше)."""
-        return camera_id in self._config_cache
+        """
+        Камера уже инициализирована (есть живой контроллер).
+
+        Раньше проверялся только кэш конфига, из‑за чего при падении
+        конструктора контроллера (например, TimeoutError в TMS‑20)
+        камера помечалась как инициализированная без реального контроллера.
+        """
+        return camera_id in self._controllers
 
     def restart_controller(self, camera_id: int) -> BasePTZController:
         """Пересоздать контроллер. Конфиг берётся из кэша."""

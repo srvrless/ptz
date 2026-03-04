@@ -6,7 +6,7 @@ from typing import Generator, List, Optional
 from app.config.settings import AppConfig, DetectorMode
 from app.core.camera.manager import CameraConnection, CameraManager
 from app.core.detection.yolo_detector import DetectorManager
-from app.core.streaming.mjpeg import generate_mjpeg, run_detection_sender
+from app.core.streaming.mjpeg import run_detection_sender
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.schemas.camera import (
     CameraResponse,
@@ -107,30 +107,6 @@ class CameraService:
         camera.switch_url(url)
         return camera
 
-    # старое оставляем (если нужно для отладки MJPEG)
-    def get_mjpeg_stream(
-        self,
-        uow: InterfaceUnitOfWork,
-        camera_id: int,
-        enable_detection: bool = True,
-    ) -> Generator[bytes, None, None]:
-        cam_cfg = self.get_camera_config(uow, camera_id)
-        camera = self._get_camera_for_current_mode(camera_id, cam_cfg)
-
-        logger.info(
-            f"Запуск MJPEG-стрима для {camera_id}, "
-            f"детекция: {'on' if enable_detection else 'off'}"
-        )
-        return generate_mjpeg(
-            camera,
-            camera_id=camera_id,
-            auto_ptz_manager=self.auto_ptz_manager,
-            cam_cfg=cam_cfg,
-            detector_manager=self.detector_manager,
-            enable_detection=enable_detection,
-            enable_auto_tracking=True,
-        )
-
     def select_camera(
         self,
         uow: InterfaceUnitOfWork,
@@ -139,6 +115,8 @@ class CameraService:
         enable_auto_tracking: bool = True,
     ) -> None:
         cam_cfg = self.get_camera_config(uow, camera_id)
+
+        auto_ptz = self.auto_ptz_manager.get_or_create(camera_id, cam_cfg)
 
         with self._lock:
             if (
@@ -167,7 +145,7 @@ class CameraService:
                 kwargs=dict(
                     camera=camera,
                     camera_id=camera_id,
-                    auto_ptz_manager=self.auto_ptz_manager,
+                    auto_ptz=auto_ptz,
                     cam_cfg=cam_cfg,
                     detector_manager=self.detector_manager,
                     enable_detection=enable_detection,
