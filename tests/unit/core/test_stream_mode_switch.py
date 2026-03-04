@@ -72,7 +72,7 @@ def make_pf(cam_cfg, mock_camera, mock_auto_ptz):
 
         pf = ProcessFrame(
             camera_id=1,
-            auto_ptz_manager=mock_auto_ptz,
+            auto_ptz=mock_auto_ptz,
             enable_auto_tracking=False,
             enable_detection=True,
             cam_cfg=cam_cfg,
@@ -196,7 +196,7 @@ def test_new_detector_used_after_switch(make_pf, mock_camera, mock_auto_ptz, cam
     dm.get_detector.return_value = det_optical
 
     pf = ProcessFrame(
-        camera_id=1, auto_ptz_manager=mock_auto_ptz,
+        camera_id=1, auto_ptz=mock_auto_ptz,
         enable_auto_tracking=False, enable_detection=True,
         cam_cfg=cam_cfg, camera=mock_camera, detector_manager=dm,
     )
@@ -269,7 +269,7 @@ def test_full_pipeline_stream_switch(cam_cfg, mock_auto_ptz):
     camera.switch_url = MagicMock(side_effect=_switch)
 
     pf = ProcessFrame(
-        camera_id=1, auto_ptz_manager=mock_auto_ptz,
+        camera_id=1, auto_ptz=mock_auto_ptz,
         enable_auto_tracking=False, enable_detection=True,
         cam_cfg=cam_cfg, camera=camera, detector_manager=dm,
     )
