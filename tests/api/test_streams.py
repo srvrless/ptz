@@ -11,7 +11,7 @@ class TestStreamsAPI:
 
     def test_select_camera_success(
         self,
-        client,
+        client_with_mocks,
         camera_db_onvif,
     ):
         """
@@ -20,6 +20,8 @@ class TestStreamsAPI:
         Использует client из conftest.py, который уже настроен
         с dishka и тестовой БД.
         """
+        client, _mocks = client_with_mocks
+
         response = client.post(
             f"/api/camera/select/{camera_db_onvif.id}",
         )

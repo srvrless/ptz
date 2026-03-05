@@ -30,7 +30,7 @@ class ProcessFrame(object):
     def __init__(
         self,
         camera_id: int,
-        auto_ptz_manager: AutoPTZManager,
+        auto_ptz: AutoPTZTracker,
         enable_auto_tracking: bool,
         enable_detection: bool,
         cam_cfg: "CameraConfig",
@@ -41,7 +41,7 @@ class ProcessFrame(object):
         self.camera_id = camera_id
         self.enable_auto_tracking = enable_auto_tracking
         self.enable_detection = enable_detection
-        self.auto_ptz_manager = auto_ptz_manager
+        self.auto_ptz = auto_ptz
         self._camera = camera
         self._detector_manager = detector_manager
         self._cam_cfg = cam_cfg
@@ -54,11 +54,7 @@ class ProcessFrame(object):
         self.tracker: Optional[BOTSortTracker] = (
             BOTSortTracker() if self._cached_detector else None
         )
-        self.auto_ptz: Optional[AutoPTZTracker] = (
-            auto_ptz_manager.get_or_create(self.camera_id, self._cam_cfg)
-            if (self._cached_detector is not None and self.enable_auto_tracking)
-            else None
-        )
+        self.auto_ptz: Optional[AutoPTZTracker] = auto_ptz
 
     def _get_manager(self) -> DetectorManager:
         """Детектор-менеджер: переданный из Dishka или глобальный синглтон."""

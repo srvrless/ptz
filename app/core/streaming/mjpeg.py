@@ -1,5 +1,3 @@
-# app/core/streaming/mjpeg.py
-
 from __future__ import annotations
 
 import json
@@ -16,6 +14,7 @@ from app.core.streaming.sockets_con import (
     ConnectionManager,
     SocketConnection,
 )
+from app.core.tracking.auto_ptz_tracker import AutoPTZTracker
 from logger.setup_logger import get_logger
 
 logger = get_logger("streaming")
@@ -39,7 +38,7 @@ def _default_connection_factory() -> SocketConnection:
 def run_detection_sender(
     camera,
     camera_id: int,
-    auto_ptz_manager,
+    auto_ptz: AutoPTZTracker,
     cam_cfg,
     *,
     enable_detection: bool = True,
@@ -58,7 +57,7 @@ def run_detection_sender(
     """
     prcocess_manager = ProcessFrame(
         camera_id=camera_id,
-        auto_ptz_manager=auto_ptz_manager,
+        auto_ptz=auto_ptz,
         enable_auto_tracking=enable_auto_tracking,
         enable_detection=enable_detection,
         cam_cfg=cam_cfg,
@@ -104,52 +103,3 @@ def run_detection_sender(
                 s.close()
             except Exception:
                 pass
-
-
-def generate_mjpeg(
-    camera,
-    camera_id: int,
-    auto_ptz_manager,
-    cam_cfg,
-    *,
-    enable_detection: bool = True,
-    enable_auto_tracking: bool = True,
-    connection_config: Optional[ConnectionConfig] = None,
-    detector_manager: Optional[DetectorManager] = None,
-) -> Generator[bytes, None, None]:
-    """
-    Генерирует MJPEG стрим с детекцией и трекингом.
-
-    Args:
-        cam_cfg: Конфиг камеры из БД (для PTZ-трекера)
-    """
-    prcocess_manager = ProcessFrame(
-        camera_id=camera_id,
-        auto_ptz_manager=auto_ptz_manager,
-        enable_auto_tracking=enable_auto_tracking,
-        enable_detection=enable_detection,
-        cam_cfg=cam_cfg,
-        camera=camera,
-        detector_manager=detector_manager,
-    )
-
-    with _default_connection_factory() as s:
-        while True:
-            frame = camera.get_frame()
-            if frame is None:
-                time.sleep(0.01)
-                continue
-
-            tracked_objects = prcocess_manager.process_frame(frame)
-
-            ok, buffer = cv2.imencode(".jpg", frame)
-            if not ok:
-                logger.warning("Failed to encode frame as JPEG")
-                continue
-
-            # JSON в сокет
-            objects_data = [d.to_dict() for d in tracked_objects]
-            s.sendall((json.dumps(objects_data) + "\n").encode("utf-8"))
-
-            jpg = buffer.tobytes()
-            yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + jpg + b"\r\n")
