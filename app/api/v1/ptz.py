@@ -54,11 +54,17 @@ def ptz_move_to_target(
 
     Ожидает JSON:
     {
+        "track_id": int
+        "lat": float,
+        "lon": float,
+        "height": float,
+        "zoom": float,      # опционально
+        "radar_id": int     # опционально
         "excluded_cameras": list[int]
     }
 
     Возвращает:
-    { "camera": CameraResponse, "azimut": float }
+    { "camera_id": int, "azimut": float }
     """
     result = ptz_service.move_to_target_with_excluded_cameras(
         excluded_cameras_id=body.excluded_cameras_id,

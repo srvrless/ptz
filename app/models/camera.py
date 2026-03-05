@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
 
 if TYPE_CHECKING:
+    from .camera_blind_zone import CameraBlindZone
     from .camera_connection import CameraConnection
     from .camera_location import CameraLocation
     from .camera_ptz import CameraPTZ
@@ -41,6 +42,11 @@ class Camera(Base):
         "CameraPTZ",
         back_populates="camera",
         uselist=False,
+        cascade="all, delete-orphan",
+    )
+    blind_zones: Mapped[list["CameraBlindZone"]] = relationship(
+        "CameraBlindZone",
+        back_populates="camera",
         cascade="all, delete-orphan",
     )
 

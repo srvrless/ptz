@@ -119,23 +119,28 @@ class PTZService:
           - ValueError (если radar_id некорректен)
         """
         with self._uow:
-            camera = self._uow.camera.get_nearest_camera_by_geo(
-                lat, lon, excluded_cameras_id
+            camera = self._uow.camera.get_best_camera_for_target_with_blind_zones(
+                lat=lat,
+                lon=lon,
+                excluded_cameras_id=excluded_cameras_id,
             )
             if camera is None:
                 logger.warning(
-                    "No available camera for target lat=%s lon=%s (excluded=%s)",
+                    "No available camera for target lat=%s lon=%s (excluded=%s, blind_zones=on)",
                     lat,
                     lon,
                     excluded_cameras_id,
                 )
-                raise CameraNotFoundError("nearest")
+                raise CameraNotFoundError("nearest_with_blind_zones")
 
             camera_id = camera.id
             camera_response = CameraResponse.from_camera(camera)
+
         radar_h = self._get_radar_height(radar_id)
         if restart_before_move:
             controller = self._ptz_manager.restart_controller(camera_id)
+        else:
+            controller = self._get_controller(camera_id)
 
         target_az = controller.search_target(
             target_lat=lat,
@@ -150,8 +155,7 @@ class PTZService:
             raise PTZMoveError(camera_id=camera_id, reason="target_az is None")
 
         logger.info(f"PTZ {camera_id} moved to azimuth {target_az:.2f}")
-        
-        return {"camera": camera_response, "azimut": float(target_az)}
+        return {"camera": camera_id, "azimut": float(target_az)}
 
     def continuous_move(
         self,

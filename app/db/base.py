@@ -23,6 +23,7 @@ def create_db_and_tables() -> None:
     # Импортируем все модели, чтобы они зарегистрировались в Base.metadata
     from app.models.base import Base
     from app.models.camera import Camera
+    from app.models.camera_blind_zone import CameraBlindZone
     from app.models.camera_connection import CameraConnection
     from app.models.camera_location import CameraLocation
     from app.models.camera_ptz import CameraPTZ

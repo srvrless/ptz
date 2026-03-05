@@ -11,6 +11,7 @@ from app.models.camera_connection import CameraConnection
 from app.models.camera_location import CameraLocation
 from app.models.camera_ptz import CameraPTZ
 from app.models.ptz_types import PTZType
+from app.utils.geo import azimuth_from_latlon, haversine_distance_m, is_angle_in_interval
 from logger.setup_logger import get_logger
 
 logger = get_logger("camera_repository")
@@ -32,6 +33,7 @@ class CameraRepository:
             joinedload(Camera.connection),
             joinedload(Camera.location),
             joinedload(Camera.ptz).joinedload(CameraPTZ.ptz_type),
+            joinedload(Camera.blind_zones),
         )
 
     def get_all_cameras(self, enabled_only: bool = True) -> list:
@@ -56,6 +58,7 @@ class CameraRepository:
             return None
 
         return camera
+
     def get_nearest_camera_by_geo(
         self,
         lat: float,
@@ -74,6 +77,65 @@ class CameraRepository:
 
         query = query.order_by(distance_sq.asc()).limit(1)
         return self.session.scalar(query)
+
+    def get_best_camera_for_target_with_blind_zones(
+        self,
+        lat: float,
+        lon: float,
+        excluded_cameras_id: list[int] | None,
+        max_candidates: int = 10,
+    ) -> Optional[Camera]:
+        """
+        Возвращает ближайшую доступную камеру, у которой цель не попадает в слепую зону.
+        Сначала выбирает несколько ближайших камер по расстоянию,
+        затем отфильтровывает их в Python с учётом слепых зон.
+        """
+        query = (
+            self._eager_load_query()
+            .join(Camera.location)
+            .where(Camera.enabled.is_(True))
+        )
+
+        if excluded_cameras_id:
+            query = query.where(Camera.id.not_in(excluded_cameras_id))
+
+        distance_sq = (CameraLocation.lat - lat) * (CameraLocation.lat - lat) + (
+            CameraLocation.lon - lon
+        ) * (CameraLocation.lon - lon)
+
+        query = query.order_by(distance_sq.asc()).limit(max_candidates)
+        candidates: list[Camera] = list(self.session.scalars(query).all())
+
+        target_latlon = (lat, lon)
+
+        for camera in candidates:
+            if not camera.location:
+                continue
+
+            cam_latlon = (camera.location.lat, camera.location.lon)
+            distance_m = haversine_distance_m(cam_latlon, target_latlon)
+            target_az = azimuth_from_latlon(cam_latlon, target_latlon)
+
+            # Если слепых зон нет — камера подходит.
+            if not camera.blind_zones:
+                return camera
+
+            conflict = False
+            for zone in camera.blind_zones:
+                in_sector = zone.sector_min_m <= distance_m <= zone.sector_max_m
+                in_az = is_angle_in_interval(
+                    angle_deg=target_az,
+                    start_deg=zone.az_start_deg,
+                    end_deg=zone.az_end_deg,
+                )
+                if in_sector and in_az:
+                    conflict = True
+                    break
+
+            if not conflict:
+                return camera
+
+        return None
 
     def create_camera(
         self,
