@@ -4,6 +4,7 @@ from app.utils.geo import (
     azimuth_from_latlon,
     elevation_from_latlon,
     haversine_distance_m,
+    is_angle_in_interval,
     normalize_deg,
     normalize_relative,
 )
@@ -82,3 +83,14 @@ class TestGeoUtilities:
             radar_h=0.0,
         )
         assert el > 0
+
+    def test_is_angle_in_interval_simple(self):
+        """Проверяет попадание угла в обычный диапазон без wrap."""
+        assert is_angle_in_interval(10.0, 0.0, 20.0)
+        assert not is_angle_in_interval(25.0, 0.0, 20.0)
+
+    def test_is_angle_in_interval_wrap(self):
+        """Проверяет диапазон, пересекающий 0° (например, 350–20)."""
+        assert is_angle_in_interval(355.0, 350.0, 20.0)
+        assert is_angle_in_interval(5.0, 350.0, 20.0)
+        assert not is_angle_in_interval(180.0, 350.0, 20.0)

@@ -110,3 +110,19 @@ def relative_camera_turn(
     """
     target_az = azimuth_from_latlon(cam_latlon, target_latlon)
     return normalize_relative(target_az - current_cam_azimuth)
+
+
+def is_angle_in_interval(angle_deg: float, start_deg: float, end_deg: float) -> bool:
+    """
+    Проверяет, попадает ли угол angle_deg в полуинтервал [start_deg, end_deg]
+    c учётом возможного \"wrap\" через 0°.
+    Все углы задаются в градусах.
+    """
+    angle = normalize_deg(angle_deg)
+    start = normalize_deg(start_deg)
+    end = normalize_deg(end_deg)
+
+    if start <= end:
+        return start <= angle <= end
+    # Диапазон через 0: например, 350..20
+    return angle >= start or angle <= end
