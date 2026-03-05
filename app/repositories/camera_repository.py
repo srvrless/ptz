@@ -41,7 +41,7 @@ class CameraRepository:
 
         if enabled_only:
             query = query.where(Camera.enabled)
-        return self.session.scalars(query).all()
+        return self.session.scalars(query).unique().all()
 
     def get_camera_by_id(self, camera_id: int) -> Optional[Camera]:
         try:
@@ -104,10 +104,10 @@ class CameraRepository:
         ) * (CameraLocation.lon - lon)
 
         query = query.order_by(distance_sq.asc()).limit(max_candidates)
-        candidates: list[Camera] = list(self.session.scalars(query).all())
+        candidates: list[Camera] = list(self.session.scalars(query).unique().all())
 
         target_latlon = (lat, lon)
-
+        
         for camera in candidates:
             if not camera.location:
                 continue
@@ -115,7 +115,9 @@ class CameraRepository:
             cam_latlon = (camera.location.lat, camera.location.lon)
             distance_m = haversine_distance_m(cam_latlon, target_latlon)
             target_az = azimuth_from_latlon(cam_latlon, target_latlon)
-
+            print(distance_m)
+            print(target_az)
+            print(camera.blind_zones)
             # Если слепых зон нет — камера подходит.
             if not camera.blind_zones:
                 return camera
@@ -172,8 +174,8 @@ class CameraRepository:
         camera = Camera(
             name=name,
             enabled=enabled,
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
+            created_at=datetime.now(datetime.timezone.utc),
+            updated_at=datetime.now(datetime.timezone.utc),
         )
         self.session.add(camera)
         self.session.flush()  # Получаем ID камеры

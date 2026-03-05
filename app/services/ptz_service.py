@@ -135,12 +135,11 @@ class PTZService:
 
             camera_id = camera.id
             camera_response = CameraResponse.from_camera(camera)
-
+        print(camera_id)
+        print(camera_response)
         radar_h = self._get_radar_height(radar_id)
         if restart_before_move:
             controller = self._ptz_manager.restart_controller(camera_id)
-        else:
-            controller = self._get_controller(camera_id)
 
         target_az = controller.search_target(
             target_lat=lat,
@@ -149,7 +148,7 @@ class PTZService:
             radar_h=radar_h,
             zoom=zoom,
         )
-
+        print(target_az)
         if target_az is None:
             logger.error(f"PTZ move_to_target failed for {camera_id}")
             raise PTZMoveError(camera_id=camera_id, reason="target_az is None")
