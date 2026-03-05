@@ -115,9 +115,6 @@ class CameraRepository:
             cam_latlon = (camera.location.lat, camera.location.lon)
             distance_m = haversine_distance_m(cam_latlon, target_latlon)
             target_az = azimuth_from_latlon(cam_latlon, target_latlon)
-            print(distance_m)
-            print(target_az)
-            print(camera.blind_zones)
             # Если слепых зон нет — камера подходит.
             if not camera.blind_zones:
                 return camera

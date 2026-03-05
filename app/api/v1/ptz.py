@@ -60,11 +60,11 @@ def ptz_move_to_target(
         "height": float,
         "zoom": float,      # опционально
         "radar_id": int     # опционально
-        "excluded_cameras": list[int]
+        "excluded_cameras": list[int] # опционально
     }
 
     Возвращает:
-    { "camera_id": int, "azimut": float }
+    { "camera": CameraResponse, "azimut": float }
     """
     result = ptz_service.move_to_target_with_excluded_cameras(
         excluded_cameras_id=body.excluded_cameras_id,
@@ -75,7 +75,7 @@ def ptz_move_to_target(
         radar_id=body.radar_id,
     )
     return result
-
+    
 
 # ---------- CONTINUOUS MOVE ----------
 

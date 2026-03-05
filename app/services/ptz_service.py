@@ -135,8 +135,6 @@ class PTZService:
 
             camera_id = camera.id
             camera_response = CameraResponse.from_camera(camera)
-        print(camera_id)
-        print(camera_response)
         radar_h = self._get_radar_height(radar_id)
         if restart_before_move:
             controller = self._ptz_manager.restart_controller(camera_id)
@@ -148,13 +146,12 @@ class PTZService:
             radar_h=radar_h,
             zoom=zoom,
         )
-        print(target_az)
         if target_az is None:
             logger.error(f"PTZ move_to_target failed for {camera_id}")
             raise PTZMoveError(camera_id=camera_id, reason="target_az is None")
 
         logger.info(f"PTZ {camera_id} moved to azimuth {target_az:.2f}")
-        return {"camera": camera_id, "azimut": float(target_az)}
+        return {"camera": camera_response, "azimut": float(target_az)}
 
     def continuous_move(
         self,
