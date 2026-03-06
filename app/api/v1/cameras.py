@@ -21,7 +21,6 @@ def list_cameras(
     uow: FromDishka[InterfaceUnitOfWork],
     camera_service: FromDishka[CameraService],
 ) -> List[CameraResponse]:
-
     return camera_service.list_cameras(uow)
 
 

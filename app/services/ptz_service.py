@@ -20,6 +20,7 @@ class PTZService:
     Конфиг запрашивается из БД только при первом обращении к камере (select / первый PTZ).
     Дальше используется кэш в PTZCameraManager — без доп. запросов к БД.
     """
+
     def __init__(
         self,
         ptz_manager: PTZCameraManager,

@@ -28,13 +28,23 @@ FRAME = np.zeros((480, 640, 3), dtype=np.uint8)
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def cam_cfg():
     return CameraConfig(
-        id=1, name="Test Camera", host="192.168.1.100",
-        user="admin", password="password", port=554,
-        rtsp_url=OPTICAL_URL, rtsp_url_ik=THERMAL_URL,
-        lat=55.75, lon=37.61, height=10.0, rate=0.0, ptz_type="onvif",
+        id=1,
+        name="Test Camera",
+        host="192.168.1.100",
+        user="admin",
+        password="password",
+        port=554,
+        rtsp_url=OPTICAL_URL,
+        rtsp_url_ik=THERMAL_URL,
+        lat=55.75,
+        lon=37.61,
+        height=10.0,
+        rate=0.0,
+        ptz_type="onvif",
     )
 
 
@@ -103,10 +113,15 @@ def real_camera():
 # Init: правильный RTSP URL при создании ProcessFrame
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("mode, expected_url", [
-    (DetectorMode.OPTICAL, OPTICAL_URL),
-    (DetectorMode.THERMAL, THERMAL_URL),
-], ids=["optical", "thermal"])
+
+@pytest.mark.parametrize(
+    "mode, expected_url",
+    [
+        (DetectorMode.OPTICAL, OPTICAL_URL),
+        (DetectorMode.THERMAL, THERMAL_URL),
+    ],
+    ids=["optical", "thermal"],
+)
 def test_init_uses_correct_stream_url(make_pf, mock_camera, mode, expected_url):
     make_pf(init_mode=mode)
     mock_camera.switch_url.assert_called_once_with(expected_url)
@@ -121,12 +136,21 @@ def test_init_without_camera_backward_compat(make_pf):
 # Runtime: переключение потока при смене режима
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("from_mode, to_mode, expected_url", [
-    (DetectorMode.OPTICAL, DetectorMode.THERMAL, THERMAL_URL),
-    (DetectorMode.THERMAL, DetectorMode.OPTICAL, OPTICAL_URL),
-], ids=["optical→thermal", "thermal→optical"])
+
+@pytest.mark.parametrize(
+    "from_mode, to_mode, expected_url",
+    [
+        (DetectorMode.OPTICAL, DetectorMode.THERMAL, THERMAL_URL),
+        (DetectorMode.THERMAL, DetectorMode.OPTICAL, OPTICAL_URL),
+    ],
+    ids=["optical→thermal", "thermal→optical"],
+)
 def test_runtime_switch_changes_stream_url(
-    make_pf, mock_camera, from_mode, to_mode, expected_url,
+    make_pf,
+    mock_camera,
+    from_mode,
+    to_mode,
+    expected_url,
 ):
     pf, dm, _ = make_pf(init_mode=from_mode)
     mock_camera.switch_url.reset_mock()
@@ -156,7 +180,9 @@ def test_multiple_switches_correct_url_sequence(make_pf, mock_camera):
         pf.process_frame(FRAME)
 
     assert mock_camera.switch_url.call_args_list == [
-        call(THERMAL_URL), call(OPTICAL_URL), call(THERMAL_URL),
+        call(THERMAL_URL),
+        call(OPTICAL_URL),
+        call(THERMAL_URL),
     ]
 
 
@@ -164,10 +190,15 @@ def test_multiple_switches_correct_url_sequence(make_pf, mock_camera):
 # Tracker reset
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("do_switch, expect_reset", [
-    (True, True),
-    (False, False),
-], ids=["mode_changed", "mode_same"])
+
+@pytest.mark.parametrize(
+    "do_switch, expect_reset",
+    [
+        (True, True),
+        (False, False),
+    ],
+    ids=["mode_changed", "mode_same"],
+)
 def test_tracker_reset_depends_on_mode_change(make_pf, do_switch, expect_reset):
     pf, dm, _ = make_pf()
     pf.tracker = MagicMock(spec=BOTSortTracker)
@@ -187,6 +218,7 @@ def test_tracker_reset_depends_on_mode_change(make_pf, do_switch, expect_reset):
 # Detector integrity: новый детектор используется после переключения
 # ---------------------------------------------------------------------------
 
+
 def test_new_detector_used_after_switch(make_pf, mock_camera, mock_auto_ptz, cam_cfg):
     det_optical = MagicMock(spec=ObjectDetector, **{"detect.return_value": []})
     det_thermal = MagicMock(spec=ObjectDetector, **{"detect.return_value": []})
@@ -196,9 +228,13 @@ def test_new_detector_used_after_switch(make_pf, mock_camera, mock_auto_ptz, cam
     dm.get_detector.return_value = det_optical
 
     pf = ProcessFrame(
-        camera_id=1, auto_ptz=mock_auto_ptz,
-        enable_auto_tracking=False, enable_detection=True,
-        cam_cfg=cam_cfg, camera=mock_camera, detector_manager=dm,
+        camera_id=1,
+        auto_ptz=mock_auto_ptz,
+        enable_auto_tracking=False,
+        enable_detection=True,
+        cam_cfg=cam_cfg,
+        camera=mock_camera,
+        detector_manager=dm,
     )
 
     pf.process_frame(FRAME)
@@ -216,6 +252,7 @@ def test_new_detector_used_after_switch(make_pf, mock_camera, mock_auto_ptz, cam
 # ---------------------------------------------------------------------------
 # Camera.switch_url: низкоуровневые тесты
 # ---------------------------------------------------------------------------
+
 
 def test_switch_url_changes_connection(real_camera):
     camera, mock_cls = real_camera
@@ -246,6 +283,7 @@ def test_switch_url_clears_last_frame(real_camera):
 # Full pipeline: кадры идут с правильного потока после переключения
 # ---------------------------------------------------------------------------
 
+
 def test_full_pipeline_stream_switch(cam_cfg, mock_auto_ptz):
     optical_frame = np.full((480, 640, 3), 100, dtype=np.uint8)
     thermal_frame = np.full((480, 640, 3), 200, dtype=np.uint8)
@@ -266,12 +304,17 @@ def test_full_pipeline_stream_switch(cam_cfg, mock_auto_ptz):
             camera.get_frame.return_value = thermal_frame
         else:
             camera.get_frame.return_value = optical_frame
+
     camera.switch_url = MagicMock(side_effect=_switch)
 
     pf = ProcessFrame(
-        camera_id=1, auto_ptz=mock_auto_ptz,
-        enable_auto_tracking=False, enable_detection=True,
-        cam_cfg=cam_cfg, camera=camera, detector_manager=dm,
+        camera_id=1,
+        auto_ptz=mock_auto_ptz,
+        enable_auto_tracking=False,
+        enable_detection=True,
+        cam_cfg=cam_cfg,
+        camera=camera,
+        detector_manager=dm,
     )
 
     # Optical phase

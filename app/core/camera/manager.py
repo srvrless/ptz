@@ -80,6 +80,7 @@ class Camera:
         """
         with self._frame_lock:
             return self._last_frame.copy() if self._last_frame is not None else None
+
     def switch_url(self, new_url: str) -> None:
         """
         Горячее переключение на другой RTSP-поток (например optical ↔ thermal).

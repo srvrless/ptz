@@ -3,6 +3,7 @@ from .base import AppError
 
 class NotFoundError(AppError):
     """Базовое исключение 404 ошибок"""
+
     status_code: int = 404
     error_code: str = "not_found"
 
@@ -12,6 +13,7 @@ class NotFoundError(AppError):
 
 class CameraNotFoundError(NotFoundError):
     """Исключение, возникающее при попытке доступа к несуществующей камере."""
+
     error_code: str = "camera_not_found"
 
     def __init__(self, camera_id: str):
@@ -21,6 +23,7 @@ class CameraNotFoundError(NotFoundError):
 
 class PTZControllerNotFoundError(NotFoundError):
     """Исключение, возникающее при попытке доступа к несуществующему PTZ контроллеру."""
+
     error_code: str = "ptz_controller_not_found"
 
     def __init__(self, controller_id: str):

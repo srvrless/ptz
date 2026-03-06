@@ -98,9 +98,9 @@ class AutoPTZTracker:
         #   - Зона покоя для zoom out: stop_high = optimal + hysteresis = 10% + 3.5% = 13.5%
         #
         # Широкая мёртвая зона (14% = 18%-4%) предотвращает постоянные переключения
-        self._zoom_bbox_min: float = 0.08   # ниже 4% — начинаем zoom in
-        self._zoom_bbox_optimal: float = 0.10   # целевой размер (10% = 1/10 кадра)
-        self._zoom_bbox_max: float = 0.15   # выше 18% — начинаем zoom out
+        self._zoom_bbox_min: float = 0.08  # ниже 4% — начинаем zoom in
+        self._zoom_bbox_optimal: float = 0.10  # целевой размер (10% = 1/10 кадра)
+        self._zoom_bbox_max: float = 0.15  # выше 18% — начинаем zoom out
 
         # Гистерезис: расстояние от optimal до границы "зоны покоя"
         # Zoom остановится когда bbox попадёт в диапазон [6.5%, 13.5%]
@@ -171,7 +171,9 @@ class AutoPTZTracker:
                 self._controller.stop(pan_tilt=True, zoom=True)
                 self._controller.set_zoom(0.0)
         except Exception as exc:
-            logger.exception(f"AutoPTZ: ошибка при stop()/set_zoom() в clear_target {exc}")
+            logger.exception(
+                f"AutoPTZ: ошибка при stop()/set_zoom() в clear_target {exc}"
+            )
         logger.info("AutoPTZ: clear_target camera=%s", self.camera_id)
 
     def get_target(self) -> Optional[int]:
@@ -309,7 +311,9 @@ class AutoPTZTracker:
                 self._zoom_state_changes += 1
                 logger.info(
                     "AutoPTZ ZOOM: >>> START ZOOM IN <<< (bbox=%.4f < min=%.4f, changes=%d)",
-                    bbox_ratio, self._zoom_bbox_min, self._zoom_state_changes
+                    bbox_ratio,
+                    self._zoom_bbox_min,
+                    self._zoom_state_changes,
                 )
             elif bbox_ratio > self._zoom_bbox_max:
                 # Объект слишком большой — начинаем zoom out
@@ -317,7 +321,9 @@ class AutoPTZTracker:
                 self._zoom_state_changes += 1
                 logger.info(
                     "AutoPTZ ZOOM: >>> START ZOOM OUT <<< (bbox=%.4f > max=%.4f, changes=%d)",
-                    bbox_ratio, self._zoom_bbox_max, self._zoom_state_changes
+                    bbox_ratio,
+                    self._zoom_bbox_max,
+                    self._zoom_state_changes,
                 )
             # else: остаёмся в IDLE, zoom_raw = 0
 
@@ -330,7 +336,9 @@ class AutoPTZTracker:
                 self._zoom_state_changes += 1
                 logger.info(
                     "AutoPTZ ZOOM: >>> STOP ZOOM IN <<< (bbox=%.4f >= stop=%.4f, changes=%d)",
-                    bbox_ratio, stop_zone_low, self._zoom_state_changes
+                    bbox_ratio,
+                    stop_zone_low,
+                    self._zoom_state_changes,
                 )
             else:
                 # Продолжаем приближать
@@ -347,7 +355,9 @@ class AutoPTZTracker:
                 self._zoom_state_changes += 1
                 logger.info(
                     "AutoPTZ ZOOM: >>> STOP ZOOM OUT <<< (bbox=%.4f <= stop=%.4f, changes=%d)",
-                    bbox_ratio, stop_zone_high, self._zoom_state_changes
+                    bbox_ratio,
+                    stop_zone_high,
+                    self._zoom_state_changes,
                 )
             else:
                 # Продолжаем отдалять
@@ -433,7 +443,8 @@ class AutoPTZTracker:
                 logger.info(
                     "AutoPTZ ZOOM: >>> FORCE STOP (target lost) <<< "
                     "(prev_state=%d, lost_frames=%d)",
-                    self._zoom_state, self._lost_frames
+                    self._zoom_state,
+                    self._lost_frames,
                 )
             zoom_cmd = 0.0
             self._cmd_zoom = 0.0
@@ -533,7 +544,9 @@ class AutoPTZTracker:
                 else:
                     self._controller.stop(pan_tilt=True, zoom=True)
             else:
-                self._controller.continuous_move(self._cmd_vx, self._cmd_vy, zoom=zoom_cmd)
+                self._controller.continuous_move(
+                    self._cmd_vx, self._cmd_vy, zoom=zoom_cmd
+                )
         except Exception as exc:
             logger.exception(f"AutoPTZ: ошибка continuous_move/stop: {exc}")
 
@@ -542,13 +555,22 @@ class AutoPTZTracker:
         if self._metrics_enabled:
             now_metrics = time.monotonic()
             # Логируем каждые 2 секунды или каждые 50 кадров
-            if (now_metrics - self._last_metrics_time >= 2.0) or (self._update_count % 50 == 0):
+            if (now_metrics - self._last_metrics_time >= 2.0) or (
+                self._update_count % 50 == 0
+            ):
                 self._last_metrics_time = now_metrics
                 logger.info(
                     "AutoPTZ METRICS: updates=%d, bbox_ratio=%.4f, zoom_state=%d, "
                     "zoom_cmd=%.4f, cmd_zoom=%.4f, state_changes=%d, "
                     "vx=%.3f, vy=%.3f, err_x=%.3f, err_y=%.3f",
-                    self._update_count, self._last_bbox_ratio, self._zoom_state,
-                    zoom_cmd, self._cmd_zoom, self._zoom_state_changes,
-                    self._cmd_vx, self._cmd_vy, err_x, err_y
+                    self._update_count,
+                    self._last_bbox_ratio,
+                    self._zoom_state,
+                    zoom_cmd,
+                    self._cmd_zoom,
+                    self._zoom_state_changes,
+                    self._cmd_vx,
+                    self._cmd_vy,
+                    err_x,
+                    err_y,
                 )

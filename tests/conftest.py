@@ -26,7 +26,6 @@ os.environ["HOST_RECV_SERVER"] = "127.0.0.1"
 os.environ["PORT_RECV_SERVER"] = "51242"
 os.environ["CAMERAS"] = ""  # Пусто, так как будем загружать из БД
 
-from app.main import create_app
 from app.models.base import Base
 from app.models.camera import Camera
 from app.models.camera_connection import CameraConnection
@@ -84,25 +83,21 @@ def db_session(test_db_session_factory):
 def app(test_db, test_db_session_factory):
     """
     FastAPI приложение для тестов.
-    
+
     Создаёт приложение с тестовым контейнером dishka,
     который использует тестовую БД вместо production БД.
     """
     from dishka import make_container, Provider, provide, Scope
     from dishka.integrations.fastapi import setup_dishka
-    from app.container import (
-        ConfigProvider, 
-        ManagersProvider, 
-        ServicesProvider
-    )
+    from app.container import ManagersProvider, ServicesProvider
     from app.utils.uow import UnitOfWork, InterfaceUnitOfWork
     from sqlalchemy.orm import Session as SQLAlchemySession
-    from app.config.settings import AppConfig, CameraConfig
-    
+    from app.config.settings import AppConfig
+
     # Создаём провайдер для тестовой БД
     class TestDatabaseProvider(Provider):
         """Провайдер, который использует тестовую БД вместо production."""
-        
+
         @provide(scope=Scope.REQUEST)
         def get_db_session(self) -> Iterator[SQLAlchemySession]:
             """Возвращает сессию из тестовой БД."""
@@ -111,14 +106,14 @@ def app(test_db, test_db_session_factory):
                 yield session
             finally:
                 session.close()
-        
+
         @provide(scope=Scope.REQUEST)
         def get_uow(self, session: SQLAlchemySession) -> InterfaceUnitOfWork:
             """Создаёт UnitOfWork с тестовой сессией."""
             uow = UnitOfWork()
             uow.session_factory = lambda: session
             return uow
-    
+
     # Создаём провайдер тестовой конфигурации
     class TestConfigProvider(Provider):
         """Провайдер конфигурации для тестов. Камеры берутся из БД при запросе."""
@@ -126,7 +121,7 @@ def app(test_db, test_db_session_factory):
         @provide(scope=Scope.APP)
         def get_test_config(self) -> AppConfig:
             return AppConfig()
-    
+
     # Создаём тестовый контейнер
     test_container = make_container(
         TestConfigProvider(),  # используем тестовый конфиг
@@ -134,18 +129,19 @@ def app(test_db, test_db_session_factory):
         TestDatabaseProvider(),  # используем тестовый провайдер БД
         ServicesProvider(),
     )
-    
+
     # Создаём приложение БЕЗ вызова create_app(),
     # чтобы избежать двойной инициализации
     from fastapi import FastAPI
+
     app_instance = FastAPI(
         title="PTZ Backend Test",
         version="1.0.0-test",
     )
-    
+
     # Настраиваем dishka с тестовым контейнером
     setup_dishka(test_container, app_instance)
-    
+
     # Добавляем роутеры
     from app.api.v1.auto_ptz import router as auto_ptz_router
     from app.api.v1.cameras import router as cameras_router
@@ -156,15 +152,17 @@ def app(test_db, test_db_session_factory):
     app_instance.include_router(streams_router)
     app_instance.include_router(ptz_router)
     app_instance.include_router(auto_ptz_router)
-    
+
     # Регистрируем обработчики ошибок
     from app.main import register_exception_handlers
+
     register_exception_handlers(app_instance)
-    
+
     yield app_instance
-    
+
     # Cleanup: закрываем контейнер после всех тестов
     test_container.close()
+
 
 @pytest.fixture
 def client(app):
@@ -176,10 +174,10 @@ def client(app):
 def client_with_mocks(test_db, test_db_session_factory):
     """
     HTTP клиент с замоканными менеджерами для API тестов.
-    
+
     Возвращает: (client, mocks_dict)
     где mocks_dict содержит: {'camera_manager', 'ptz_manager', 'auto_ptz_manager'}
-    
+
     Использование:
         def test_api(self, client_with_mocks):
             client, mocks = client_with_mocks
@@ -191,12 +189,12 @@ def client_with_mocks(test_db, test_db_session_factory):
     from app.core.camera.manager import CameraManager
     from app.core.ptz.manager import PTZCameraManager
     from app.core.tracking.auto_ptz_manager import AutoPTZManager
-    
+
     # Создаём моки
     camera_manager_mock = MagicMock(spec=CameraManager)
     ptz_manager_mock = MagicMock(spec=PTZCameraManager)
     auto_ptz_manager_mock = MagicMock(spec=AutoPTZManager)
-    
+
     # Создаём приложение с моками
     app_instance, container = create_test_app_with_mocks(
         test_db_session_factory,
@@ -204,17 +202,17 @@ def client_with_mocks(test_db, test_db_session_factory):
         ptz_manager_mock=ptz_manager_mock,
         auto_ptz_manager_mock=auto_ptz_manager_mock,
     )
-    
+
     mocks = {
-        'camera_manager': camera_manager_mock,
-        'ptz_manager': ptz_manager_mock,
-        'auto_ptz_manager': auto_ptz_manager_mock,
+        "camera_manager": camera_manager_mock,
+        "ptz_manager": ptz_manager_mock,
+        "auto_ptz_manager": auto_ptz_manager_mock,
     }
-    
+
     client = TestClient(app_instance)
-    
+
     yield client, mocks
-    
+
     # Cleanup
     container.close()
 

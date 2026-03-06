@@ -7,7 +7,6 @@ from app.core.detection.yolo_detector import (
     ObjectDetector,
     get_detector_manager,
 )
-from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.core.tracking.auto_ptz_tracker import AutoPTZTracker
 from app.core.tracking.botsort_tracker import BOTSortTracker
 from logger.setup_logger import get_logger

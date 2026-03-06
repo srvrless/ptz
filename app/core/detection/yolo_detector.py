@@ -288,6 +288,7 @@ class DetectorManager:
 
             logger.info("Previous detector unloaded, GPU memory cleared")
 
+
 # --- глобальный доступ через менеджер ---
 
 _manager: Optional[DetectorManager] = None

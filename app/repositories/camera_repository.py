@@ -11,7 +11,11 @@ from app.models.camera_connection import CameraConnection
 from app.models.camera_location import CameraLocation
 from app.models.camera_ptz import CameraPTZ
 from app.models.ptz_types import PTZType
-from app.utils.geo import azimuth_from_latlon, haversine_distance_m, is_angle_in_interval
+from app.utils.geo import (
+    azimuth_from_latlon,
+    haversine_distance_m,
+    is_angle_in_interval,
+)
 from logger.setup_logger import get_logger
 
 logger = get_logger("camera_repository")
@@ -65,7 +69,11 @@ class CameraRepository:
         lon: float,
         excluded_cameras_id: list[int] | None,
     ) -> Optional[Camera]:
-        query = self._eager_load_query().join(Camera.location).where(Camera.enabled.is_(True))
+        query = (
+            self._eager_load_query()
+            .join(Camera.location)
+            .where(Camera.enabled.is_(True))
+        )
 
         if excluded_cameras_id:
             query = query.where(Camera.id.not_in(excluded_cameras_id))
@@ -107,7 +115,7 @@ class CameraRepository:
         candidates: list[Camera] = list(self.session.scalars(query).unique().all())
 
         target_latlon = (lat, lon)
-        
+
         for camera in candidates:
             if not camera.location:
                 continue
@@ -200,7 +208,9 @@ class CameraRepository:
             camera_id=camera.id,
             type_id=ptz_type_obj.id,
         )
-        camera.ptz.ptz_type = ptz_type_obj  # set relationship so ptz_type_name works before flush
+        camera.ptz.ptz_type = (
+            ptz_type_obj  # set relationship so ptz_type_name works before flush
+        )
 
         logger.info(f"Created camera {camera.id} ({name})")
         return camera

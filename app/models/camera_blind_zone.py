@@ -31,4 +31,3 @@ class CameraBlindZone(Base):
             f"sector=({self.sector_min_m}, {self.sector_max_m}), "
             f"az=({self.az_start_deg}, {self.az_end_deg}))"
         )
-

@@ -96,17 +96,17 @@ class BOTSortTracker:
 
     _DEFAULT_CFG: dict = dict(
         # --- ByteTrack core ---
-        track_high_thresh=0.5,      # 1st-stage matching confidence gate
-        track_low_thresh=0.1,       # 2nd-stage matching confidence gate
-        new_track_thresh=0.6,       # min conf to create a new track
-        track_buffer=60,            # ≈2 s @ 30 fps: how long to keep lost tracks
-        match_thresh=0.8,           # IoU gate for matching
-        fuse_score=False,           # fuse detection confidence into cost matrix
+        track_high_thresh=0.5,  # 1st-stage matching confidence gate
+        track_low_thresh=0.1,  # 2nd-stage matching confidence gate
+        new_track_thresh=0.6,  # min conf to create a new track
+        track_buffer=60,  # ≈2 s @ 30 fps: how long to keep lost tracks
+        match_thresh=0.8,  # IoU gate for matching
+        fuse_score=False,  # fuse detection confidence into cost matrix
         # --- BoT-SORT specific ---
         gmc_method="sparseOptFlow",  # camera motion compensation method
-        proximity_thresh=0.5,        # spatial proximity for Re-ID fusion
-        appearance_thresh=0.25,      # appearance similarity for Re-ID fusion
-        with_reid=False,             # Re-ID disabled (no extra model needed)
+        proximity_thresh=0.5,  # spatial proximity for Re-ID fusion
+        appearance_thresh=0.25,  # appearance similarity for Re-ID fusion
+        with_reid=False,  # Re-ID disabled (no extra model needed)
     )
 
     def __init__(self, *, frame_rate: int = 30, **overrides) -> None:
@@ -137,9 +137,7 @@ class BOTSortTracker:
         saved_count = BaseTrack._count
         self._tracker = BOTSORT(self._args, frame_rate=self._frame_rate)
         BaseTrack._count = saved_count
-        logger.debug(
-            "BOTSortTracker reset (id counter kept at %d)", saved_count
-        )
+        logger.debug("BOTSortTracker reset (id counter kept at %d)", saved_count)
 
     def update(
         self,
@@ -181,4 +179,3 @@ class BOTSortTracker:
             )
 
         return result
-

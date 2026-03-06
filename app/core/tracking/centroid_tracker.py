@@ -64,6 +64,7 @@ class CentroidTracker:
         self._next_id = 1
         self._cam_dx = 0.0
         self._cam_dy = 0.0
+
     @staticmethod
     def _centroid(bbox: Tuple[int, int, int, int]) -> Tuple[float, float]:
         x1, y1, x2, y2 = bbox

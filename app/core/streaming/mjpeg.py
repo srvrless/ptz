@@ -3,11 +3,14 @@ from __future__ import annotations
 import json
 import time
 from threading import Event
-from typing import Generator, Optional
+from typing import Optional
 
-import cv2
 
-from app.core.detection.yolo_detector import DetectorManager, ObjectDetector, get_detector
+from app.core.detection.yolo_detector import (
+    DetectorManager,
+    ObjectDetector,
+    get_detector,
+)
 from app.core.streaming.frame import ProcessFrame
 from app.core.streaming.sockets_con import (
     ConnectionConfig,

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from threading import Event, Lock, Thread
-from typing import Generator, List, Optional
+from typing import List, Optional
 
 from app.config.settings import AppConfig, DetectorMode
 from app.core.camera.manager import CameraConnection, CameraManager

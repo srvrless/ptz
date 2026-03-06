@@ -269,7 +269,7 @@ class PTZController(BasePTZController):
             if zoom and self._current_zoom_state != ZOOM_STATE_STOP:
                 logger.debug(
                     "ONVIF ZOOM: STOP via stop() (prev_state=%d)",
-                    self._current_zoom_state
+                    self._current_zoom_state,
                 )
                 self._current_zoom_state = ZOOM_STATE_STOP
         except Exception as e:

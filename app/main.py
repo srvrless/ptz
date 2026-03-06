@@ -28,9 +28,9 @@ logger = get_logger("app")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_database()
-    
+
     logger.info("✅ Application startup complete")
-    
+
     yield
 
     container = app.state.container
@@ -42,17 +42,13 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     """Создает и конфигурирует FastAPI приложение."""
-    app = FastAPI(
-        title="PTZ Backend",
-        version="1.0.0",
-        lifespan=lifespan
-    )
+    app = FastAPI(title="PTZ Backend", version="1.0.0", lifespan=lifespan)
     container = create_container()
     setup_dishka(container, app)
-    
+
     app.state.container = container
     logger.info("✅ Dishka container initialized")
-    
+
     # Админка
     admin = Admin(app, engine, base_url="/admin", title="PTZ Admin")
     admin.add_view(CameraAdmin)
@@ -108,7 +104,7 @@ def init_database() -> None:
 
 def register_exception_handlers(app: FastAPI) -> None:
     """Регистрирует обработчики ошибок."""
-    
+
     @app.exception_handler(CameraNotFoundError)
     async def camera_not_found_handler(request: Request, exc: CameraNotFoundError):
         return JSONResponse(
