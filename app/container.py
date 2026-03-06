@@ -5,6 +5,7 @@
 - Application scope: конфигурация, менеджеры (создаются один раз при старте)
 - Request scope: сессии БД, сервисы (создаются для каждого запроса)
 """
+
 from typing import Iterator
 
 from dishka import Provider, Scope, make_container, provide
@@ -23,7 +24,7 @@ from app.utils.uow import InterfaceUnitOfWork, UnitOfWork
 
 class ConfigProvider(Provider):
     """Провайдер для конфигурации приложения."""
-    
+
     @provide(scope=Scope.APP)
     def get_app_config(self) -> AppConfig:
         """
@@ -74,7 +75,7 @@ class ManagersProvider(Provider):
 
 class DatabaseProvider(Provider):
     """Провайдер для работы с БД."""
-    
+
     @provide(scope=Scope.REQUEST)
     def get_db_session(self) -> Iterator[SQLAlchemySession]:
         """
@@ -82,13 +83,13 @@ class DatabaseProvider(Provider):
         Автоматически закрывает сессию после завершения запроса.
         """
         from app.db.session import Session
-        
+
         session = Session()
         try:
             yield session
         finally:
             session.close()
-    
+
     @provide(scope=Scope.REQUEST)
     def get_uow(self, session: SQLAlchemySession) -> InterfaceUnitOfWork:
         """
@@ -103,7 +104,7 @@ class DatabaseProvider(Provider):
 
 class ServicesProvider(Provider):
     """Провайдер для сервисного слоя."""
-    
+
     @provide(scope=Scope.APP)
     def get_camera_service(
         self,
@@ -124,7 +125,7 @@ class ServicesProvider(Provider):
             detector_manager=detector_manager,
             config=config,
         )
-    
+
     @provide(scope=Scope.REQUEST)
     def get_ptz_service(
         self,
@@ -157,7 +158,7 @@ class ServicesProvider(Provider):
 def create_container():
     """
     Создаёт и возвращает контейнер dishka со всеми провайдерами.
-    
+
     Использование:
         container = create_container()
         setup_dishka(container, app)

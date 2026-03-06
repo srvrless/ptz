@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from enum import Enum
 from functools import lru_cache
-from typing import Dict, Optional
+from typing import Optional
 
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,6 +13,7 @@ class DetectorMode(str, Enum):
 
     OPTICAL = "optical"
     THERMAL = "thermal"
+
 
 # ---------- Модель камеры ----------
 

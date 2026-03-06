@@ -12,6 +12,5 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from app.db.base import create_db_and_tables
 
 
-
 if __name__ == "__main__":
     create_db_and_tables()

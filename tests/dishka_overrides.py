@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterator
+from typing import Iterator
 from unittest.mock import MagicMock
 
 from dishka import Provider, Scope, make_container, provide
@@ -92,9 +92,9 @@ def create_test_app_with_mocks(
     """
     from fastapi import FastAPI
     from sqlalchemy.orm import Session as SQLAlchemySession
-    
+
     from app.utils.uow import InterfaceUnitOfWork, UnitOfWork
-    
+
     # Тестовый провайдер БД
     class TestDatabaseProvider(Provider):
         @provide(scope=Scope.REQUEST)
@@ -104,13 +104,13 @@ def create_test_app_with_mocks(
                 yield session
             finally:
                 session.close()
-        
+
         @provide(scope=Scope.REQUEST)
         def get_uow(self, session: SQLAlchemySession) -> InterfaceUnitOfWork:
             uow = UnitOfWork()
             uow.session_factory = lambda: session
             return uow
-    
+
     # Создаём контейнер с моками
     container = make_container(
         ConfigProvider(),
@@ -123,22 +123,23 @@ def create_test_app_with_mocks(
         TestDatabaseProvider(),
         ServicesProvider(),
     )
-    
+
     # Создаём приложение
     app = FastAPI(title="PTZ Test", version="1.0.0-test")
     setup_dishka(container, app)
-    
+
     # Добавляем роутеры
     from app.api.v1.cameras import router as cameras_router
     from app.api.v1.ptz import router as ptz_router
     from app.api.v1.streams import router as streams_router
-    
+
     app.include_router(cameras_router)
     app.include_router(streams_router)
     app.include_router(ptz_router)
-    
+
     # Регистрируем обработчики ошибок
     from app.main import register_exception_handlers
+
     register_exception_handlers(app)
-    
+
     return app, container

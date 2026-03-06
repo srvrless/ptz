@@ -169,8 +169,13 @@ class Tms20PTZController(BasePTZController):
             logger.info(
                 "TMS-20 METRICS: cmd_count=%d, zoom_cmds=%d, last_cmd_ms=%.1f, "
                 "x=%.3f, y=%.3f, zoom=%.3f, zoom_state=%d",
-                self._cmd_count, self._zoom_cmd_count, cmd_duration * 1000,
-                x, y, zoom, self._current_zoom_state
+                self._cmd_count,
+                self._zoom_cmd_count,
+                cmd_duration * 1000,
+                x,
+                y,
+                zoom,
+                self._current_zoom_state,
             )
 
     def stop(self, pan_tilt: bool = True, zoom: bool = True) -> None:
@@ -182,7 +187,7 @@ class Tms20PTZController(BasePTZController):
                 if self._current_zoom_state != ZOOM_STATE_STOP:
                     logger.debug(
                         "TMS-20 ZOOM: STOP via stop() (prev_state=%d)",
-                        self._current_zoom_state
+                        self._current_zoom_state,
                     )
                 self._tcp.zoom_stop()
                 self._current_zoom_state = ZOOM_STATE_STOP
@@ -194,9 +199,9 @@ class Tms20PTZController(BasePTZController):
         Относительный зум: delta > 0 — немного приблизить, delta < 0 — отдалить.
         """
         try:
-            if delta == 0.0:    
+            if delta == 0.0:
                 zoom_position, zoom_position_ir = self._tcp.get_zoom_position()
-                
+
                 while zoom_position > 100:
                     zoom_position, zoom_position_ir = self._tcp.get_zoom_position()
                     self._tcp.zoom_out()

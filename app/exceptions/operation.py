@@ -3,6 +3,7 @@ from .base import AppError
 
 class OperationError(AppError):
     """Базовое исключение для ошибок операций."""
+
     status_code: int = 400
     error_code: str = "operation_error"
 
@@ -12,6 +13,7 @@ class OperationError(AppError):
 
 class PTZMoveError(OperationError):
     """Исключение, возникающее при ошибке перемещения PTZ камеры."""
+
     error_code: str = "ptz_move_error"
 
     def __init__(self, camera_id: str, reason: str):

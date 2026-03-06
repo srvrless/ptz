@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Type
 
 from app.db.session import Session
 from app.repositories.camera_repository import CameraRepository
@@ -26,7 +25,7 @@ class InterfaceUnitOfWork(ABC):
 
 class UnitOfWork(InterfaceUnitOfWork):
     def __init__(self):
-        self.session_factory =  Session
+        self.session_factory = Session
 
     def __enter__(self):
         self.session = self.session_factory()

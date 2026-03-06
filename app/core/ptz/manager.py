@@ -32,7 +32,9 @@ class PTZCameraManager:
         # ВАЖНО: не кэшируем конфиг, если контроллер не был успешно создан.
         controller = PTZControllerFactory.create(cam_cfg.ptz_type, cam_cfg)
         if controller is None:
-            raise ValueError(f"Не удалось создать PTZ-контроллер для камеры {camera_id}")
+            raise ValueError(
+                f"Не удалось создать PTZ-контроллер для камеры {camera_id}"
+            )
 
         self._config_cache[camera_id] = cam_cfg
         self._controllers[camera_id] = controller
@@ -82,7 +84,9 @@ class PTZCameraManager:
         cam_cfg = self.get_cached_config(camera_id)
         controller = PTZControllerFactory.create(cam_cfg.ptz_type, cam_cfg)
         if controller is None:
-            raise ValueError(f"Не удалось пересоздать PTZ-контроллер для камеры {camera_id}")
+            raise ValueError(
+                f"Не удалось пересоздать PTZ-контроллер для камеры {camera_id}"
+            )
         self._controllers[camera_id] = controller
         logger.info(f"Переинициализирован PTZ-контроллер для камеры {camera_id}")
         return controller

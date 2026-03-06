@@ -223,7 +223,7 @@ class Tms20TCP:
         self._send_cam(0x0020, 0x00, 0x00)
         if sync_ir:
             self._send_ir(0x0020, 0x00, 0x00)
-            
+
     def cuurent_zoom(self, sync_ir: bool = True):
         pass
 
@@ -235,15 +235,15 @@ class Tms20TCP:
         self._send_cam(0x0040, 0x00, 0x00)
         if sync_ir:
             self._send_ir(0x0040, 0x00, 0x00)
-    
+
     def zoom_in_ir(self):
         """Зум IR камеры в сторону Tele (приближение)."""
         self._send_ir(0x0020, 0x00, 0x00)
-    
+
     def zoom_out_ir(self):
         """Зум IR камеры в сторону Wide (отдаление)."""
         self._send_ir(0x0040, 0x00, 0x00)
-    
+
     def zoom_stop_ir(self):
         """Остановить зум IR камеры."""
         self._send_ir(0x0000, 0x00, 0x00)
@@ -259,7 +259,6 @@ class Tms20TCP:
     def focus_far(self):
         """Фокус дальше (Focus Far = 0x0080)."""
         self._send_cam(0x0080, 0x00, 0x00)
-
 
     def thermal_on(self):
         """
@@ -311,7 +310,6 @@ class Tms20TCP:
         lsb = value & 0xFF
         self._send_cam(0x005F, msb, lsb)
 
-
     def _receive_response(self, expected_cmd: int) -> Optional[int]:
         """
         Получить ответ от устройства.
@@ -320,24 +318,24 @@ class Tms20TCP:
         """
         # Читаем пакет: 0xFF Add Cmd1 Cmd2 Data1 Data2 Sum (7 байт)
         response = self.sock.recv(7)
-        
+
         addr = response[1]
         cmd1 = response[2]
         cmd2 = response[3]
         cmd = (cmd1 << 8) | cmd2
-        
+
         if cmd != expected_cmd:
             return None
-        
+
         # Проверяем checksum
         data1 = response[4]
         data2 = response[5]
         received_sum = response[6]
         calculated_sum = self._checksum(addr, cmd1, cmd2, data1, data2)
-        
+
         if received_sum != calculated_sum:
             return None
-        
+
         # Возвращаем значение (MSB << 8 | LSB)
         value = (data1 << 8) | data2
         return value
@@ -345,18 +343,19 @@ class Tms20TCP:
     def get_zoom_position(self) -> Optional[int]:
         """
         Получить текущую позицию зума (Call Zoom Position, 0x0055).
-        
+
         Возвращает позицию зума в единицах протокола (0x0000 - 0xFFFF) или None при ошибке.
         Ответ: 0xFF Add 0x00 0x5D MSB LSB Sum
         """
         # Отправляем команду Call Zoom Position (0x0055)
         self._send_cam(0x0055, 0x00, 0x00)
         response_cam = self._receive_response(0x005D)
-        
+
         self._send_ir(0x0055, 0x00, 0x00)
         response_ir = self._receive_response(0x005D)
         # Получаем ответ с командой 0x005D
         return response_cam, response_ir
+
 
 if __name__ == "__main__":
     ptz = Tms20TCP("192.168.1.100")

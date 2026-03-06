@@ -3,7 +3,12 @@ from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaSyncRoute
 
 from app.schemas.camera import CameraResponse
-from app.schemas.ptz import ContinuousMoveRequest, MoveExcludedCameras, MoveRequest, ZoomRequest
+from app.schemas.ptz import (
+    ContinuousMoveRequest,
+    MoveExcludedCameras,
+    MoveRequest,
+    ZoomRequest,
+)
 from app.services import PTZService
 
 router = APIRouter(prefix="/api", tags=["ptz"], route_class=DishkaSyncRoute)
@@ -44,6 +49,7 @@ def ptz_move(
     )
     return result
 
+
 @router.post("/ptz/move/")
 def ptz_move_to_target(
     body: MoveExcludedCameras,
@@ -75,7 +81,7 @@ def ptz_move_to_target(
         radar_id=body.radar_id,
     )
     return result
-    
+
 
 # ---------- CONTINUOUS MOVE ----------
 

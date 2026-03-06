@@ -16,7 +16,7 @@ class TestStreamsAPI:
     ):
         """
         Проверяет выбор камеры из БД.
-        
+
         Использует client из conftest.py, который уже настроен
         с dishka и тестовой БД.
         """
@@ -28,7 +28,7 @@ class TestStreamsAPI:
 
         # Может быть 200 (успех) или 404 (камера не найдена в конфиге)
         assert response.status_code in [200, 404]
-        
+
         if response.status_code == 200:
             data = response.json()
             assert data["selected_camera_id"] == camera_db_onvif.id

@@ -15,9 +15,11 @@ class MoveRequest(BaseModel):
             raise ValueError("radar_id must be >= 0")
         return v
 
+
 class MoveExcludedCameras(MoveRequest):
     excluded_cameras_id: list[int] | None
     track_id: int | None
+
 
 class ContinuousMoveRequest(BaseModel):
     x: float = Field(0.0, ge=-1, le=1, description="Скорость по pan [-1, 1]")

@@ -4,6 +4,7 @@ Integration тесты для CameraService.
 Эти тесты проверяют взаимодействие сервиса с реальной БД,
 но с замоканными внешними зависимостями (менеджеры).
 """
+
 from unittest.mock import MagicMock
 
 from app.config.settings import AppConfig
@@ -27,13 +28,13 @@ class TestCameraService:
             detector_manager=MagicMock(spec=DetectorManager),
             config=MagicMock(spec=AppConfig),
         )
-        
+
         uow = UnitOfWork()
         uow.session = db_session
         uow.camera = CameraRepository(db_session)
-        
+
         cameras = service.list_cameras(uow)
-        
+
         assert len(cameras) >= 0
 
     def test_get_camera_by_id_success(self, db_session, camera_db_onvif):

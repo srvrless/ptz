@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from app.config.settings import DetectorMode
 
+
 class DetectorModeRequest(BaseModel):
     """Запрос на переключение режима детектора."""
 

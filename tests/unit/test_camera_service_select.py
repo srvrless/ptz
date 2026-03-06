@@ -25,14 +25,23 @@ from app.services.camera_service import CameraService
 # Helpers & Fixtures
 # ---------------------------------------------------------------------------
 
+
 def _cam_cfg(cam_id: int) -> CameraConfig:
     host = f"10.0.0.{cam_id}"
     return CameraConfig(
-        id=cam_id, name=f"Camera {cam_id}", host=host,
-        user="admin", password="pass", port=554,
+        id=cam_id,
+        name=f"Camera {cam_id}",
+        host=host,
+        user="admin",
+        password="pass",
+        port=554,
         rtsp_url=f"rtsp://{host}/optical",
         rtsp_url_ik=f"rtsp://{host}/thermal",
-        lat=55.0, lon=37.0, height=10.0, rate=0.0, ptz_type="onvif",
+        lat=55.0,
+        lon=37.0,
+        height=10.0,
+        rate=0.0,
+        ptz_type="onvif",
     )
 
 
@@ -86,9 +95,9 @@ def _make_service(camera_manager, detector_manager):
 # Stop event lifecycle
 # ---------------------------------------------------------------------------
 
+
 @patch("app.services.camera_service.run_detection_sender")
 class TestStopEventLifecycle:
-
     def test_old_stop_event_set_on_camera_switch(self, _, service, uow):
         service.select_camera(uow, camera_id=1)
         event_1 = service._stop_event
@@ -112,14 +121,24 @@ class TestStopEventLifecycle:
 # Camera release
 # ---------------------------------------------------------------------------
 
+
 @patch("app.services.camera_service.run_detection_sender")
 class TestCameraRelease:
-
-    @pytest.mark.parametrize("cam_ids, expect_release_id", [
-        ([1, 2], 1),
-    ], ids=["switch_releases_old"])
+    @pytest.mark.parametrize(
+        "cam_ids, expect_release_id",
+        [
+            ([1, 2], 1),
+        ],
+        ids=["switch_releases_old"],
+    )
     def test_old_camera_released_on_switch(
-        self, _, service, uow, camera_manager, cam_ids, expect_release_id,
+        self,
+        _,
+        service,
+        uow,
+        camera_manager,
+        cam_ids,
+        expect_release_id,
     ):
         for cid in cam_ids:
             service.select_camera(uow, camera_id=cid)
@@ -136,6 +155,7 @@ class TestCameraRelease:
 # ---------------------------------------------------------------------------
 # Noop on same camera
 # ---------------------------------------------------------------------------
+
 
 @patch("app.services.camera_service.run_detection_sender")
 def test_same_camera_alive_worker_noop(mock_sender, service, uow):
@@ -155,6 +175,7 @@ def test_same_camera_alive_worker_noop(mock_sender, service, uow):
 # stop_selected_camera
 # ---------------------------------------------------------------------------
 
+
 @patch("app.services.camera_service.run_detection_sender")
 def test_stop_sets_event_and_clears_state(_, service, uow, camera_manager):
     service.select_camera(uow, camera_id=1)
@@ -172,9 +193,9 @@ def test_stop_sets_event_and_clears_state(_, service, uow, camera_manager):
 # State preserved across calls (APP scope vs REQUEST scope)
 # ---------------------------------------------------------------------------
 
+
 @patch("app.services.camera_service.run_detection_sender")
 class TestScopeIntegrity:
-
     def test_single_instance_preserves_state(self, _, service, uow):
         events = []
         for cam_id in [1, 2, 3]:
@@ -185,19 +206,30 @@ class TestScopeIntegrity:
         assert not events[-1].is_set()
         assert service._selected_camera_id == 3
 
-    @pytest.mark.parametrize("same_instance, old_event_should_be_set", [
-        (True, True),
-        (False, False),
-    ], ids=["APP_scope", "REQUEST_scope_bug"])
+    @pytest.mark.parametrize(
+        "same_instance, old_event_should_be_set",
+        [
+            (True, True),
+            (False, False),
+        ],
+        ids=["APP_scope", "REQUEST_scope_bug"],
+    )
     def test_scope_affects_worker_lifecycle(
-        self, _, uow, camera_manager, detector_manager,
-        same_instance, old_event_should_be_set,
+        self,
+        _,
+        uow,
+        camera_manager,
+        detector_manager,
+        same_instance,
+        old_event_should_be_set,
     ):
         svc1 = _make_service(camera_manager, detector_manager)
         svc1.select_camera(uow, camera_id=1)
         orphaned_event = svc1._stop_event
 
-        svc2 = svc1 if same_instance else _make_service(camera_manager, detector_manager)
+        svc2 = (
+            svc1 if same_instance else _make_service(camera_manager, detector_manager)
+        )
         svc2.select_camera(uow, camera_id=2)
 
         assert orphaned_event.is_set() == old_event_should_be_set
@@ -207,6 +239,7 @@ class TestScopeIntegrity:
 # Stress: rapid camera switches
 # ---------------------------------------------------------------------------
 
+
 @patch("app.services.camera_service.run_detection_sender")
 def test_rapid_switches_all_old_events_set(_, service, uow):
     events = []
@@ -215,7 +248,7 @@ def test_rapid_switches_all_old_events_set(_, service, uow):
         events.append(service._stop_event)
 
     for i, ev in enumerate(events[:-1]):
-        assert ev.is_set(), f"Event от камеры {i+1} должен быть set"
+        assert ev.is_set(), f"Event от камеры {i + 1} должен быть set"
 
     assert not events[-1].is_set()
     assert service._selected_camera_id == 5

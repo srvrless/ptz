@@ -3,6 +3,7 @@ from .base import AppError
 
 class ValidationError(AppError):
     """Базовое исключение для ошибок валидации данных."""
+
     status_code: int = 400
     error_code: str = "validation_error"
 
@@ -12,6 +13,7 @@ class ValidationError(AppError):
 
 class InvalidRadarIDError(ValidationError):
     """Исключение, возникающее при передаче некорректного ID радара."""
+
     error_code: str = "invalid_radar_id"
 
     def __init__(self, radar_id: str):
