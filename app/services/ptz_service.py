@@ -8,7 +8,8 @@ from app.core.ptz.manager import PTZCameraManager
 from app.exceptions import CameraNotFoundError, PTZControllerNotFoundError, PTZMoveError
 from app.utils.uow import InterfaceUnitOfWork
 from logger.setup_logger import get_logger
-from app.schemas.camera import CameraResponse
+from app.schemas.camera import CameraResponse, ConnectionResponse, LocationResponse
+from app.services.camera_gateway_client import CameraGatewayClient
 
 
 logger = get_logger("ptz_service")
@@ -26,19 +27,20 @@ class PTZService:
         ptz_manager: PTZCameraManager,
         config: AppConfig,
         uow: InterfaceUnitOfWork,
+        camera_gateway: CameraGatewayClient,
     ):
         self._ptz_manager = ptz_manager
         self.config = config
         self._uow = uow
+        self._camera_gateway = camera_gateway
 
     def _fetch_camera_config_from_db(self, camera_id: int) -> CameraConfig:
         """Запрос конфига из БД. Конвертация внутри with — объект не detached."""
-        with self._uow:
-            camera = self._uow.camera.get_camera_by_id(camera_id)
-            if camera is None:
-                logger.warning(f"Camera not found in DB: {camera_id}")
-                raise PTZControllerNotFoundError(camera_id)
-            return CameraConfig.from_db_model(camera)
+        camera_cfg = self._camera_gateway.get_camera_config_by_id(camera_id)
+        if camera_cfg is None:
+            logger.warning(f"Camera not found in DB: {camera_id}")
+            raise PTZControllerNotFoundError(str(camera_id))
+        return camera_cfg
 
     def _get_controller(self, camera_id: int) -> PTZController:
         """Контроллер из кэша. При первом обращении — запрос в БД и init_camera."""
@@ -119,23 +121,22 @@ class PTZService:
           - PTZMoveError
           - ValueError (если radar_id некорректен)
         """
-        with self._uow:
-            camera = self._uow.camera.get_best_camera_for_target_with_blind_zones(
-                lat=lat,
-                lon=lon,
-                excluded_cameras_id=excluded_cameras_id,
-            )
-            if camera is None:
-                logger.warning(
-                    "No available camera for target lat=%s lon=%s (excluded=%s, blind_zones=on)",
-                    lat,
-                    lon,
-                    excluded_cameras_id,
-                )
-                raise CameraNotFoundError("nearest_with_blind_zones")
+        best_cam_cfg = self._camera_gateway.get_nearest_camera_config(
+            lat=lat, lon=lon, excluded_cameras_id=excluded_cameras_id
+        )
+        if best_cam_cfg is None:
+            raise CameraNotFoundError("nearest_camera")
 
-            camera_id = camera.id
-            camera_response = CameraResponse.from_camera(camera)
+        camera_id = best_cam_cfg.id
+        camera_response = CameraResponse(
+            id=best_cam_cfg.id,
+            name=best_cam_cfg.name,
+            connection=ConnectionResponse(
+                rtsp_url=best_cam_cfg.rtsp_url,
+                rtsp_url_ik=best_cam_cfg.rtsp_url_ik,
+            ),
+            location=LocationResponse(lat=best_cam_cfg.lat, lon=best_cam_cfg.lon),
+        )
         radar_h = self._get_radar_height(radar_id)
         if restart_before_move:
             controller = self._ptz_manager.restart_controller(camera_id)

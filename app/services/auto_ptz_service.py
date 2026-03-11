@@ -6,6 +6,7 @@ from app.config.settings import CameraConfig
 from app.core.ptz.manager import PTZCameraManager
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.exceptions import CameraNotFoundError
+from app.services.camera_gateway_client import CameraGatewayClient
 from app.utils.uow import InterfaceUnitOfWork
 
 
@@ -20,10 +21,12 @@ class AutoPTZService:
         auto_ptz_manager: AutoPTZManager,
         ptz_manager: PTZCameraManager,
         uow: InterfaceUnitOfWork,
+        camera_gateway: CameraGatewayClient,
     ) -> None:
         self._auto_ptz_manager = auto_ptz_manager
         self._ptz_manager = ptz_manager
         self._uow = uow
+        self._camera_gateway = camera_gateway
 
     def _resolve_camera_config(self, camera_id: int) -> CameraConfig:
         """Из кэша PTZManager, если камера инициализирована; иначе запрос в БД."""
@@ -32,11 +35,10 @@ class AutoPTZService:
         return self._fetch_camera_config_from_db(camera_id)
 
     def _fetch_camera_config_from_db(self, camera_id: int) -> CameraConfig:
-        with self._uow:
-            camera = self._uow.camera.get_camera_by_id(camera_id)
-            if camera is None:
-                raise CameraNotFoundError(camera_id)
-            return CameraConfig.from_db_model(camera)
+        camera_cfg = self._camera_gateway.get_camera_config_by_id(camera_id)
+        if camera_cfg is None:
+            raise CameraNotFoundError(str(camera_id))
+        return camera_cfg
 
     def set_target(self, camera_id: int, track_id: Optional[int]) -> None:
         cam_cfg = self._resolve_camera_config(camera_id)

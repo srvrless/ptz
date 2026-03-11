@@ -85,6 +85,18 @@ class AppConfig(BaseSettings):
     app_debug: bool = True
     app_token: str = Field(..., description="Bearer-токен API")
 
+    # External services
+    camera_api_base_url: str = Field(
+        default="http://localhost:6666",
+        alias="CAMERA_API_BASE_URL",
+        description="Base URL API gateway для получения данных камер",
+    )
+    camera_api_token: Optional[str] = Field(
+        default=None,
+        alias="CAMERA_API_TOKEN",
+        description="Bearer-токен для API gateway (если требуется)",
+    )
+
     # Список камер из .env: CAMERAS=1,2
     cameras_raw: str = Field("", alias="CAMERAS")
 

@@ -72,6 +72,7 @@ def ptz_move_to_target(
     Возвращает:
     { "camera": CameraResponse, "azimut": float }
     """
+    # TODO: call another api to get best cameras
     result = ptz_service.move_to_target_with_excluded_cameras(
         excluded_cameras_id=body.excluded_cameras_id,
         lat=body.lat,

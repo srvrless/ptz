@@ -17,6 +17,7 @@ from app.schemas.camera import (
 )
 from app.utils.uow import InterfaceUnitOfWork
 from app.exceptions import CameraNotFoundError
+from app.services.camera_gateway_client import CameraGatewayClient
 from logger.setup_logger import get_logger
 
 logger = get_logger("camera_service")
@@ -29,6 +30,7 @@ class CameraService:
         auto_ptz_manager: AutoPTZManager,
         detector_manager: DetectorManager,
         config: AppConfig,
+        camera_gateway: CameraGatewayClient,
     ) -> None:
         self.camera_manager = camera_manager
         self.auto_ptz_manager = auto_ptz_manager
@@ -38,44 +40,7 @@ class CameraService:
         self._selected_camera_id: Optional[str] = None
         self._worker_thread: Optional[Thread] = None
         self._stop_event: Optional[Event] = None
-
-    def list_cameras(self, uow: InterfaceUnitOfWork) -> List[CameraResponse]:
-        """Получить список всех камер в виде DTO"""
-        with uow:
-            cameras = uow.camera.get_all_cameras()
-            return [CameraResponse.from_camera(camera) for camera in cameras]
-
-    def create_camera(
-        self, uow: InterfaceUnitOfWork, camera_data: CreateCamera
-    ) -> CreateCameraResponse:
-        with uow:
-            camera_obj = uow.camera.create_camera(**camera_data.dict_for_repo())
-            return CreateCameraResponse.from_camera(camera_obj)
-
-    def update_camera(
-        self, uow: InterfaceUnitOfWork, camera_id: int, camera_data: UpdateCamera
-    ) -> UpdateCameraResponse:
-        with uow:
-            camera_obj = uow.camera.update_camera(
-                camera_id, **camera_data.dict_for_repo()
-            )
-            if camera_obj is None:
-                raise CameraNotFoundError(camera_id)
-            return UpdateCameraResponse.from_camera(camera_obj)
-
-    def soft_delete_camera(self, uow: InterfaceUnitOfWork, camera_id: int) -> bool:
-        with uow:
-            camera = uow.camera.delete_camera(camera_id)
-            return camera
-
-    def get_camera_by_id(
-        self, uow: InterfaceUnitOfWork, camera_id: int
-    ) -> Optional[CameraResponse]:
-        with uow:
-            camera = uow.camera.get_camera_by_id(camera_id)
-            if camera is None:
-                return None
-            return CameraResponse.from_camera(camera)
+        self._camera_gateway = camera_gateway
 
     def get_camera_config(
         self,
@@ -85,12 +50,11 @@ class CameraService:
         """Получить конфиг камеры из БД. Конвертация внутри with — объект не detached."""
         from app.config.settings import CameraConfig
 
-        with uow:
-            camera = uow.camera.get_camera_by_id(camera_id)
-            if camera is None:
-                logger.warning(f"Camera not found: {camera_id}")
-                raise CameraNotFoundError(camera_id)
-            return CameraConfig.from_db_model(camera)
+        camera_cfg = self._camera_gateway.get_camera_config_by_id(camera_id)
+        if camera_cfg is None:
+            logger.warning(f"Camera not found: {camera_id}")
+            raise CameraNotFoundError(str(camera_id))
+        return camera_cfg
 
     def _rtsp_url_for_current_mode(self, cam_cfg) -> str:
         """Возвращает RTSP URL, соответствующий текущему режиму детектора."""

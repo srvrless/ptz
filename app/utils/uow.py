@@ -1,11 +1,9 @@
 from abc import ABC, abstractmethod
 
 from app.db.session import Session
-from app.repositories.camera_repository import CameraRepository
 
 
 class InterfaceUnitOfWork(ABC):
-    camera: CameraRepository
 
     @abstractmethod
     def __init__(self): ...
@@ -29,7 +27,6 @@ class UnitOfWork(InterfaceUnitOfWork):
 
     def __enter__(self):
         self.session = self.session_factory()
-        self.camera = CameraRepository(self.session)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
