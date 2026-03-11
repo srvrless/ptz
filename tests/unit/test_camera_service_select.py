@@ -18,6 +18,7 @@ from app.config.settings import AppConfig, CameraConfig, DetectorMode
 from app.core.camera.manager import CameraManager
 from app.core.detection.yolo_detector import DetectorManager
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
+from app.services.camera_gateway_client import CameraGatewayClient
 from app.services.camera_service import CameraService
 
 
@@ -69,6 +70,7 @@ def service(camera_manager, detector_manager):
         auto_ptz_manager=MagicMock(spec=AutoPTZManager),
         detector_manager=detector_manager,
         config=MagicMock(spec=AppConfig),
+        camera_gateway=MagicMock(spec=CameraGatewayClient),
     )
     svc.get_camera_config = MagicMock(side_effect=lambda u, cid: _cam_cfg(cid))
     return svc
@@ -86,6 +88,7 @@ def _make_service(camera_manager, detector_manager):
         auto_ptz_manager=MagicMock(spec=AutoPTZManager),
         detector_manager=detector_manager,
         config=MagicMock(spec=AppConfig),
+        camera_gateway=MagicMock(spec=CameraGatewayClient),
     )
     svc.get_camera_config = MagicMock(side_effect=lambda u, cid: _cam_cfg(cid))
     return svc

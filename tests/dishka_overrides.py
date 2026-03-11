@@ -9,6 +9,7 @@ from app.core.camera.manager import CameraManager
 from app.core.detection.yolo_detector import DetectorManager
 from app.core.ptz.manager import PTZCameraManager
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
+from app.services.camera_gateway_client import CameraGatewayClient
 
 
 class MockManagersProvider(Provider):
@@ -92,8 +93,11 @@ def create_test_app_with_mocks(
     """
     from fastapi import FastAPI
     from sqlalchemy.orm import Session as SQLAlchemySession
+    from unittest.mock import MagicMock
 
     from app.utils.uow import InterfaceUnitOfWork, UnitOfWork
+    from app.config.settings import CameraConfig
+    from app.models.camera import Camera
 
     # Тестовый провайдер БД
     class TestDatabaseProvider(Provider):
@@ -111,6 +115,34 @@ def create_test_app_with_mocks(
             uow.session_factory = lambda: session
             return uow
 
+    class TestGatewayProvider(Provider):
+        @provide(scope=Scope.APP)
+        def get_camera_gateway_client(self) -> CameraGatewayClient:
+            """
+            В тестах не ходим в реальный API gateway.
+            Эмулируем gateway: выдаём CameraConfig на основе данных тестовой БД.
+            """
+
+            gateway = MagicMock(spec=CameraGatewayClient)
+
+            def _get_by_id(camera_id: int):
+                session = test_db_session_factory()
+                try:
+                    cam = (
+                        session.query(Camera)
+                        .filter(Camera.id == camera_id)
+                        .one_or_none()
+                    )
+                    if cam is None or not cam.enabled:
+                        return None
+                    return CameraConfig.from_db_model(cam)
+                finally:
+                    session.close()
+
+            gateway.get_camera_config_by_id.side_effect = _get_by_id
+            gateway.get_nearest_camera_config.return_value = None
+            return gateway
+
     # Создаём контейнер с моками
     container = make_container(
         ConfigProvider(),
@@ -122,6 +154,7 @@ def create_test_app_with_mocks(
         ),
         TestDatabaseProvider(),
         ServicesProvider(),
+        TestGatewayProvider(),
     )
 
     # Создаём приложение
