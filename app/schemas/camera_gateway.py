@@ -13,21 +13,20 @@ class GatewayCameraResponse(BaseModel):
     """
 
     id: int
-    name: Optional[str] = None
+    name: str
 
     host: str
     username: str
     password: str
-    port: int = 554
-
+    port: int
     rtsp_url: str
     rtsp_url_ik: str
 
     lat: float
     lon: float
     height: float
-    rate: float = 0.0
-    ptz_type: str = "onvif"
+    rate: float 
+    ptz_type: str 
 
     model_config = ConfigDict(extra="ignore")
 

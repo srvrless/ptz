@@ -79,7 +79,6 @@ class CameraService:
         enable_auto_tracking: bool = True,
     ) -> None:
         cam_cfg = self.get_camera_config(uow, camera_id)
-
         auto_ptz = self.auto_ptz_manager.get_or_create(camera_id, cam_cfg)
 
         with self._lock:

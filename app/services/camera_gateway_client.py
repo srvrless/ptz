@@ -16,7 +16,7 @@ class CameraGatewayClient:
     def _to_camera_config(camera: GatewayCameraResponse) -> CameraConfig:
         return CameraConfig(
             id=camera.id,
-            name=camera.name or f"camera-{camera.id}",
+            name=camera.name,
             host=camera.host,
             user=camera.username,
             password=camera.password,
@@ -29,9 +29,8 @@ class CameraGatewayClient:
             rate=camera.rate,
             ptz_type=camera.ptz_type,
         )
-
     def get_camera_config_by_id(self, camera_id: int) -> Optional[CameraConfig]:
-        resp = self._client.get(f"/camera/{camera_id}")
+        resp = self._client.get(f"/v1/cameras/camera/{camera_id}")
         if resp.status_code == 404:
             return None
         resp.raise_for_status()
@@ -43,8 +42,7 @@ class CameraGatewayClient:
         *,
         lat: float,
         lon: float,
-        excluded_cameras_id: list[int] | None,
-        camera_id_for_path: int = 0,
+        excluded_cameras_id: list[int] | None
     ) -> Optional[CameraConfig]:
         payload = {
             "lat": lat,
@@ -52,9 +50,9 @@ class CameraGatewayClient:
             "excluded_cameras_id": excluded_cameras_id,
         }
 
-        # gateway endpoint в примере — GET c JSON body (нестандартно, но поддерживаем)
+        # gateway endpoint в примере — Post c JSON body (нестандартно, но поддерживаем)
         resp = self._client.request(
-            "GET", f"/nearest_camera/{camera_id_for_path}", json=payload
+            "POST", f"/v1/cameras/nearest_camera/", json=payload
         )
         if resp.status_code == 404:
             return None
