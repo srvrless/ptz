@@ -11,7 +11,9 @@ from unittest.mock import MagicMock
 class TestPTZAPI:
     """Тесты для /api/ptz/* endpoints."""
 
-    def test_ptz_move_success(self, client_with_mocks, auth_header, camera_db_onvif):
+    def test_ptz_move_success(
+        self, client_with_mocks, auth_header, sample_camera_onvif_config
+    ):
         """Проверяет успешное движение PTZ."""
         client, mocks = client_with_mocks
 
@@ -30,14 +32,16 @@ class TestPTZAPI:
         }
 
         response = client.post(
-            f"/api/ptz/{camera_db_onvif.id}/move/",
+            f"/api/ptz/{sample_camera_onvif_config.id}/move/",
             json=payload,
             headers=auth_header,
         )
 
         assert response.status_code in [200, 404]
 
-    def test_ptz_continuous_move(self, client_with_mocks, auth_header, camera_db_onvif):
+    def test_ptz_continuous_move(
+        self, client_with_mocks, auth_header, sample_camera_onvif_config
+    ):
         """Проверяет непрерывное движение PTZ."""
         client, mocks = client_with_mocks
 
@@ -51,14 +55,14 @@ class TestPTZAPI:
         }
 
         response = client.post(
-            f"/api/ptz/{camera_db_onvif.id}/continuous_move/",
+            f"/api/ptz/{sample_camera_onvif_config.id}/continuous_move/",
             json=payload,
             headers=auth_header,
         )
 
         assert response.status_code in [200, 404]
 
-    def test_ptz_stop(self, client_with_mocks, auth_header, camera_db_onvif):
+    def test_ptz_stop(self, client_with_mocks, auth_header, sample_camera_onvif_config):
         """Проверяет остановку PTZ."""
         client, mocks = client_with_mocks
 
@@ -68,7 +72,7 @@ class TestPTZAPI:
         mocks["ptz_manager"].restart_controller.return_value = mock_controller
 
         response = client.post(
-            f"/api/ptz/{camera_db_onvif.id}/stop/",
+            f"/api/ptz/{sample_camera_onvif_config.id}/stop/",
             headers=auth_header,
         )
 

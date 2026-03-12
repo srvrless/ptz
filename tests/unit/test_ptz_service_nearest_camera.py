@@ -51,7 +51,6 @@ def service(ptz_manager: MagicMock, config: AppConfig, camera_gateway: MagicMock
     return PTZService(
         ptz_manager=ptz_manager,
         config=config,
-        uow=MagicMock(),
         camera_gateway=camera_gateway,
     )
 

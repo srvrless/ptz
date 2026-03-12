@@ -21,7 +21,6 @@ from app.services.auto_ptz_service import AutoPTZService
 from app.services.camera_gateway_client import CameraGatewayClient
 from app.services.camera_service import CameraService
 from app.services.ptz_service import PTZService
-from app.utils.uow import InterfaceUnitOfWork, UnitOfWork
 
 
 class ConfigProvider(Provider):
@@ -75,35 +74,6 @@ class ManagersProvider(Provider):
         return AutoPTZManager(ptz_manager=ptz_manager)
 
 
-class DatabaseProvider(Provider):
-    """Провайдер для работы с БД."""
-
-    @provide(scope=Scope.REQUEST)
-    def get_db_session(self) -> Iterator[SQLAlchemySession]:
-        """
-        Создаёт сессию БД для каждого запроса.
-        Автоматически закрывает сессию после завершения запроса.
-        """
-        from app.db.session import Session
-
-        session = Session()
-        try:
-            yield session
-        finally:
-            session.close()
-
-    @provide(scope=Scope.REQUEST)
-    def get_uow(self, session: SQLAlchemySession) -> InterfaceUnitOfWork:
-        """
-        Создаёт UnitOfWork для каждого запроса.
-        Использует сессию из провайдера get_db_session.
-        """
-        uow = UnitOfWork()
-        # Переопределяем session_factory, чтобы использовать уже созданную сессию
-        uow.session_factory = lambda: session
-        return uow
-
-
 class ServicesProvider(Provider):
     """Провайдер для сервисного слоя."""
 
@@ -140,7 +110,7 @@ class ServicesProvider(Provider):
         CameraService — APP scope, т.к. хранит состояние воркера
         (_worker_thread, _stop_event, _selected_camera_id),
         которое должно пережить отдельный HTTP-запрос.
-        Все зависимости уже APP scope, uow передаётся через аргументы методов.
+        Все зависимости уже APP scope
         """
         return CameraService(
             camera_manager=camera_manager,
@@ -155,14 +125,12 @@ class ServicesProvider(Provider):
         self,
         ptz_manager: PTZCameraManager,
         config: AppConfig,
-        uow: InterfaceUnitOfWork,
         camera_gateway: CameraGatewayClient,
     ) -> PTZService:
         """Создаёт PTZService для каждого запроса."""
         return PTZService(
             ptz_manager=ptz_manager,
             config=config,
-            uow=uow,
             camera_gateway=camera_gateway,
         )
 
@@ -171,14 +139,12 @@ class ServicesProvider(Provider):
         self,
         auto_ptz_manager: AutoPTZManager,
         ptz_manager: PTZCameraManager,
-        uow: InterfaceUnitOfWork,
         camera_gateway: CameraGatewayClient,
     ) -> AutoPTZService:
         """Создаёт AutoPTZService для каждого запроса."""
         return AutoPTZService(
             auto_ptz_manager=auto_ptz_manager,
             ptz_manager=ptz_manager,
-            uow=uow,
             camera_gateway=camera_gateway,
         )
 
@@ -194,6 +160,5 @@ def create_container():
     return make_container(
         ConfigProvider(),
         ManagersProvider(),
-        DatabaseProvider(),
         ServicesProvider(),
     )
