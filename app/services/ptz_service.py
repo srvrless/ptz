@@ -6,7 +6,6 @@ from app.config.settings import AppConfig, CameraConfig
 from app.core.ptz.controller import PTZController
 from app.core.ptz.manager import PTZCameraManager
 from app.exceptions import CameraNotFoundError, PTZControllerNotFoundError, PTZMoveError
-from app.utils.uow import InterfaceUnitOfWork
 from logger.setup_logger import get_logger
 from app.schemas.camera import CameraResponse, ConnectionResponse, LocationResponse
 from app.services.camera_gateway_client import CameraGatewayClient
@@ -26,26 +25,24 @@ class PTZService:
         self,
         ptz_manager: PTZCameraManager,
         config: AppConfig,
-        uow: InterfaceUnitOfWork,
         camera_gateway: CameraGatewayClient,
     ):
         self._ptz_manager = ptz_manager
         self.config = config
-        self._uow = uow
         self._camera_gateway = camera_gateway
 
-    def _fetch_camera_config_from_db(self, camera_id: int) -> CameraConfig:
+    def _fetch_camera_config_from_api(self, camera_id: int) -> CameraConfig:
         """Запрос конфига из БД. Конвертация внутри with — объект не detached."""
         camera_cfg = self._camera_gateway.get_camera_config_by_id(camera_id)
         if camera_cfg is None:
-            logger.warning(f"Camera not found in DB: {camera_id}")
+            logger.warning(f"Camera not found in API: {camera_id}")
             raise PTZControllerNotFoundError(str(camera_id))
         return camera_cfg
 
     def _get_controller(self, camera_id: int) -> PTZController:
         """Контроллер из кэша. При первом обращении — запрос в БД и init_camera."""
         if not self._ptz_manager.is_initialized(camera_id):
-            cam_cfg = self._fetch_camera_config_from_db(camera_id)
+            cam_cfg = self._fetch_camera_config_from_api(camera_id)
             self._ptz_manager.init_camera(camera_id, cam_cfg)
         return self._ptz_manager.get_controller(camera_id)
 

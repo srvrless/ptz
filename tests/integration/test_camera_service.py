@@ -31,7 +31,7 @@ class TestCameraService:
             camera_gateway=gateway,
         )
 
-        cfg = service.get_camera_config(MagicMock(), camera_id=sample_camera_onvif_config.id)
+        cfg = service.get_camera_config(camera_id=sample_camera_onvif_config.id)
         assert isinstance(cfg, CameraConfig)
         assert cfg.id == sample_camera_onvif_config.id
 
@@ -48,4 +48,4 @@ class TestCameraService:
         )
 
         with pytest.raises(CameraNotFoundError):
-            service.get_camera_config(MagicMock(), camera_id=999)
+            service.get_camera_config(camera_id=999)

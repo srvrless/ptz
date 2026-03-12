@@ -12,7 +12,7 @@ class TestStreamsAPI:
     def test_select_camera_success(
         self,
         client_with_mocks,
-        camera_db_onvif,
+        sample_camera_onvif_config,
     ):
         """
         Проверяет выбор камеры из БД.
@@ -23,7 +23,7 @@ class TestStreamsAPI:
         client, _mocks = client_with_mocks
 
         response = client.post(
-            f"/api/camera/select/{camera_db_onvif.id}",
+            f"/api/camera/select/{sample_camera_onvif_config.id}",
         )
 
         # Может быть 200 (успех) или 404 (камера не найдена в конфиге)
@@ -31,7 +31,7 @@ class TestStreamsAPI:
 
         if response.status_code == 200:
             data = response.json()
-            assert data["selected_camera_id"] == camera_db_onvif.id
+            assert data["selected_camera_id"] == sample_camera_onvif_config.id
 
     def test_stop_selected_camera(self, client):
         """Проверяет остановку выбранной камеры."""

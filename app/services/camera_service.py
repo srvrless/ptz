@@ -8,14 +8,6 @@ from app.core.camera.manager import CameraConnection, CameraManager
 from app.core.detection.yolo_detector import DetectorManager
 from app.core.streaming.mjpeg import run_detection_sender
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
-from app.schemas.camera import (
-    CameraResponse,
-    CreateCamera,
-    CreateCameraResponse,
-    UpdateCamera,
-    UpdateCameraResponse,
-)
-from app.utils.uow import InterfaceUnitOfWork
 from app.exceptions import CameraNotFoundError
 from app.services.camera_gateway_client import CameraGatewayClient
 from logger.setup_logger import get_logger
@@ -44,7 +36,6 @@ class CameraService:
 
     def get_camera_config(
         self,
-        uow: InterfaceUnitOfWork,
         camera_id: int,
     ):
         """Получить конфиг камеры из БД. Конвертация внутри with — объект не detached."""
@@ -73,12 +64,11 @@ class CameraService:
 
     def select_camera(
         self,
-        uow: InterfaceUnitOfWork,
         camera_id: int,
         enable_detection: bool = True,
         enable_auto_tracking: bool = True,
     ) -> None:
-        cam_cfg = self.get_camera_config(uow, camera_id)
+        cam_cfg = self.get_camera_config(camera_id)
         auto_ptz = self.auto_ptz_manager.get_or_create(camera_id, cam_cfg)
 
         with self._lock:
