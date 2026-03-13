@@ -69,20 +69,21 @@ class TestCameraGatewayClientGetCameraConfigById:
 class TestCameraGatewayClientPostNearestCameraConfig:
     def test_sends_post_with_json_body_and_returns_none_on_404(self) -> None:
         http_client = MagicMock()
-        http_client.request.return_value = _httpx_response(status_code=404, method="POST")
+        http_client.request.return_value = _httpx_response(
+            status_code=404, method="POST"
+        )
         client = CameraGatewayClient(http_client)
 
         cfg = client.get_nearest_camera_config(
             lat=55.0,
             lon=37.0,
-            excluded_cameras_id=[1, 2, 3],
         )
         assert cfg is None
 
         http_client.request.assert_called_once_with(
             "POST",
             "/v1/cameras/nearest_camera/",
-            json={"lat": 55.0, "lon": 37.0, "excluded_cameras_id": [1, 2, 3]},
+            json={"lat": 55.0, "lon": 37.0},
         )
 
     def test_maps_gateway_payload_to_camera_config(self) -> None:
@@ -98,9 +99,7 @@ class TestCameraGatewayClientPostNearestCameraConfig:
         cfg = client.get_nearest_camera_config(
             lat=55.75,
             lon=37.62,
-            excluded_cameras_id=None,
         )
         assert cfg is not None
         assert cfg.id == 42
         assert cfg.ptz_type == "onvif"
-

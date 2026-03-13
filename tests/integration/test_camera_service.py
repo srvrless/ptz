@@ -12,6 +12,7 @@ import pytest
 from app.config.settings import AppConfig, CameraConfig
 from app.core.camera.manager import CameraManager
 from app.core.detection.yolo_detector import DetectorManager
+from app.core.ptz.manager import PTZCameraManager
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
 from app.exceptions import CameraNotFoundError
 from app.services.camera_gateway_client import CameraGatewayClient
@@ -25,6 +26,7 @@ class TestCameraService:
 
         service = CameraService(
             camera_manager=MagicMock(spec=CameraManager),
+            ptz_manager=MagicMock(spec=PTZCameraManager),
             auto_ptz_manager=MagicMock(spec=AutoPTZManager),
             detector_manager=MagicMock(spec=DetectorManager),
             config=MagicMock(spec=AppConfig),
@@ -41,6 +43,7 @@ class TestCameraService:
 
         service = CameraService(
             camera_manager=MagicMock(spec=CameraManager),
+            ptz_manager=MagicMock(spec=PTZCameraManager),
             auto_ptz_manager=MagicMock(spec=AutoPTZManager),
             detector_manager=MagicMock(spec=DetectorManager),
             config=MagicMock(spec=AppConfig),

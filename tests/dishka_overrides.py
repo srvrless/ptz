@@ -94,6 +94,15 @@ def create_test_app_with_mocks(
         )
     """
     from fastapi import FastAPI
+    from unittest.mock import MagicMock
+
+    # В API тестах не должен происходить реальный connect() к сокет-сервису,
+    # иначе `/api/camera/select` будет возвращать 502 в окружении CI/локально.
+    import app.services.camera_service as camera_service_module
+
+    fake_sock = MagicMock()
+    fake_sock.close = MagicMock()
+    camera_service_module._default_connection_factory = lambda: fake_sock  # type: ignore[assignment]
 
     class TestGatewayProvider(Provider):
         @provide(scope=Scope.APP)
@@ -105,11 +114,48 @@ def create_test_app_with_mocks(
 
             gateway = MagicMock(spec=CameraGatewayClient)
             cfgs = dict(camera_configs or {})
+            # simple in-memory lock state: camera_id -> client_id
+            locks: dict[int, str] = {}
 
             def _get_by_id(camera_id: int):
-                return cfgs.get(camera_id)
+                cfg = cfgs.get(camera_id)
+                if cfg is None:
+                    return None
+                # reflect current lock state
+                if camera_id in locks:
+                    return cfg.model_copy(
+                        update={"is_busy": True, "client_id": locks[camera_id]}
+                    )
+                return cfg.model_copy(update={"is_busy": False, "client_id": None})
+
+            def _claim_camera(camera_id: int, client_id: str):
+                cfg = cfgs.get(camera_id)
+                if cfg is None:
+                    from fastapi import HTTPException
+
+                    raise HTTPException(status_code=404, detail="Camera not found")
+                owner = locks.get(camera_id)
+                if owner is not None and owner != client_id:
+                    # emulate gateway "busy" using httpx-like exception surface:
+                    from fastapi import HTTPException
+
+                    raise HTTPException(status_code=423, detail="Камера занята")
+                locks[camera_id] = client_id
+                return _get_by_id(camera_id)
+
+            def _release_camera(camera_id: int, client_id: str):
+                owner = locks.get(camera_id)
+                if owner is None:
+                    return
+                if owner != client_id:
+                    from fastapi import HTTPException
+
+                    raise HTTPException(status_code=423, detail="Камера занята")
+                del locks[camera_id]
 
             gateway.get_camera_config_by_id.side_effect = _get_by_id
+            gateway.claim_camera.side_effect = _claim_camera
+            gateway.release_camera.side_effect = _release_camera
             gateway.get_nearest_camera_config.return_value = None
             return gateway
 
