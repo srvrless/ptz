@@ -28,6 +28,7 @@ class AutoPTZTracker:
     def __init__(
         self,
         camera_id: int,
+        client_id: str | None,
         ptz_manager: PTZCameraManager,
         cam_cfg: "CameraConfig",
         *,
@@ -43,7 +44,7 @@ class AutoPTZTracker:
         self.dead_zone = dead_zone
         self.max_lost_frames = max_lost_frames
         self.min_speed = min_speed
-
+        self.client_id = client_id
         self._controller: Optional[BasePTZController] = (
             ptz_manager.get_or_init_controller(camera_id, cam_cfg)
         )

@@ -101,6 +101,7 @@ class ServicesProvider(Provider):
     def get_camera_service(
         self,
         camera_manager: CameraManager,
+        ptz_manager: PTZCameraManager,
         auto_ptz_manager: AutoPTZManager,
         detector_manager: DetectorManager,
         config: AppConfig,
@@ -114,6 +115,7 @@ class ServicesProvider(Provider):
         """
         return CameraService(
             camera_manager=camera_manager,
+            ptz_manager=ptz_manager,
             auto_ptz_manager=auto_ptz_manager,
             detector_manager=detector_manager,
             config=config,

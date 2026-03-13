@@ -12,28 +12,31 @@ router = APIRouter(prefix="/api", tags=["auto-ptz"], route_class=DishkaSyncRoute
 def start_auto_tracking(
     camera_id: int,
     body: TrackRequest,
+    client_id: str,
     auto_ptz_service: FromDishka[AutoPTZService],
 ):
     """Включить слежение за объектом с указанным track_id."""
-    auto_ptz_service.set_target(camera_id, body.track_id)
+    auto_ptz_service.set_target(camera_id, body.track_id, client_id=client_id)
     return {"status": "ok", "camera_id": camera_id, "track_id": body.track_id}
 
 
 @router.post("/stop/{camera_id}")
 def stop_auto_tracking(
     camera_id: int,
+    client_id: str,
     auto_ptz_service: FromDishka[AutoPTZService],
 ):
     """Выключить автослежение для камеры."""
-    auto_ptz_service.clear_target(camera_id)
+    auto_ptz_service.clear_target(camera_id, client_id=client_id)
     return {"status": "ok", "camera_id": camera_id}
 
 
 @router.get("/status/{camera_id}")
 def get_auto_tracking_status(
     camera_id: int,
+    client_id: str,
     auto_ptz_service: FromDishka[AutoPTZService],
 ):
     """Получить текущий выбранный track_id (если есть)."""
-    track_id = auto_ptz_service.get_target(camera_id)
+    track_id = auto_ptz_service.get_target(camera_id, client_id=client_id)
     return {"status": "ok", "camera_id": camera_id, "track_id": track_id}

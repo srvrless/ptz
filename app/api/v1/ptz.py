@@ -21,6 +21,7 @@ router = APIRouter(prefix="/api", tags=["ptz"], route_class=DishkaSyncRoute)
 def ptz_move(
     camera_id: int,
     body: MoveRequest,
+    client_id: str,
     # _token: str = Depends(get_token),
     ptz_service: FromDishka[PTZService],
 ):
@@ -41,6 +42,7 @@ def ptz_move(
     """
     result = ptz_service.move_to_target(
         camera_id=camera_id,
+        client_id=client_id,
         lat=body.lat,
         lon=body.lon,
         height=body.height,
@@ -53,6 +55,7 @@ def ptz_move(
 @router.post("/ptz/move/")
 def ptz_move_to_target(
     body: MoveExcludedCameras,
+    client_id: str,
     ptz_service: FromDishka[PTZService],
 ) -> CameraResponse:
     """
@@ -66,7 +69,6 @@ def ptz_move_to_target(
         "height": float,
         "zoom": float,      # опционально
         "radar_id": int     # опционально
-        "excluded_cameras": list[int] # опционально
     }
 
     Возвращает:
@@ -74,7 +76,7 @@ def ptz_move_to_target(
     """
     # TODO: call another api to get best cameras
     result = ptz_service.move_to_target_with_excluded_cameras(
-        excluded_cameras_id=body.excluded_cameras_id,
+        client_id=client_id,
         lat=body.lat,
         lon=body.lon,
         height=body.height,
@@ -91,6 +93,7 @@ def ptz_move_to_target(
 def ptz_continuous_move(
     camera_id: int,
     body: ContinuousMoveRequest,
+    client_id: str,
     # _token: str = Depends(get_token),
     ptz_service: FromDishka[PTZService],
 ):
@@ -109,6 +112,7 @@ def ptz_continuous_move(
     """
     ptz_service.continuous_move(
         camera_id=camera_id,
+        client_id=client_id,
         x=body.x,
         y=body.y,
         zoom=body.zoom,
@@ -122,6 +126,7 @@ def ptz_continuous_move(
 @router.post("/ptz/{camera_id}/stop/")
 def ptz_stop(
     camera_id: int,
+    client_id: str,
     ptz_service: FromDishka[PTZService],
 ):
     """
@@ -130,7 +135,7 @@ def ptz_stop(
     Возвращает:
     { "status": "ok", "azimut": float | null }
     """
-    result = ptz_service.stop(camera_id)
+    result = ptz_service.stop(camera_id, client_id=client_id)
     return result
 
 
@@ -141,6 +146,7 @@ def ptz_stop(
 def ptz_zoom(
     camera_id: int,
     body: ZoomRequest,
+    client_id: str,
     ptz_service: FromDishka[PTZService],
 ):
     """
@@ -154,5 +160,5 @@ def ptz_zoom(
     Возвращает:
     { "status": "ok" }
     """
-    ptz_service.set_zoom(camera_id, zoom_delta=body.zoom)
+    ptz_service.set_zoom(camera_id, client_id=client_id, zoom_delta=body.zoom)
     return {"status": "ok"}

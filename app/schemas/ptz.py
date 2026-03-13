@@ -17,7 +17,6 @@ class MoveRequest(BaseModel):
 
 
 class MoveExcludedCameras(MoveRequest):
-    excluded_cameras_id: list[int] | None
     track_id: int | None
 
 
