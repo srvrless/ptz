@@ -47,7 +47,9 @@ def camera_gateway() -> MagicMock:
 
 
 @pytest.fixture
-def service(ptz_manager: MagicMock, config: AppConfig, camera_gateway: MagicMock) -> PTZService:
+def service(
+    ptz_manager: MagicMock, config: AppConfig, camera_gateway: MagicMock
+) -> PTZService:
     return PTZService(
         ptz_manager=ptz_manager,
         config=config,
@@ -64,7 +66,7 @@ class TestPTZServiceMoveToTargetWithExcludedCameras:
 
         with pytest.raises(CameraNotFoundError):
             service.move_to_target_with_excluded_cameras(
-                excluded_cameras_id=[1, 2],
+                client_id="c1",
                 lat=55.0,
                 lon=37.0,
                 height=5.0,
@@ -75,17 +77,20 @@ class TestPTZServiceMoveToTargetWithExcludedCameras:
     def test_moves_selected_nearest_camera_and_returns_camera_and_azimut(
         self,
         service: PTZService,
-        camera_gateway: MagicMock,
         ptz_manager: MagicMock,
+        camera_gateway: MagicMock,
     ) -> None:
         camera_gateway.get_nearest_camera_config.return_value = _cam_cfg(7)
+        ptz_manager.assert_owner = MagicMock()
+        ptz_manager.get_controller.return_value = MagicMock()
 
         controller = MagicMock()
         controller.search_target.return_value = 12.34
+        ptz_manager.get_controller.return_value = controller
         ptz_manager.restart_controller.return_value = controller
 
         result = service.move_to_target_with_excluded_cameras(
-            excluded_cameras_id=[1, 2],
+            client_id="c1",
             lat=55.1,
             lon=37.1,
             height=6.0,
@@ -99,9 +104,7 @@ class TestPTZServiceMoveToTargetWithExcludedCameras:
         assert result["azimut"] == 12.34
 
         camera_gateway.get_nearest_camera_config.assert_called_once_with(
-            lat=55.1,
-            lon=37.1,
-            excluded_cameras_id=[1, 2],
+            lat=55.1, lon=37.1
         )
         ptz_manager.restart_controller.assert_called_once_with(7)
         controller.search_target.assert_called_once()
@@ -109,21 +112,22 @@ class TestPTZServiceMoveToTargetWithExcludedCameras:
     def test_raises_ptz_move_error_when_controller_returns_none(
         self,
         service: PTZService,
-        camera_gateway: MagicMock,
         ptz_manager: MagicMock,
+        camera_gateway: MagicMock,
     ) -> None:
         camera_gateway.get_nearest_camera_config.return_value = _cam_cfg(5)
+        ptz_manager.assert_owner = MagicMock()
         controller = MagicMock()
         controller.search_target.return_value = None
+        ptz_manager.get_controller.return_value = controller
         ptz_manager.restart_controller.return_value = controller
 
         with pytest.raises(PTZMoveError):
             service.move_to_target_with_excluded_cameras(
-                excluded_cameras_id=None,
+                client_id="c1",
                 lat=55.1,
                 lon=37.1,
                 height=6.0,
                 radar_id=1,
                 restart_before_move=True,
             )
-

@@ -46,6 +46,15 @@ class CameraConfig(BaseModel):
         description="Тип PTZ контроллера: 'onvif' или 'tms20'",
     )
 
+    client_id: str | None = Field(
+        default=None,
+        description="ID клиента, который захватил камеру (если занята).",
+    )
+    is_busy: bool = Field(
+        default=False,
+        description="Флаг занятости камеры (управление/стрим заблокированы для других клиентов).",
+    )
+
     def is_tms20(self) -> bool:
         return self.ptz_type.lower() == "tms20"
 

@@ -25,8 +25,11 @@ class GatewayCameraResponse(BaseModel):
     lat: float
     lon: float
     height: float
-    rate: float 
-    ptz_type: str 
+    rate: float
+    ptz_type: str
+
+    # Эти поля могут отсутствовать в старых версиях gateway.
+    client_id: Optional[str] = None
+    is_busy: bool = False
 
     model_config = ConfigDict(extra="ignore")
-

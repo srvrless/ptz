@@ -25,6 +25,13 @@ class AutoPTZService:
         self._ptz_manager = ptz_manager
         self._camera_gateway = camera_gateway
 
+    def _assert_owned(self, camera_id: int, client_id: str) -> None:
+        """
+        Проверяем локальный ownership камеры.
+        Auto‑tracking разрешён только для владельца, выбранного через select_camera.
+        """
+        self._ptz_manager.assert_owner(camera_id, client_id)
+
     def _resolve_camera_config(self, camera_id: int) -> CameraConfig:
         """Из кэша PTZManager, если камера инициализирована; иначе запрос в БД."""
         if self._ptz_manager.is_initialized(camera_id):
@@ -37,14 +44,23 @@ class AutoPTZService:
             raise CameraNotFoundError(str(camera_id))
         return camera_cfg
 
-    def set_target(self, camera_id: int, track_id: Optional[int]) -> None:
+    def set_target(
+        self,
+        camera_id: int,
+        track_id: Optional[int],
+        *,
+        client_id: str,
+    ) -> None:
+        self._assert_owned(camera_id, client_id)
         cam_cfg = self._resolve_camera_config(camera_id)
         self._auto_ptz_manager.set_target(camera_id, track_id, cam_cfg)
 
-    def clear_target(self, camera_id: int) -> None:
+    def clear_target(self, camera_id: int, *, client_id: str) -> None:
+        self._assert_owned(camera_id, client_id)
         cam_cfg = self._resolve_camera_config(camera_id)
         self._auto_ptz_manager.clear_target(camera_id, cam_cfg)
 
-    def get_target(self, camera_id: int) -> Optional[int]:
+    def get_target(self, camera_id: int, *, client_id: str) -> Optional[int]:
+        self._assert_owned(camera_id, client_id)
         cam_cfg = self._resolve_camera_config(camera_id)
         return self._auto_ptz_manager.get_target(camera_id, cam_cfg)
