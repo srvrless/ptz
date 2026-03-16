@@ -18,7 +18,7 @@ router = APIRouter(prefix="/api", tags=["ptz"], route_class=DishkaSyncRoute)
 # ---------- MOVE ----------
 
 
-@router.post("/ptz/{camera_id}/move/{client_id}/")
+@router.post("/ptz/{camera_id}/move/")
 def ptz_move(
     camera_id: int,
     body: MoveRequest,
