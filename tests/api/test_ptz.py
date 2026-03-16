@@ -38,7 +38,7 @@ class TestPTZAPI:
             f"/api/ptz/{sample_camera_onvif_config.id}/move/",
             json=payload,
             params={"client_id": "test-client"},
-            headers=auth_header,
+            headers={**auth_header, "x-client-id": "test-client"},
         )
 
         assert response.status_code in [200, 404]
@@ -63,7 +63,7 @@ class TestPTZAPI:
             f"/api/ptz/{sample_camera_onvif_config.id}/continuous_move/",
             json=payload,
             params={"client_id": "test-client"},
-            headers=auth_header,
+            headers={**auth_header, "x-client-id": "test-client"},
         )
 
         assert response.status_code in [200, 404]
@@ -81,7 +81,7 @@ class TestPTZAPI:
         response = client.post(
             f"/api/ptz/{sample_camera_onvif_config.id}/stop/",
             params={"client_id": "test-client"},
-            headers=auth_header,
+            headers={**auth_header, "x-client-id": "test-client"},
         )
 
         assert response.status_code in [200, 404]
@@ -107,6 +107,6 @@ class TestPTZAPI:
             f"/api/ptz/{sample_camera_onvif_config.id}/move/",
             json=payload,
             params={"client_id": "intruder"},
-            headers=auth_header,
+            headers={**auth_header, "x-client-id": "intruder"},
         )
         assert response.status_code == 423

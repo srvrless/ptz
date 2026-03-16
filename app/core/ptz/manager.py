@@ -63,10 +63,11 @@ class PTZCameraManager:
         if current != client_id:
             raise HTTPException(status_code=423, detail="Камера занята")
 
-    def owned_camera_ids(self, client_id: str) -> list[int]:
-        """Список camera_id, которыми владеет client_id (для выборок/подбора)."""
-        with self._lock:
-            return [cid for cid, owner in self._owners.items() if owner == client_id]
+    # TODO: в будущем будет один инстанс управления
+    # def owned_camera_ids(self, client_id: str) -> list[int]:
+    #     """Список camera_id, которыми владеет client_id (для выборок/подбора)."""
+    #     with self._lock:
+    #         return [cid for cid, owner in self._owners.items() if owner == client_id]
 
     def init_camera(self, camera_id: int, cam_cfg: "CameraConfig") -> BasePTZController:
         """

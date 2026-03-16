@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaSyncRoute
 
+from app.api.v1.deps import get_client_id
 from app.schemas.camera import CameraResponse
 from app.schemas.ptz import (
     ContinuousMoveRequest,
@@ -21,9 +22,9 @@ router = APIRouter(prefix="/api", tags=["ptz"], route_class=DishkaSyncRoute)
 def ptz_move(
     camera_id: int,
     body: MoveRequest,
-    client_id: str,
     # _token: str = Depends(get_token),
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ):
     """
     Абсолютное позиционирование PTZ-камеры по координатам цели.
@@ -55,8 +56,8 @@ def ptz_move(
 @router.post("/ptz/move/")
 def ptz_move_to_target(
     body: MoveExcludedCameras,
-    client_id: str,
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ) -> CameraResponse:
     """
     Абсолютное позиционирование PTZ-камеры по координатам цели.
@@ -79,7 +80,7 @@ def ptz_move_to_target(
         client_id=client_id,
         lat=body.lat,
         lon=body.lon,
-        height=body.height,
+        height=body.height, 
         zoom=body.zoom,
         radar_id=body.radar_id,
     )
@@ -93,9 +94,9 @@ def ptz_move_to_target(
 def ptz_continuous_move(
     camera_id: int,
     body: ContinuousMoveRequest,
-    client_id: str,
     # _token: str = Depends(get_token),
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ):
     """
     Непрерывное движение PTZ.
@@ -126,8 +127,8 @@ def ptz_continuous_move(
 @router.post("/ptz/{camera_id}/stop/")
 def ptz_stop(
     camera_id: int,
-    client_id: str,
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ):
     """
     Остановить PTZ-движение.
@@ -146,8 +147,8 @@ def ptz_stop(
 def ptz_zoom(
     camera_id: int,
     body: ZoomRequest,
-    client_id: str,
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ):
     """
     Управление зумом PTZ.

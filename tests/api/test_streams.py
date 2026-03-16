@@ -25,6 +25,7 @@ class TestStreamsAPI:
         response = client.post(
             f"/api/camera/select/{sample_camera_onvif_config.id}",
             params={"client_id": "test-client"},
+            headers={"x-client-id": "test-client"},
         )
 
         # Может быть 200 (успех)
@@ -36,7 +37,11 @@ class TestStreamsAPI:
 
     def test_stop_selected_camera(self, client):
         """Проверяет остановку выбранной камеры."""
-        response = client.post("/api/camera/stop", params={"client_id": "test-client"})
+        response = client.post(
+            "/api/camera/stop",
+            params={"client_id": "test-client"},
+            headers={"x-client-id": "test-client"},
+        )
 
         assert response.status_code == 200
         data = response.json()
@@ -53,10 +58,12 @@ class TestStreamsAPI:
         r1 = client.post(
             f"/api/camera/select/{sample_camera_onvif_config.id}",
             params={"client_id": "c1"},
+            headers={"x-client-id": "c1"},
         )
         r2 = client.post(
             f"/api/camera/select/{sample_camera_tms20_config.id}",
             params={"client_id": "c2"},
+            headers={"x-client-id": "c2"},
         )
 
         assert r1.status_code == 200
@@ -72,11 +79,13 @@ class TestStreamsAPI:
         r1 = client.post(
             f"/api/camera/select/{sample_camera_onvif_config.id}",
             params={"client_id": "c1"},
+            headers={"x-client-id": "c1"},
         )
         assert r1.status_code == 200
 
         r2 = client.post(
             f"/api/camera/select/{sample_camera_onvif_config.id}",
             params={"client_id": "c2"},
+            headers={"x-client-id": "c2"},
         )
         assert r2.status_code == 423
