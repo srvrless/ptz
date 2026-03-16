@@ -153,7 +153,7 @@ class CameraService:
             )
             raise HTTPException(
                 status_code=502,
-                detail="Не удалось подключиться к PTZ-контроллеру",
+                detail="Не удалось подключиться к камере",
             ) from exc
 
     def _get_camera_for_current_mode(self, camera_id: int, cam_cfg):

@@ -77,7 +77,7 @@ class PTZService:
 
         Бросает:
           - PTZControllerNotFoundError
-          - PTZMoveError
+          - PTZMoveError`
           - ValueError (если radar_id некорректен)
         """
         self._assert_owned(camera_id, client_id)
