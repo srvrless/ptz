@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaSyncRoute
 
+from app.api.v1.deps import get_client_id
 from app.schemas.camera import CameraResponse
 from app.schemas.ptz import (
     ContinuousMoveRequest,
@@ -23,6 +24,7 @@ def ptz_move(
     body: MoveRequest,
     # _token: str = Depends(get_token),
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ):
     """
     Абсолютное позиционирование PTZ-камеры по координатам цели.
@@ -41,6 +43,7 @@ def ptz_move(
     """
     result = ptz_service.move_to_target(
         camera_id=camera_id,
+        client_id=client_id,
         lat=body.lat,
         lon=body.lon,
         height=body.height,
@@ -54,6 +57,7 @@ def ptz_move(
 def ptz_move_to_target(
     body: MoveExcludedCameras,
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ) -> CameraResponse:
     """
     Абсолютное позиционирование PTZ-камеры по координатам цели.
@@ -66,17 +70,17 @@ def ptz_move_to_target(
         "height": float,
         "zoom": float,      # опционально
         "radar_id": int     # опционально
-        "excluded_cameras": list[int] # опционально
     }
 
     Возвращает:
     { "camera": CameraResponse, "azimut": float }
     """
+    # TODO: call another api to get best cameras
     result = ptz_service.move_to_target_with_excluded_cameras(
-        excluded_cameras_id=body.excluded_cameras_id,
+        client_id=client_id,
         lat=body.lat,
         lon=body.lon,
-        height=body.height,
+        height=body.height, 
         zoom=body.zoom,
         radar_id=body.radar_id,
     )
@@ -92,6 +96,7 @@ def ptz_continuous_move(
     body: ContinuousMoveRequest,
     # _token: str = Depends(get_token),
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ):
     """
     Непрерывное движение PTZ.
@@ -108,6 +113,7 @@ def ptz_continuous_move(
     """
     ptz_service.continuous_move(
         camera_id=camera_id,
+        client_id=client_id,
         x=body.x,
         y=body.y,
         zoom=body.zoom,
@@ -122,6 +128,7 @@ def ptz_continuous_move(
 def ptz_stop(
     camera_id: int,
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ):
     """
     Остановить PTZ-движение.
@@ -129,7 +136,7 @@ def ptz_stop(
     Возвращает:
     { "status": "ok", "azimut": float | null }
     """
-    result = ptz_service.stop(camera_id)
+    result = ptz_service.stop(camera_id, client_id=client_id)
     return result
 
 
@@ -141,6 +148,7 @@ def ptz_zoom(
     camera_id: int,
     body: ZoomRequest,
     ptz_service: FromDishka[PTZService],
+    client_id: str = Depends(get_client_id),
 ):
     """
     Управление зумом PTZ.
@@ -153,5 +161,5 @@ def ptz_zoom(
     Возвращает:
     { "status": "ok" }
     """
-    ptz_service.set_zoom(camera_id, zoom_delta=body.zoom)
+    ptz_service.set_zoom(camera_id, client_id=client_id, zoom_delta=body.zoom)
     return {"status": "ok"}

@@ -46,6 +46,15 @@ class CameraConfig(BaseModel):
         description="Тип PTZ контроллера: 'onvif' или 'tms20'",
     )
 
+    client_id: str | None = Field(
+        default=None,
+        description="ID клиента, который захватил камеру (если занята).",
+    )
+    is_busy: bool = Field(
+        default=False,
+        description="Флаг занятости камеры (управление/стрим заблокированы для других клиентов).",
+    )
+
     def is_tms20(self) -> bool:
         return self.ptz_type.lower() == "tms20"
 
@@ -84,6 +93,18 @@ class AppConfig(BaseSettings):
     app_port: int = 8000
     app_debug: bool = True
     app_token: str = Field(..., description="Bearer-токен API")
+
+    # External services
+    camera_api_base_url: str = Field(
+        default="http://localhost:8080",
+        alias="CAMERA_API_BASE_URL",
+        description="Base URL API gateway для получения данных камер",
+    )
+    camera_api_token: Optional[str] = Field(
+        default=None,
+        alias="CAMERA_API_TOKEN",
+        description="Bearer-токен для API gateway (если требуется)",
+    )
 
     # Список камер из .env: CAMERAS=1,2
     cameras_raw: str = Field("", alias="CAMERAS")

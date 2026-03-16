@@ -29,6 +29,7 @@ class AutoPTZManager:
     def get_or_create(
         self,
         camera_id: int,
+        client_id: str | None,
         cam_cfg: "CameraConfig",
     ) -> AutoPTZTracker:
         """
@@ -39,7 +40,12 @@ class AutoPTZManager:
             tracker = self._trackers.get(camera_id)
             if tracker is not None:
                 return tracker
-            tracker = AutoPTZTracker(camera_id, self._ptz_manager, cam_cfg)
+            tracker = AutoPTZTracker(
+                camera_id=camera_id,
+                client_id=client_id,
+                ptz_manager=self._ptz_manager,
+                cam_cfg=cam_cfg,
+            )
             self._trackers[camera_id] = tracker
             return tracker
 
@@ -49,7 +55,9 @@ class AutoPTZManager:
         track_id: Optional[int],
         cam_cfg: "CameraConfig",
     ) -> None:
-        tracker = self.get_or_create(camera_id, cam_cfg)
+        tracker = self.get_or_create(
+            camera_id=camera_id, client_id=None, cam_cfg=cam_cfg
+        )
         tracker.set_target(track_id)
 
     def clear_target(
@@ -57,7 +65,9 @@ class AutoPTZManager:
         camera_id: int,
         cam_cfg: "CameraConfig",
     ) -> None:
-        tracker = self.get_or_create(camera_id, cam_cfg)
+        tracker = self.get_or_create(
+            camera_id=camera_id, client_id=None, cam_cfg=cam_cfg
+        )
         tracker.clear_target()
 
     def get_target(
@@ -65,5 +75,7 @@ class AutoPTZManager:
         camera_id: int,
         cam_cfg: "CameraConfig",
     ) -> Optional[int]:
-        tracker = self.get_or_create(camera_id, cam_cfg)
+        tracker = self.get_or_create(
+            camera_id=camera_id, client_id=None, cam_cfg=cam_cfg
+        )
         return tracker.get_target()

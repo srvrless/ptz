@@ -1,96 +1,61 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from threading import Event, Lock, Thread
-from typing import List, Optional
+from typing import Dict, Optional
+from contextlib import contextmanager
 
-from app.config.settings import AppConfig, DetectorMode
+from fastapi import HTTPException
+
+from app.config.settings import AppConfig, CameraConfig, DetectorMode
 from app.core.camera.manager import CameraConnection, CameraManager
 from app.core.detection.yolo_detector import DetectorManager
-from app.core.streaming.mjpeg import run_detection_sender
+from app.core.streaming.mjpeg import run_detection_sender, _default_connection_factory
+from app.core.ptz.manager import PTZCameraManager
 from app.core.tracking.auto_ptz_manager import AutoPTZManager
-from app.schemas.camera import (
-    CameraResponse,
-    CreateCamera,
-    CreateCameraResponse,
-    UpdateCamera,
-    UpdateCameraResponse,
-)
-from app.utils.uow import InterfaceUnitOfWork
 from app.exceptions import CameraNotFoundError
+from app.services.camera_gateway_client import CameraGatewayClient
 from logger.setup_logger import get_logger
 
 logger = get_logger("camera_service")
+
+
+@dataclass
+class _ClientSession:
+    camera_id: int
+    worker_thread: Thread
+    stop_event: Event
 
 
 class CameraService:
     def __init__(
         self,
         camera_manager: CameraManager,
+        ptz_manager: PTZCameraManager,
         auto_ptz_manager: AutoPTZManager,
         detector_manager: DetectorManager,
         config: AppConfig,
+        camera_gateway: CameraGatewayClient,
     ) -> None:
         self.camera_manager = camera_manager
+        self.ptz_manager = ptz_manager
         self.auto_ptz_manager = auto_ptz_manager
         self.detector_manager = detector_manager
         self.config = config
         self._lock = Lock()
-        self._selected_camera_id: Optional[str] = None
-        self._worker_thread: Optional[Thread] = None
-        self._stop_event: Optional[Event] = None
-
-    def list_cameras(self, uow: InterfaceUnitOfWork) -> List[CameraResponse]:
-        """Получить список всех камер в виде DTO"""
-        with uow:
-            cameras = uow.camera.get_all_cameras()
-            return [CameraResponse.from_camera(camera) for camera in cameras]
-
-    def create_camera(
-        self, uow: InterfaceUnitOfWork, camera_data: CreateCamera
-    ) -> CreateCameraResponse:
-        with uow:
-            camera_obj = uow.camera.create_camera(**camera_data.dict_for_repo())
-            return CreateCameraResponse.from_camera(camera_obj)
-
-    def update_camera(
-        self, uow: InterfaceUnitOfWork, camera_id: int, camera_data: UpdateCamera
-    ) -> UpdateCameraResponse:
-        with uow:
-            camera_obj = uow.camera.update_camera(
-                camera_id, **camera_data.dict_for_repo()
-            )
-            if camera_obj is None:
-                raise CameraNotFoundError(camera_id)
-            return UpdateCameraResponse.from_camera(camera_obj)
-
-    def soft_delete_camera(self, uow: InterfaceUnitOfWork, camera_id: int) -> bool:
-        with uow:
-            camera = uow.camera.delete_camera(camera_id)
-            return camera
-
-    def get_camera_by_id(
-        self, uow: InterfaceUnitOfWork, camera_id: int
-    ) -> Optional[CameraResponse]:
-        with uow:
-            camera = uow.camera.get_camera_by_id(camera_id)
-            if camera is None:
-                return None
-            return CameraResponse.from_camera(camera)
+        self._sessions: Dict[str, _ClientSession] = {}
+        self._camera_gateway = camera_gateway
 
     def get_camera_config(
         self,
-        uow: InterfaceUnitOfWork,
         camera_id: int,
-    ):
+    ) -> CameraConfig:
         """Получить конфиг камеры из БД. Конвертация внутри with — объект не detached."""
-        from app.config.settings import CameraConfig
-
-        with uow:
-            camera = uow.camera.get_camera_by_id(camera_id)
-            if camera is None:
-                logger.warning(f"Camera not found: {camera_id}")
-                raise CameraNotFoundError(camera_id)
-            return CameraConfig.from_db_model(camera)
+        camera_cfg = self._camera_gateway.get_camera_config_by_id(camera_id)
+        if camera_cfg is None:
+            logger.warning(f"Camera not found: {camera_id}")
+            raise CameraNotFoundError(str(camera_id))
+        return camera_cfg
 
     def _rtsp_url_for_current_mode(self, cam_cfg) -> str:
         """Возвращает RTSP URL, соответствующий текущему режиму детектора."""
@@ -98,6 +63,98 @@ class CameraService:
         if current_mode == DetectorMode.THERMAL:
             return cam_cfg.rtsp_url_ik
         return cam_cfg.rtsp_url
+
+    @contextmanager
+    def _claim_camera_or_rollback(
+        self,
+        camera_id: int,
+        client_id: str,
+    ) -> CameraConfig:
+        """
+        Захватывает камеру в gateway и гарантирует release при любой ошибке
+        в вызывающем коде.
+        """
+        try:
+            cam_cfg = self._camera_gateway.claim_camera(camera_id, client_id)
+        except HTTPException:
+            # gateway уже вернул корректный HTTP-статус (например, 423)
+            raise
+        except Exception as exc:
+            # httpx может кидать HTTPStatusError на 4xx — нормализуем 423
+            if getattr(exc, "response", None) is not None:
+                status = getattr(exc.response, "status_code", None)
+                if status == 423:
+                    raise HTTPException(status_code=423, detail="Камера занята")
+                if status == 404:
+                    raise HTTPException(status_code=404, detail="Камера не найдена")
+            raise
+
+        try:
+            yield cam_cfg
+        except Exception:
+            # Любая ошибка после успешного claim — откатываем занятость.
+            try:
+                self._camera_gateway.release_camera(camera_id, client_id)
+            except Exception:
+                logger.exception(
+                    "Failed to rollback camera lock in gateway after error: "
+                    "camera=%s client=%s",
+                    camera_id,
+                    client_id,
+                )
+            raise
+
+    @contextmanager
+    def _ptz_ownership(self, camera_id: int, client_id: str, cam_cfg):
+        """Гарантирует установку и очистку владельца PTZ."""
+        self.ptz_manager.set_owner(camera_id, client_id)
+        try:
+            if not self.ptz_manager.is_initialized(camera_id):
+                self._ensure_camera_available(camera_id, cam_cfg)
+            yield
+        except Exception:
+            self.ptz_manager.clear_owner(camera_id, client_id)
+            raise
+
+    def _ensure_streaming_available(self, camera_id: int) -> None:
+        """
+        Синхронно проверяет доступность сокет‑сервиса для стриминга.
+        Бросает 5xx, если соединение установить не удалось.
+        """
+        try:
+            sock = _default_connection_factory()
+            sock.close()
+
+        except Exception as exc:
+            logger.error(
+                "Failed to connect to streaming socket for camera=%s: %s",
+                camera_id,
+                exc,
+            )
+            raise HTTPException(
+                status_code=502,
+                detail="Не удалось подключиться к сервису стриминга",
+            ) from exc
+
+
+    def _ensure_camera_available(self, camera_id: int, cam_cfg) -> None:
+        """
+        Синхронно проверяет доступность PTZ‑контроллера (ONVIF / TMS‑20).
+        Бросает 5xx, если соединение установить не удалось.
+        """
+        try:
+            self.ptz_manager.init_camera(camera_id, cam_cfg)
+
+        except Exception as exc:
+            logger.error(
+                "Failed connect to PTZ controller for camera=%s: %s",
+                camera_id,
+                exc,
+            )
+            raise HTTPException(
+                status_code=502,
+                detail="Не удалось подключиться к камере",
+            ) from exc
 
     def _get_camera_for_current_mode(self, camera_id: int, cam_cfg):
         """Создаёт/получает камеру и гарантирует, что она на правильном потоке."""
@@ -109,82 +166,120 @@ class CameraService:
 
     def select_camera(
         self,
-        uow: InterfaceUnitOfWork,
         camera_id: int,
+        client_id: str,
         enable_detection: bool = True,
         enable_auto_tracking: bool = True,
     ) -> None:
-        cam_cfg = self.get_camera_config(uow, camera_id)
+        # 1) Захватываем камеру в gateway с автоматическим rollback при ошибке.
+        with self._claim_camera_or_rollback(camera_id, client_id) as cam_cfg:
+            with self._ptz_ownership(camera_id, client_id, cam_cfg):
+                self._ensure_streaming_available(camera_id)
+                auto_ptz = self.auto_ptz_manager.get_or_create(
+                    camera_id, client_id, cam_cfg
+                )
+    
+                with self._lock:
+                    existing = self._sessions.get(client_id)
 
-        auto_ptz = self.auto_ptz_manager.get_or_create(camera_id, cam_cfg)
+                    # Проверка дубликата сессии
+                    if (
+                        existing
+                        and existing.camera_id == camera_id
+                        and existing.worker_thread.is_alive()
+                    ):
+                        return
 
+                    old_camera_id: Optional[int] = (
+                        existing.camera_id if existing is not None else None
+                    )
+
+                    # 2) Останавливаем старый detection-воркер и освобождаем старую камеру.
+                    self._stop_worker_locked(client_id)
+
+                    if old_camera_id is not None and old_camera_id != camera_id:
+                        self.camera_manager.release(old_camera_id)
+                        # Освобождаем lock в gateway за старую камеру (best-effort).
+                        try:
+                            self._camera_gateway.release_camera(
+                                old_camera_id, client_id
+                            )
+                        except Exception:
+                            logger.exception(
+                                "Failed to release camera lock in gateway: "
+                                "camera=%s client=%s",
+                                old_camera_id,
+                                client_id,
+                            )
+
+                    # 3) Готовим камеру и проверяем доступность сокет‑сервиса.
+                    camera = self._get_camera_for_current_mode(camera_id, cam_cfg)
+
+                    # 4) Запускаем detection-воркер и сохраняем сессию.
+                    stop_event = Event()
+                    worker = Thread(
+                        target=run_detection_sender,
+                        kwargs=dict(
+                            camera=camera,
+                            camera_id=camera_id,
+                            auto_ptz=auto_ptz,
+                            cam_cfg=cam_cfg,
+                            detector_manager=self.detector_manager,
+                            enable_detection=enable_detection,
+                            enable_auto_tracking=enable_auto_tracking,
+                            stop_event=stop_event,
+                        ),
+                        daemon=True,
+                    )
+                    worker.start()
+
+                    self._sessions[client_id] = _ClientSession(
+                        camera_id=camera_id, worker_thread=worker, stop_event=stop_event
+                    )
+
+                    logger.info(
+                        "Selected camera=%s for client=%s", camera_id, client_id
+                    )
+
+    def get_selected_camera_id(self, client_id: str) -> Optional[int]:
         with self._lock:
-            if (
-                self._selected_camera_id == camera_id
-                and self._worker_thread is not None
-                and self._worker_thread.is_alive()
-            ):
-                return
+            sess = self._sessions.get(client_id)
+            return None if sess is None else sess.camera_id
 
-            old_camera_id = self._selected_camera_id
-
-            # 1. Останавливаем старый detection-воркер
-            self._stop_worker_locked()
-
-            # 2. Останавливаем старую камеру (reader thread + VideoCapture)
-            #    чтобы get_frame() возвращал None и воркер точно не слал данные
-            if old_camera_id is not None and old_camera_id != camera_id:
-                self.camera_manager.release(old_camera_id)
-
-            # 3. Создаём/получаем камеру для нового ID
-            camera = self._get_camera_for_current_mode(camera_id, cam_cfg)
-
-            stop_event = Event()
-            worker = Thread(
-                target=run_detection_sender,
-                kwargs=dict(
-                    camera=camera,
-                    camera_id=camera_id,
-                    auto_ptz=auto_ptz,
-                    cam_cfg=cam_cfg,
-                    detector_manager=self.detector_manager,
-                    enable_detection=enable_detection,
-                    enable_auto_tracking=enable_auto_tracking,
-                    stop_event=stop_event,
-                ),
-                daemon=True,
-            )
-            worker.start()
-
-            self._selected_camera_id = camera_id
-            self._stop_event = stop_event
-            self._worker_thread = worker
-
-            logger.info(f"Selected camera: {camera_id}")
-
-    def get_selected_camera_id(self) -> Optional[str]:
+    def stop_selected_camera(self, client_id: str) -> None:
         with self._lock:
-            return self._selected_camera_id
-
-    def stop_selected_camera(self) -> None:
-        with self._lock:
-            old_camera_id = self._selected_camera_id
-            self._stop_worker_locked()
+            sess = self._sessions.get(client_id)
+            old_camera_id = None if sess is None else sess.camera_id
+            self._stop_worker_locked(client_id)
             if old_camera_id is not None:
                 self.camera_manager.release(old_camera_id)
-            self._selected_camera_id = None
+                # Снимаем локальный ownership (если не владелец — 423).
+                self.ptz_manager.clear_owner(old_camera_id, client_id)
+                # Освобождаем lock в gateway (best-effort)
+                try:
+                    self._camera_gateway.release_camera(old_camera_id, client_id)
+                except Exception:
+                    logger.exception(
+                        "Failed to release camera lock in gateway: camera=%s client=%s",
+                        old_camera_id,
+                        client_id,
+                    )
 
-    def _stop_worker_locked(self) -> None:
-        if self._stop_event is not None:
-            self._stop_event.set()
+            if client_id in self._sessions:
+                del self._sessions[client_id]
 
-        if self._worker_thread is not None and self._worker_thread.is_alive():
-            self._worker_thread.join(timeout=5)
-            if self._worker_thread.is_alive():
+    def _stop_worker_locked(self, client_id: str) -> None:
+        sess = self._sessions.get(client_id)
+        if sess is None:
+            return
+
+        sess.stop_event.set()
+
+        if sess.worker_thread.is_alive():
+            sess.worker_thread.join(timeout=5)
+            if sess.worker_thread.is_alive():
                 logger.error(
-                    f"Detection worker for camera {self._selected_camera_id} "
-                    f"did not stop within 5s — possible data leak to socket"
+                    "Detection worker for camera %s (client=%s) did not stop within 5s — possible data leak to socket",
+                    sess.camera_id,
+                    client_id,
                 )
-
-        self._stop_event = None
-        self._worker_thread = None
