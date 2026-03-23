@@ -91,8 +91,9 @@ class PTZController(BasePTZController):
 
     def _connect(self):
         session = Session()
-        timeout = 5
-        transport = Transport(session=session, timeout=timeout)
+        timeout = 3
+        operation_timeout = 3 
+        transport = Transport(session=session, timeout=timeout, operation_timeout=operation_timeout)
 
         try:
             # 3. Передаем transport в ONVIFCamera
