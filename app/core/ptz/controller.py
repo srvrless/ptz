@@ -4,7 +4,9 @@ import time
 from typing import Optional
 
 from onvif import ONVIFCamera
-
+from zeep.transports import Transport
+from requests import Session
+from requests.exceptions import RequestException
 from app.core.ptz.base import BasePTZController
 from app.core.ptz.factory import PTZControllerFactory
 from app.utils.geo import normalize_deg
@@ -87,34 +89,49 @@ class PTZController(BasePTZController):
 
     # ---------- подключение ----------
 
-    def _connect(self) -> None:
+    def _connect(self):
+        session = Session()
+        timeout = 5
+        transport = Transport(session=session, timeout=timeout)
+
         try:
+            # 3. Передаем transport в ONVIFCamera
             if self.wsdl_dir:
                 self.camera = ONVIFCamera(
-                    self.host, self.port, self.user, self.password, self.wsdl_dir
+                    self.host, self.port, self.user, self.password, 
+                    self.wsdl_dir, transport=transport
                 )
             else:
                 self.camera = ONVIFCamera(
-                    self.host, self.port, self.user, self.password
+                    self.host, self.port, self.user, self.password, 
+                    transport=transport
                 )
-
+            
+            # 4. Выполняем действия, которые реально обращаются к сети
             self.media = self.camera.create_media_service()
             self.ptz = self.camera.create_ptz_service()
 
+            # Первый сетевой запрос (именно здесь сработает таймаут, если камера не отвечает)
             profiles = self.media.GetProfiles()
+            if not profiles:
+                raise Exception("Профили не найдены")
+                
             self.profile = profiles[0]
-
             self.status = self.ptz.GetStatus({"ProfileToken": self.profile.token})
-            logger.info(f"PTZController подключён к {self.host}:{self.port}")
-        except Exception as e:
-            logger.error(
-                f"Ошибка подключения к PTZ-камере {self.host}:{self.port}: {e}"
-            )
+            
+            logger.info(f"Успешное подключение к {self.host}")
+
+        except (RequestException, Exception) as e:
             self.camera = None
             self.media = None
             self.ptz = None
             self.profile = None
             self.status = None
+
+            # Логируем и пробрасываем исключение дальше (raise), 
+            # чтобы внешний код мог сделать retry
+            logger.error(f"Ошибка при подключении к {self.host}: {e}")
+            raise
 
     def _refresh_status(self, force: bool = False) -> None:
         """
