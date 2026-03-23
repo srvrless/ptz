@@ -87,6 +87,7 @@ class ServicesProvider(Provider):
             base_url=config.camera_api_base_url.rstrip("/"),
             headers=headers,
             timeout=10.0,
+            trust_env=False
         )
         try:
             yield client

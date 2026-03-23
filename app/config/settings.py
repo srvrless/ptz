@@ -96,7 +96,7 @@ class AppConfig(BaseSettings):
 
     # External services
     camera_api_base_url: str = Field(
-        default="http://localhost:8080",
+        default="http://localhost:7000",
         alias="CAMERA_API_BASE_URL",
         description="Base URL API gateway для получения данных камер",
     )
