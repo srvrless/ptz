@@ -356,6 +356,21 @@ class CameraService:
             if client_id in self._sessions:
                 del self._sessions[client_id]
 
+    def touch_selected_camera(self, *, camera_id: int, client_id: str) -> None:
+        """
+        Обновить TTL для уже выбранной камеры.
+
+        Используется PTZ-ручками как "keep-alive":
+        таймер переустанавливается на максимум `camera_ttl_seconds` (10 минут).
+        """
+        with self._lock:
+            sess = self._sessions.get(client_id)
+            if sess is None or sess.camera_id != camera_id:
+                return
+            # Поскольку TTL фиксирован (10 минут по определению), "не больше 10"
+            # гарантируется самим таймером: мы каждый раз ставим полную длительность.
+            self._schedule_ttl_locked(client_id, camera_id)
+
     def _stop_worker_locked(self, client_id: str) -> None:
         sess = self._sessions.get(client_id)
         if sess is None:

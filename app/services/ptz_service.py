@@ -11,6 +11,7 @@ from app.exceptions import CameraNotFoundError, PTZMoveError
 from logger.setup_logger import get_logger
 from app.schemas.camera import CameraResponse, ConnectionResponse, LocationResponse
 from app.services.camera_gateway_client import CameraGatewayClient
+from app.services.camera_service import CameraService
 
 
 logger = get_logger("ptz_service")
@@ -28,10 +29,12 @@ class PTZService:
         ptz_manager: PTZCameraManager,
         config: AppConfig,
         camera_gateway: CameraGatewayClient,
+        camera_service: CameraService,
     ):
         self._ptz_manager = ptz_manager
         self.config = config
         self._camera_gateway = camera_gateway
+        self._camera_service = camera_service
 
     def _assert_owned(self, camera_id: int, client_id: str) -> None:
         """Ownership проверяем локально, без gateway."""
@@ -81,6 +84,7 @@ class PTZService:
           - ValueError (если radar_id некорректен)
         """
         self._assert_owned(camera_id, client_id)
+        self._camera_service.touch_selected_camera(camera_id=camera_id, client_id=client_id)
         if restart_before_move:
             logger.info(f"Restart PTZ controller before move: {camera_id}")
             self._ptz_manager.restart_controller(camera_id)
@@ -169,6 +173,7 @@ class PTZService:
         x, y, zoom — скорости в диапазоне [-1, 1].
         """
         self._assert_owned(camera_id, client_id)
+        self._camera_service.touch_selected_camera(camera_id=camera_id, client_id=client_id)
         controller = self._get_controller(camera_id)
         controller.continuous_move(x, y, zoom)
         logger.info(
@@ -180,6 +185,7 @@ class PTZService:
         Остановить PTZ-движение и вернуть текущий азимут.
         """
         self._assert_owned(camera_id, client_id)
+        self._camera_service.touch_selected_camera(camera_id=camera_id, client_id=client_id)
         controller = self._get_controller(camera_id)
         controller.stop()
         # по аналогии со старым кодом — после остановки можно сделать restart
@@ -195,6 +201,7 @@ class PTZService:
         Изменить зум относительно текущего (zoom_delta может быть отрицательным).
         """
         self._assert_owned(camera_id, client_id)
+        self._camera_service.touch_selected_camera(camera_id=camera_id, client_id=client_id)
         controller = self._get_controller(camera_id)
         controller.set_zoom(zoom_delta)
         logger.info(f"PTZ set_zoom camera={camera_id}, delta={zoom_delta}")
@@ -205,6 +212,7 @@ class PTZService:
         Можно расширить, добавив tilt/zoom и т.п.
         """
         self._assert_owned(camera_id, client_id)
+        self._camera_service.touch_selected_camera(camera_id=camera_id, client_id=client_id)
         controller = self._get_controller(camera_id)
         azimut = controller.get_azimut()
         return {"azimut": azimut}

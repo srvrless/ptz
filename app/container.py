@@ -129,12 +129,14 @@ class ServicesProvider(Provider):
         ptz_manager: PTZCameraManager,
         config: AppConfig,
         camera_gateway: CameraGatewayClient,
+        camera_service: CameraService,
     ) -> PTZService:
         """Создаёт PTZService для каждого запроса."""
         return PTZService(
             ptz_manager=ptz_manager,
             config=config,
             camera_gateway=camera_gateway,
+            camera_service=camera_service,
         )
 
     @provide(scope=Scope.REQUEST)

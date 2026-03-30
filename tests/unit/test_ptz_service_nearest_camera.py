@@ -8,6 +8,7 @@ from app.config.settings import AppConfig, CameraConfig
 from app.core.ptz.manager import PTZCameraManager
 from app.exceptions import CameraNotFoundError, PTZMoveError
 from app.services.camera_gateway_client import CameraGatewayClient
+from app.services.camera_service import CameraService
 from app.services.ptz_service import PTZService
 
 
@@ -47,13 +48,24 @@ def camera_gateway() -> MagicMock:
 
 
 @pytest.fixture
+def camera_service() -> MagicMock:
+    svc = MagicMock(spec=CameraService)
+    svc.touch_selected_camera = MagicMock()
+    return svc
+
+
+@pytest.fixture
 def service(
-    ptz_manager: MagicMock, config: AppConfig, camera_gateway: MagicMock
+    ptz_manager: MagicMock,
+    config: AppConfig,
+    camera_gateway: MagicMock,
+    camera_service: MagicMock,
 ) -> PTZService:
     return PTZService(
         ptz_manager=ptz_manager,
         config=config,
         camera_gateway=camera_gateway,
+        camera_service=camera_service,
     )
 
 
