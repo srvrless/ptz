@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from threading import Event, Lock, Thread
+from threading import Event, Lock, Thread, Timer
 from typing import Dict, Optional
 from contextlib import contextmanager
 
@@ -25,6 +25,8 @@ class _ClientSession:
     camera_id: int
     worker_thread: Thread
     stop_event: Event
+    ttl_timer: Optional[Timer] = None
+    ttl_seq: int = 0
 
 
 class CameraService:
@@ -36,6 +38,7 @@ class CameraService:
         detector_manager: DetectorManager,
         config: AppConfig,
         camera_gateway: CameraGatewayClient,
+        camera_ttl_seconds: float = 600
     ) -> None:
         self.camera_manager = camera_manager
         self.ptz_manager = ptz_manager
@@ -45,6 +48,8 @@ class CameraService:
         self._lock = Lock()
         self._sessions: Dict[str, _ClientSession] = {}
         self._camera_gateway = camera_gateway
+        self.camera_ttl_seconds = camera_ttl_seconds
+        self._ttl_seq = 0
 
     def get_camera_config(
         self,
@@ -164,6 +169,86 @@ class CameraService:
         camera.switch_url(url)
         return camera
 
+    def _schedule_ttl_locked(self, client_id: str, camera_id: int) -> None:
+        """
+        Планирует авто-release камеры через `self.camera_ttl_seconds`.
+
+        Требование: вызывающий код должен удерживать `self._lock`.
+        """
+        sess = self._sessions[client_id]
+
+        # Инвалидируем предыдущий таймер/запуск.
+        if sess.ttl_timer is not None:
+            try:
+                sess.ttl_timer.cancel()
+            except Exception:
+                logger.exception(
+                    "Failed to cancel ttl timer: camera=%s client=%s",
+                    camera_id,
+                    client_id,
+                )
+            sess.ttl_timer = None
+
+        self._ttl_seq += 1
+        sess.ttl_seq = self._ttl_seq
+        expected_seq = sess.ttl_seq
+
+        timer = Timer(
+            self.camera_ttl_seconds,
+            self._ttl_timeout,
+            args=(client_id, camera_id, expected_seq),
+        )
+        timer.daemon = True
+        sess.ttl_timer = timer
+        timer.start()
+
+    def _invalidate_ttl_locked(self, client_id: str) -> None:
+        """Отменяет текущий таймер и увеличивает seq для защиты от гонок."""
+        sess = self._sessions.get(client_id)
+        if sess is None:
+            return
+
+        if sess.ttl_timer is not None:
+            try:
+                sess.ttl_timer.cancel()
+            except Exception:
+                logger.exception(
+                    "Failed to cancel ttl timer: camera=%s client=%s",
+                    sess.camera_id,
+                    client_id,
+                )
+            sess.ttl_timer = None
+
+        self._ttl_seq += 1
+        sess.ttl_seq = self._ttl_seq
+
+    def _ttl_timeout(
+        self, client_id: str, expected_camera_id: int, expected_seq: int
+    ) -> None:
+        """
+        Коллбек таймера TTL (runs в отдельном потоке).
+
+        Идемпотентный: если за время TTL сменился camera_id или произошёл reset,
+        то просто ничего не делаем.
+        """
+        with self._lock:
+            sess = self._sessions.get(client_id)
+            if sess is None:
+                return
+            if sess.camera_id != expected_camera_id:
+                return
+            if sess.ttl_seq != expected_seq:
+                return
+
+        try:
+            self.stop_selected_camera(client_id)
+        except Exception:
+            logger.exception(
+                "TTL auto-release failed: camera=%s client=%s",
+                expected_camera_id,
+                client_id,
+            )
+
     def select_camera(
         self,
         camera_id: int,
@@ -188,6 +273,8 @@ class CameraService:
                         and existing.camera_id == camera_id
                         and existing.worker_thread.is_alive()
                     ):
+                        # Камера та же и воркер жив — продлеваем TTL.
+                        self._schedule_ttl_locked(client_id, camera_id)
                         return
 
                     old_camera_id: Optional[int] = (
@@ -236,6 +323,7 @@ class CameraService:
                     self._sessions[client_id] = _ClientSession(
                         camera_id=camera_id, worker_thread=worker, stop_event=stop_event
                     )
+                    self._schedule_ttl_locked(client_id, camera_id)
 
                     logger.info(
                         "Selected camera=%s for client=%s", camera_id, client_id
@@ -273,6 +361,9 @@ class CameraService:
         if sess is None:
             return
 
+        # Останавливаем TTL-таймер и инвалидация seq для защиты от гонок.
+        self._invalidate_ttl_locked(client_id)
+
         sess.stop_event.set()
 
         if sess.worker_thread.is_alive():
@@ -281,5 +372,19 @@ class CameraService:
                 logger.error(
                     "Detection worker for camera %s (client=%s) did not stop within 5s — possible data leak to socket",
                     sess.camera_id,
+                    client_id,
+                )
+
+    def stop_all_sessions(self) -> None:
+        """Graceful cleanup активных сессий (в т.ч. отмена TTL-таймеров)."""
+        with self._lock:
+            client_ids = list(self._sessions.keys())
+
+        for client_id in client_ids:
+            try:
+                self.stop_selected_camera(client_id)
+            except Exception:
+                logger.exception(
+                    "Failed to stop camera session on shutdown: client=%s",
                     client_id,
                 )

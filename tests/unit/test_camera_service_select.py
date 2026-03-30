@@ -12,8 +12,10 @@
 
 from unittest.mock import MagicMock, patch
 
+import threading
+import time
+
 import pytest
-from starlette.exceptions import HTTPException
 
 from app.config.settings import AppConfig, CameraConfig, DetectorMode
 from app.core.camera.manager import CameraManager
@@ -101,6 +103,25 @@ def _make_service(camera_manager, detector_manager):
         camera_gateway=camera_gateway,
     )
     return svc
+
+
+def _make_service_with_ttl(camera_manager, detector_manager, camera_ttl_seconds: float):
+    """Фабрика для создания сервиса с коротким TTL (для тестов)."""
+    camera_gateway = MagicMock(spec=CameraGatewayClient)
+    camera_gateway.claim_camera.side_effect = lambda camera_id, client_id: _cam_cfg(
+        camera_id, client_id=client_id
+    )
+    camera_gateway.release_camera = MagicMock()
+    config = MagicMock(spec=AppConfig)
+    return CameraService(
+        camera_manager=camera_manager,
+        ptz_manager=MagicMock(spec=PTZCameraManager),
+        auto_ptz_manager=MagicMock(spec=AutoPTZManager),
+        detector_manager=detector_manager,
+        config=config,
+        camera_gateway=camera_gateway,
+        camera_ttl_seconds=camera_ttl_seconds,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -296,6 +317,128 @@ def test_success_select_camera_create_controller(_sock_factory, service):
     service.ptz_manager.is_initialized.return_value = True
     service.select_camera(camera_id=cam_id, client_id=client_id)
     assert service.ptz_manager.is_initialized(cam_id)
+
+
+# ---------------------------------------------------------------------------
+# TTL auto-release
+# ---------------------------------------------------------------------------
+
+
+@patch("app.services.camera_service.run_detection_sender")
+@patch("app.services.camera_service._default_connection_factory")
+def test_ttl_auto_release_calls_release(
+    _sock_factory,
+    mock_sender,
+    camera_manager,
+    detector_manager,
+):
+    mock_sender.side_effect = lambda **kw: kw["stop_event"].wait()
+
+    release_called = threading.Event()
+    release_args = {}
+
+    def _release_side_effect(camera_id: int):
+        release_args["camera_id"] = camera_id
+        release_called.set()
+
+    camera_manager.release.side_effect = _release_side_effect
+
+    svc = _make_service_with_ttl(
+        camera_manager=camera_manager,
+        detector_manager=detector_manager,
+        camera_ttl_seconds=0.2,
+    )
+    svc.ptz_manager.is_initialized.return_value = True
+
+    client_id = "c1"
+    svc.select_camera(camera_id=1, client_id=client_id)
+
+    assert release_called.wait(timeout=2.0), "TTL did not release the camera"
+    assert release_args["camera_id"] == 1
+    assert svc.get_selected_camera_id(client_id) is None
+
+
+@patch("app.services.camera_service.run_detection_sender")
+@patch("app.services.camera_service._default_connection_factory")
+def test_ttl_reset_on_reselect(
+    _sock_factory,
+    mock_sender,
+    camera_manager,
+    detector_manager,
+):
+    mock_sender.side_effect = lambda **kw: kw["stop_event"].wait()
+
+    release_calls = []
+
+    def _release_side_effect(camera_id: int):
+        release_calls.append((camera_id, time.monotonic()))
+
+    camera_manager.release.side_effect = _release_side_effect
+
+    ttl = 0.2
+    svc = _make_service_with_ttl(
+        camera_manager=camera_manager,
+        detector_manager=detector_manager,
+        camera_ttl_seconds=ttl,
+    )
+    svc.ptz_manager.is_initialized.return_value = True
+
+    client_id = "c1"
+    t0 = time.monotonic()
+    svc.select_camera(camera_id=1, client_id=client_id)
+
+    # Пере-выбор той же камеры должен продлить TTL.
+    time.sleep(ttl / 2)
+    svc.select_camera(camera_id=1, client_id=client_id)
+
+    # К моменту t0 + (0.55 * ttl) release ещё не должен случиться.
+    time.sleep(ttl * 0.55)
+    assert len(release_calls) == 0, f"Release happened too early: {release_calls}"
+
+    # Должен случиться не позже t0 + 2 * ttl.
+    time.sleep(ttl * 0.9)
+    assert len(release_calls) == 1
+    assert release_calls[0][0] == 1
+
+
+@patch("app.services.camera_service.run_detection_sender")
+@patch("app.services.camera_service._default_connection_factory")
+def test_manual_stop_cancels_ttl(
+    _sock_factory,
+    mock_sender,
+    camera_manager,
+    detector_manager,
+):
+    mock_sender.side_effect = lambda **kw: kw["stop_event"].wait()
+
+    release_calls = []
+
+    def _release_side_effect(camera_id: int):
+        release_calls.append((camera_id, time.monotonic()))
+
+    camera_manager.release.side_effect = _release_side_effect
+
+    ttl = 0.2
+    svc = _make_service_with_ttl(
+        camera_manager=camera_manager,
+        detector_manager=detector_manager,
+        camera_ttl_seconds=ttl,
+    )
+    svc.ptz_manager.is_initialized.return_value = True
+
+    client_id = "c1"
+    svc.select_camera(camera_id=1, client_id=client_id)
+
+    # Ручной stop раньше TTL.
+    time.sleep(ttl / 4)
+    svc.stop_selected_camera(client_id)
+
+    # Release должен случиться ровно один раз (при manual stop).
+    assert len(release_calls) == 1
+
+    # После TTL не должно быть повторного release.
+    time.sleep(ttl * 1.2)
+    assert len(release_calls) == 1
 
 
 @patch("app.services.camera_service._default_connection_factory")

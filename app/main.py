@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from sqladmin import Admin
 from app.api.v1.auto_ptz import router as auto_ptz_router
 from app.api.v1.detector import router as detector_router
 from app.api.v1.ptz import router as ptz_router
@@ -11,6 +10,7 @@ from app.api.v1.streams import router as streams_router
 from app.container import create_container
 from app.core.camera.manager import CameraManager
 from app.exceptions import CameraNotFoundError, PTZControllerNotFoundError, PTZMoveError
+from app.services.camera_service import CameraService
 from logger.setup_logger import get_logger
 
 logger = get_logger("app")
@@ -24,7 +24,10 @@ async def lifespan(app: FastAPI):
 
     container = app.state.container
     with container() as request_container:
+        camera_service = request_container.get(CameraService)
         camera_manager = request_container.get(CameraManager)
+        logger.info("Остановка активных TTL-сессий...")
+        camera_service.stop_all_sessions()
         logger.info("Остановка всех камер...")
         camera_manager.stop_all()
 
