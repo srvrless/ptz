@@ -10,7 +10,7 @@ import psutil  # pip install psutil
 import pika  # pip install pika
 
 # --- КОНФИГУРАЦИЯ ПУТЕЙ (Используем Path для Windows-совместимости) ---
-BASE_DIR = Path(r"C:\ptz_infrastructure")
+BASE_DIR = Path(r"C:\project\ptz")
 APP_DIR = BASE_DIR / "app"
 VENV_DIR = BASE_DIR / "venv"
 BAT_FILE = BASE_DIR / "run_ptz.bat"
