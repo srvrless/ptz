@@ -124,7 +124,7 @@ def process_update(ch, method, properties, body):
 def start_agent():
     try:
         # Укажи IP сервера с RabbitMQ
-        connection = pika.BlockingConnection(pika.ConnectionParameters('192.168.x.x'))
+        connection = pika.BlockingConnection(pika.ConnectionParameters('10.14.101.253'))
         channel = connection.channel()
 
         channel.exchange_declare(exchange='ptz_updates', exchange_type='fanout')
