@@ -3,6 +3,11 @@ import shutil
 import hashlib
 from pathlib import Path
 
+EXTRA_ITEMS = [
+        "env.example",
+        "TCP_COMP.py",
+        "logger",
+    ]
 
 def file_hash(path: Path) -> str:
     """Считает хэш файла"""
@@ -53,6 +58,20 @@ def build():
     shutil.copytree("./app", release_dir / "app")
     shutil.copy("pyproject.toml", release_dir / "pyproject.toml")
     shutil.copy("uv.lock", release_dir / "uv.lock")
+
+
+    for item in EXTRA_ITEMS:
+        src = Path(item)
+        dst = release_dir / item
+
+        if not src.exists():
+            print(f"[WARN] {item} не найден, пропускаем")
+            continue
+
+        if src.is_dir():
+            shutil.copytree(src, dst)
+        else:
+            shutil.copy(src, dst)
 
     # Удаляем временный файл
     Path("requirements.txt").unlink()
