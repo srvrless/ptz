@@ -6,7 +6,6 @@ readme = "README.md"
 requires-python = "==3.14.*"
 dependencies = [
     "alembic>=1.18.1",
-    "black>=25.9.0",
     "dishka[fastapi]==1.7.1",
     "environs>=14.3.0",
     "fastapi>=0.123.3",
@@ -30,6 +29,9 @@ dependencies = [
     "uvicorn>=0.38.0",
     "wsdiscovery>=2.1.2",
 ]
+
+[tool.setuptools.package-dir]
+"pzt-camera" = "app"
 
 [dependency-groups]
 dev = [

@@ -350,3 +350,5 @@ tests/*.db
 logs
 optical.pt
 thermal.pt
+.cache_wheels
+dist_release
