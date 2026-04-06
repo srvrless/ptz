@@ -192,32 +192,37 @@ class PTZController(BasePTZController):
     # ---------- базовые операции PTZ ----------
 
     def move(self, x: float, y: float, zoom: Optional[float] = None) -> None:
-        """
-        Абсолютное перемещение в координатах ONVIF [-1..1].
-        """
-        if not self.ptz or not self.profile:
-            logger.error("PTZ-сервис не инициализирован")
-            return
-
-        try:
-            self._refresh_status(force=True)  # Нужен актуальный статус для позиции
-            request = self.ptz.create_type("AbsoluteMove")
-            request.ProfileToken = self.profile.token
-            request.Position = self.status.Position
-
-            request.Position.PanTilt.x = max(-1.0, min(1.0, x))
-            request.Position.PanTilt.y = max(-1.0, min(1.0, y))
-
-            if zoom is not None:
-                request.Position.Zoom.x = self.status.Position.Zoom.x
-            else:
-                # Если не задаём zoom — оставляем текущий
-                request.Position.Zoom.x = self.status.Position.Zoom.x
-
-            self.ptz.AbsoluteMove(request)
-            self._refresh_status(force=True)
-        except Exception as e:
-            logger.error(f"PTZ AbsoluteMove error: {e}")
+            """
+            Абсолютное перемещение в координатах ONVIF [-1..1].
+            """
+            if not self.ptz or not self.profile:
+                logger.error("PTZ-сервис не инициализирован")
+                return
+            try:
+                request = self.ptz.create_type("AbsoluteMove")
+                request.ProfileToken = self.profile.token
+                # Создаем новый, чистый объект позиции
+                position = self.ptz.create_type("PTZVector")
+                
+                # Настраиваем PanTilt
+                pan_tilt = self.ptz.create_type("Vector2D")
+                pan_tilt.x = max(-1.0, min(1.0, x))
+                pan_tilt.y = max(-1.0, min(1.0, y))
+                position.PanTilt = pan_tilt
+                # Если zoom передан, создаем и добавляем ноду Zoom. 
+                # Если нет — она просто не отправится, и камера не тронет мотор объектива.
+                if zoom is not None:
+                    zoom_vec = self.ptz.create_type("Vector1D")
+                    zoom_vec.x = max(-1.0, min(1.0, zoom))
+                    position.Zoom = zoom_vec
+                request.Position = position
+                self.ptz.AbsoluteMove(request)
+                
+                # Обновлять статус сразу после AbsoluteMove бессмысленно, 
+                # камера еще не доехала. Лучше оставить это фоновой джобе.
+                self._refresh_status(force=True) 
+            except Exception as e:
+                logger.error(f"PTZ AbsoluteMove error: {e}")
 
     def continuous_move(self, x: float, y: float, zoom: float = 0.0) -> None:
         """
