@@ -339,7 +339,7 @@ class Tms20TCP:
         # Возвращаем значение (MSB << 8 | LSB)
         value = (data1 << 8) | data2
         return value
-
+        return value
     def get_zoom_position(self) -> Optional[int]:
         """
         Получить текущую позицию зума (Call Zoom Position, 0x0055).

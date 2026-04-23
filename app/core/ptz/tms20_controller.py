@@ -47,26 +47,47 @@ class Tms20PTZController(BasePTZController):
         self._tcp = Tms20TCP(ip=host, port=port, pt_addr=pt_addr, cam_addr=cam_addr)
         self._last_azimut: Optional[float] = None
 
-        # Отслеживание состояния zoom чтобы не спамить одинаковые команды
         self._current_zoom_state: int = ZOOM_STATE_STOP
 
-        # Метрики для диагностики
         self._metrics_enabled: bool = False
         self._last_cmd_time: float = 0.0
         self._cmd_count: int = 0
         self._zoom_cmd_count: int = 0
 
-        # Состояние тепловизора
         self._thermal_enabled: bool = False
 
+        # --- Инициализация камеры с проверкой статуса ---
         try:
-            self._tcp.power_on_pt()
-            self._tcp.power_on_cam()
-            self._tcp.power_on_ir()  # тепловизор включается вместе с камерой
-            self._thermal_enabled = True
-        except Exception as e:
-            logger.error(f"TMS-20 power on error: {e}")
+            # 1. Проверяем PT Drive (Механику)
+            pt_is_on = self._tcp.get_power_state(self._tcp.pt_addr)
+            if pt_is_on is True:
+                logger.info("TMS-20: PT Drive is already ON. Skipping initialization.")
+            else:
+                logger.info("TMS-20: PT Drive is OFF or unresponsive. Sending Power ON...")
+                self._tcp.power_on_pt()
+                time.sleep(0.5) # Даем время на обработку команды
 
+            # 2. Проверяем EO Camera
+            cam_is_on = self._tcp.get_power_state(self._tcp.cam_addr)
+            if cam_is_on is True:
+                logger.info("TMS-20: EO Camera is already ON.")
+            else:
+                logger.info("TMS-20: EO Camera is OFF. Sending Power ON...")
+                self._tcp.power_on_cam()
+                time.sleep(0.5)
+
+            # 3. Проверяем IR Camera (Тепловизор)
+            ir_is_on = self._tcp.get_power_state(self._tcp.ir_addr)
+            if ir_is_on is True:
+                logger.info("TMS-20: IR Camera is already ON.")
+                self._thermal_enabled = True
+            else:
+                logger.info("TMS-20: IR Camera is OFF. Sending Power ON...")
+                self._tcp.power_on_ir()
+                self._thermal_enabled = True
+                
+        except Exception as e:
+            logger.error(f"TMS-20 initialization/power on error: {e}")
     @classmethod
     def from_config(cls, config: CameraConfig) -> "Tms20PTZController":
         """Создать контроллер из конфига камеры."""
