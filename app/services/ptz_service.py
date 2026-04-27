@@ -85,9 +85,6 @@ class PTZService:
         """
         self._assert_owned(camera_id, client_id)
         self._camera_service.touch_selected_camera(camera_id=camera_id, client_id=client_id)
-        if restart_before_move:
-            logger.info(f"Restart PTZ controller before move: {camera_id}")
-            self._ptz_manager.restart_controller(camera_id)
 
         controller = self._get_controller(camera_id)
 
@@ -189,8 +186,6 @@ class PTZService:
         controller = self._get_controller(camera_id)
         controller.stop()
         # по аналогии со старым кодом — после остановки можно сделать restart
-        self._ptz_manager.restart_controller(camera_id)
-        controller = self._get_controller(camera_id)
 
         azimut = controller.get_azimut()
         logger.info(f"PTZ stop camera={camera_id}, azimut={azimut}")
