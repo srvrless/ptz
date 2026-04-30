@@ -61,7 +61,6 @@ class BasePTZController(ABC):
         """
         if self.cam_latlon is None or self.cam_h is None:
             return None
-
         target_az = azimuth_from_latlon(
             self.cam_latlon, (target_lat, target_lon), self.cam_rate
         )
