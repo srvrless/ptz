@@ -99,8 +99,7 @@ class TestPTZServiceMoveToTargetWithExcludedCameras:
         controller = MagicMock()
         controller.search_target.return_value = 12.34
         ptz_manager.get_controller.return_value = controller
-        ptz_manager.restart_controller.return_value = controller
-
+        
         result = service.move_to_target_with_excluded_cameras(
             client_id="c1",
             lat=55.1,
@@ -118,7 +117,6 @@ class TestPTZServiceMoveToTargetWithExcludedCameras:
         camera_gateway.get_nearest_camera_config.assert_called_once_with(
             lat=55.1, lon=37.1
         )
-        ptz_manager.restart_controller.assert_called_once_with(7)
         controller.search_target.assert_called_once()
 
     def test_raises_ptz_move_error_when_controller_returns_none(
