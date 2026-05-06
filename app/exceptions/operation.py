@@ -16,6 +16,6 @@ class PTZMoveError(OperationError):
 
     error_code: str = "ptz_move_error"
 
-    def __init__(self, camera_id: str, reason: str):
+    def __init__(self, camera_id: int, reason: str):
         message = f"Failed to move PTZ camera with ID '{camera_id}': {reason}."
         super().__init__(message)

@@ -43,7 +43,7 @@ class CameraConfig(BaseModel):
     )
     ptz_type: str = Field(
         "onvif",
-        description="Тип PTZ контроллера: 'onvif' или 'tms20'",
+        description="Тип PTZ контроллера: 'onvif', 'tms20' или 'china'",
     )
 
     client_id: str | None = Field(
@@ -57,6 +57,9 @@ class CameraConfig(BaseModel):
 
     def is_tms20(self) -> bool:
         return self.ptz_type.lower() == "tms20"
+
+    def is_china(self) -> bool:
+        return self.ptz_type.lower() == "china"
 
     @classmethod
     def from_db_model(cls, camera) -> CameraConfig:

@@ -21,6 +21,15 @@ class TestCameraConfig:
         """Проверяет is_tms20 для ONVIF."""
         assert sample_camera_onvif_config.is_tms20() is False
 
+    def test_is_china_true(self, sample_camera_onvif_config):
+        """Проверяет is_china для China aliases."""
+        config = sample_camera_onvif_config.model_copy(update={"ptz_type": "china"})
+        assert config.is_china() is True
+
+    def test_is_china_false(self, sample_camera_onvif_config):
+        """Проверяет is_china для ONVIF."""
+        assert sample_camera_onvif_config.is_china() is False
+
     def test_camera_config_required_fields(self):
         """Проверяет, что обязательные поля валидируются."""
         with pytest.raises(Exception):

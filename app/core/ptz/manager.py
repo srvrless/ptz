@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 from threading import Lock
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
-from app.core.ptz.base import BasePTZController
-from app.core.ptz.factory import PTZControllerFactory
+from fastapi import HTTPException
 
+import app.core.ptz.china_controller  # noqa: F401 — регистрация China
 import app.core.ptz.controller  # noqa: F401 — регистрация ONVIF
 import app.core.ptz.tms20_controller  # noqa: F401 — регистрация TMS-20
+from app.core.ptz.base import BasePTZController
+from app.core.ptz.factory import PTZControllerFactory
 from logger.setup_logger import get_logger
-from fastapi import HTTPException
 
 if TYPE_CHECKING:
     from app.config.settings import CameraConfig
